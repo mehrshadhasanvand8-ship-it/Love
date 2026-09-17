@@ -1943,27 +1943,27 @@
 
             if(data.status === 'happy') {
                 banner.className = "alert-banner happy";
-                title.innerText = `😊 ${data.senderName} امروز ازت خوشحاله!`;
+                title.innerText = `😊 ${data.senderName} خوشحاله!`;
             } else {
                 banner.className = "alert-banner";
-                title.innerText = `🤬 ${data.senderName} غر داره و عصبانیه!`;
+                title.innerText = `🤬 ${data.senderName} عصبانیه!`;
             }
-            text.innerText = `دلیل: "${data.reason}" (${data.time})`;
+            text.innerText = `${data.reason} (${data.time})`;
             banner.style.display = 'block';
-
-            if('vibrate' in navigator) navigator.vibrate([300, 100, 300]);
         }
 
         function appendGhorHistory(item) {
-            const box = document.getElementById('ghor-history-box');
-            if(box.innerHTML.includes('هنوز پیامی')) box.innerHTML = '';
+            const historyBox = document.getElementById('ghor-history-box');
+            if (historyBox.innerText === 'هنوز پیامی ثبت نشده...') {
+                historyBox.innerHTML = '';
+            }
             const div = document.createElement('div');
-            div.style.marginBottom = "6px";
-            div.style.borderBottom = "1px solid rgba(255,255,255,0.08)";
-            div.style.paddingBottom = "4px";
-            div.innerHTML = `<b>${item.senderName} (${item.status === 'happy' ? '😊 خوشحال' : '🤬 عصبانی'}):</b> ${item.reason} <span style="font-size:9px; color:rgba(255,255,255,0.5);">(${item.time})</span>`;
-            box.appendChild(div);
-            box.scrollTop = box.scrollHeight;
+            div.style.marginBottom = '6px';
+            div.style.borderBottom = '1px solid rgba(255,255,255,0.1)';
+            div.style.paddingBottom = '4px';
+            const emoji = item.status === 'happy' ? '😊' : '🤬';
+            div.innerHTML = `<strong>${emoji} ${item.senderName}</strong> (${item.time}): <br/>${item.reason}`;
+            historyBox.prepend(div);
         }
     </script>
 </body>
