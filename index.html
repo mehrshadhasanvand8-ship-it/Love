@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>فضای دو نفره شیشه‌ای (نقاشی و صدا)</title>
+    <title>فضای دو نفره شیشه‌ای (نقاشی و چت تلگرامی)</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: Tahoma, sans-serif; }
         body {
-            background: linear-gradient(135deg, #1f1c2c, #928dab);
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
             height: 100vh;
             display: flex;
             justify-content: center;
@@ -18,15 +18,14 @@
             color: #fff;
         }
         .glass-panel {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            border-radius: 24px;
         }
         
-        /* صفحات */
         .screen {
             display: none;
             width: 380px;
@@ -40,23 +39,26 @@
         h2 { margin-bottom: 5px; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
         p { font-size: 13px; color: rgba(255,255,255,0.7); }
 
-        input {
+        input, textarea {
             width: 100%; padding: 12px 15px;
-            background: rgba(255, 255, 255, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 10px; color: #fff; font-size: 14px; outline: none;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px; color: #fff; font-size: 14px; outline: none;
+            transition: 0.3s;
         }
-        input::placeholder { color: rgba(255, 255, 255, 0.6); }
+        input:focus { border-color: #2481cc; background: rgba(255, 255, 255, 0.15); }
+        input::placeholder { color: rgba(255, 255, 255, 0.5); }
 
         .btn {
-            background: linear-gradient(135deg, #ff416c, #ff4b2b);
+            background: linear-gradient(135deg, #2481cc, #1e72b5);
             border: none; color: white; padding: 12px;
-            border-radius: 10px; font-size: 15px; font-weight: bold; cursor: pointer;
+            border-radius: 12px; font-size: 15px; font-weight: bold; cursor: pointer;
+            box-shadow: 0 4px 15px rgba(36, 129, 204, 0.4);
             transition: 0.3s;
         }
         .btn:hover { opacity: 0.9; transform: translateY(-2px); }
-        .btn-secondary { background: linear-gradient(135deg, #11998e, #38ef7d); }
-        .btn-audio { background: linear-gradient(135deg, #f7b733, #fc4a1a); }
+        .btn-secondary { background: linear-gradient(135deg, #11998e, #38ef7d); box-shadow: 0 4px 15px rgba(17, 153, 142, 0.4); }
+        .btn-chat { background: linear-gradient(135deg, #2b98f0, #0077db); }
 
         /* صفحه نقاشی */
         #paint-screen {
@@ -66,39 +68,107 @@
         header { display: flex; justify-content: space-between; align-items: center; padding: 5px 15px; flex-wrap: wrap; gap: 10px; }
         .toolbar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
         .tool-btn, select, input[type="color"] {
-            background: rgba(255, 255, 255, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            padding: 8px 12px; border-radius: 8px; color: white; cursor: pointer; font-size: 13px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 8px 12px; border-radius: 10px; color: white; cursor: pointer; font-size: 13px;
         }
-        .tool-btn.active { background: rgba(255, 255, 255, 0.4); border-color: #fff; }
+        .tool-btn.active { background: rgba(255, 255, 255, 0.3); border-color: #fff; }
         input[type="color"] { padding: 2px; width: 38px; height: 34px; }
         .canvas-container {
-            flex-grow: 1; background: #14141e;
-            border-radius: 15px; border: 1px solid rgba(255, 255, 255, 0.15);
+            flex-grow: 1; background: #13131a;
+            border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.1);
             overflow: hidden; position: relative;
         }
         canvas { display: block; cursor: crosshair; width: 100%; height: 100%; }
 
-        /* استایل صفحه میکروفون صوتی */
-        .mic-box {
-            width: 120px; height: 120px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            margin: 20px auto;
-            display: flex; justify-content: center; align-items: center;
-            font-size: 50px; cursor: pointer;
-            transition: 0.3s;
-            box-shadow: 0 0 20px rgba(0,0,0,0.3);
+        /* === چت روم کاملاً شبیه تلگرام (شیشه‌ای) === */
+        #chat-screen {
+            width: 92vw; max-width: 420px; height: 90vh;
+            padding: 0; display: none; flex-direction: column; justify-content: space-between;
+            overflow: hidden; border-radius: 20px;
         }
-        .mic-box.active {
-            background: rgba(56, 239, 125, 0.3);
-            border-color: #38ef7d;
-            box-shadow: 0 0 30px #38ef7d;
-            transform: scale(1.05);
+        #chat-screen.active { display: flex; }
+        
+        /* هدر تلگرامی */
+        .tg-header {
+            background: rgba(20, 20, 35, 0.7);
+            backdrop-filter: blur(10px);
+            padding: 12px 18px;
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
+        .tg-profile { display: flex; align-items: center; gap: 12px; }
+        .tg-avatar {
+            width: 40px; height: 40px; border-radius: 50%;
+            background: linear-gradient(135deg, #ff416c, #ff4b2b);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: bold; font-size: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        .tg-info h3 { font-size: 15px; color: #fff; }
+        .tg-info span { font-size: 11px; color: #4cd137; }
 
-        .error-msg { color: #ffb3b3; font-size: 13px; min-height: 18px; }
+        /* بدنه پیام‌ها */
+        .chat-messages {
+            flex-grow: 1; padding: 15px; overflow-y: auto;
+            display: flex; flex-direction: column; gap: 8px;
+            background: radial-gradient(circle at center, rgba(25,25,45,0.4) 0%, rgba(10,10,20,0.7) 100%);
+        }
+        
+        /* حباب پیام تلگرام */
+        .message {
+            max-width: 80%; padding: 10px 14px; border-radius: 16px;
+            font-size: 13.5px; line-height: 1.5; word-break: break-word;
+            position: relative; box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            animation: fadeIn 0.2s ease-out;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        .message.mine {
+            background: rgba(43, 152, 240, 0.25);
+            border: 1px solid rgba(43, 152, 240, 0.4);
+            align-self: flex-start;
+            border-bottom-right-radius: 4px;
+        }
+        .message.theirs {
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            align-self: flex-end;
+            border-bottom-left-radius: 4px;
+        }
+        .msg-sender { font-size: 11px; font-weight: bold; color: #4cd137; margin-bottom: 3px; display: block; }
+        .msg-time { font-size: 9px; color: rgba(255, 255, 255, 0.5); float: left; margin-top: 4px; margin-right: 8px; }
+
+        /* نوار ایموجی سریع */
+        .emoji-bar {
+            background: rgba(15, 15, 25, 0.5);
+            padding: 6px 12px; display: flex; gap: 8px; overflow-x: auto;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            white-space: nowrap;
+        }
+        .emoji-bar span { cursor: pointer; font-size: 18px; transition: 0.2s; }
+        .emoji-bar span:hover { transform: scale(1.3); }
+
+        /* بخش پایین و ارسال پیام */
+        .tg-input-area {
+            background: rgba(20, 20, 35, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 10px 15px; display: flex; align-items: center; gap: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .tg-input-area input {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 20px; padding: 10px 16px; font-size: 14px;
+        }
+        .send-btn {
+            background: #2481cc; border: none; width: 42px; height: 42px;
+            border-radius: 50%; color: white; display: flex; align-items: center;
+            justify-content: center; cursor: pointer; box-shadow: 0 3px 10px rgba(36,129,204,0.5);
+            transition: 0.2s; flex-shrink: 0;
+        }
+        .send-btn:hover { transform: scale(1.05); background: #1e72b5; }
+
+        .error-msg { color: #ff8080; font-size: 13px; min-height: 18px; }
     </style>
 </head>
 <body>
@@ -106,9 +176,9 @@
     <!-- ۱. منوی اصلی انتخاب بخش -->
     <div id="hub-screen" class="screen glass-panel active">
         <h2>✨ فضای دونفره شیشه‌ای</h2>
-        <p>لطفاً یکی از قابلیت‌ها را انتخاب کنید:</p>
+        <p>یکی از قابلیت‌ها را انتخاب کن:</p>
         <button class="btn" onclick="goToScreen('paint-auth-screen')">🎨 اتاق نقاشی آنلاین</button>
-        <button class="btn btn-audio" onclick="goToScreen('audio-auth-screen')">🎙️ مکالمه صوتی زنده</button>
+        <button class="btn btn-chat" onclick="goToScreen('chat-auth-screen')">💬 چت روم تلگرامی</button>
     </div>
 
     <!-- ۲. صفحه ورود/ساخت اتاق نقاشی -->
@@ -134,10 +204,9 @@
                     <option value="2">باریک</option>
                     <option value="5" selected>متوسط</option>
                     <option value="12">ضخیم</option>
-                    <option value="25">خیلی ضخیم</option>
                 </select>
                 <input type="color" id="color-picker" value="#ffffff" onchange="updateColor(this.value)">
-                <button class="tool-btn" style="background: rgba(255, 65, 108, 0.4);" onclick="clearCanvas()">🗑️ شروع مجدد</button>
+                <button class="tool-btn" style="background: rgba(255, 65, 108, 0.4);" onclick="clearCanvas()">🗑️ پاکسازی</button>
                 <button class="tool-btn" onclick="location.reload()">خروج</button>
             </div>
         </header>
@@ -146,29 +215,58 @@
         </div>
     </div>
 
-    <!-- ۴. صفحه ورود/ساخت اتاق صوتی -->
-    <div id="audio-auth-screen" class="screen glass-panel">
-        <h2>🎙️ مکالمه صوتی</h2>
-        <p>با پارتنرت زنده حرف بزن!</p>
-        <input type="text" id="audio-room-code" placeholder="کد اتاق صوتی (مثلاً: 9988)">
-        <input type="password" id="audio-room-pass" placeholder="رمز عبور اتاق">
-        <div id="audio-error" class="error-msg"></div>
-        <button class="btn btn-audio" onclick="joinAudioRoom()">ورود به اتاق صدا</button>
-        <button class="btn btn-secondary" onclick="createAudioRoom()">ساخت اتاق صدا</button>
+    <!-- ۴. صفحه ورود/ساخت چت روم -->
+    <div id="chat-auth-screen" class="screen glass-panel">
+        <h2>💬 چت روم تلگرامی</h2>
+        <p>گفتگوی زنده با استایل تلگرام</p>
+        <input type="text" id="chat-room-code" placeholder="کد اتاق (مثلاً: 5678)">
+        <input type="password" id="chat-room-pass" placeholder="رمز عبور اتاق">
+        <input type="text" id="chat-user-name" placeholder="اسم شما (مثلاً: پارتنر)">
+        <div id="chat-error" class="error-msg"></div>
+        <button class="btn btn-chat" onclick="joinChatRoom()">ورود به چت روم</button>
+        <button class="btn btn-secondary" onclick="createChatRoom()">ساخت اتاق جدید</button>
         <button class="tool-btn" onclick="goToScreen('hub-screen')" style="margin-top: 10px;">⬅️ بازگشت به منو</button>
     </div>
 
-    <!-- ۵. صفحه مکالمه صوتی زنده -->
-    <div id="audio-call-screen" class="screen glass-panel" style="width: 380px;">
-        <h2>🎙️ اتاق صوتی فعال</h2>
-        <p id="audio-status-text">برای شروع صحبت روی میکروفون بزنید</p>
-        
-        <div class="mic-box" id="mic-btn" onclick="toggleMicrophone()">
-            🎤
+    <!-- ۵. صفحه محیط چت کاملاً شبیه تلگرام -->
+    <div id="chat-screen" class="screen glass-panel">
+        <!-- هدر تلگرامی -->
+        <div class="tg-header">
+            <div class="tg-profile">
+                <div class="tg-avatar" id="partner-avatar">💬</div>
+                <div class="tg-info">
+                    <h3 id="chat-room-title">چت روم</h3>
+                    <span>● آنلاین و زنده</span>
+                </div>
+            </div>
+            <button class="tool-btn" onclick="location.reload()" style="padding: 5px 10px; font-size: 11px;">خروج</button>
         </div>
-        
-        <audio id="remoteAudio" autoplay></audio>
-        <button class="tool-btn" onclick="location.reload()" style="margin-top: 15px; width: 100%; justify-content: center;">قطع تماس و خروج</button>
+
+        <!-- پیام‌ها -->
+        <div class="chat-messages" id="chat-messages-box"></div>
+
+        <!-- نوار ایموجی سریع -->
+        <div class="emoji-bar">
+            <span onclick="addEmoji('❤️')">❤️</span>
+            <span onclick="addEmoji('😍')">😍</span>
+            <span onclick="addEmoji('🔥')">🔥</span>
+            <span onclick="addEmoji('✨')">✨</span>
+            <span onclick="addEmoji('😂')">😂</span>
+            <span onclick="addEmoji('👍')">👍</span>
+            <span onclick="addEmoji('😘')">😘</span>
+            <span onclick="addEmoji('🌹')">🌹</span>
+            <span onclick="addEmoji('🥺')">🥺</span>
+            <span onclick="addEmoji('😎')">😎</span>
+            <span onclick="addEmoji('💯')">💯</span>
+        </div>
+
+        <!-- بخش ارسال پیام -->
+        <div class="tg-input-area">
+            <input type="text" id="chat-input-msg" placeholder="پیام..." onkeypress="handleChatKeyPress(event)">
+            <button class="send-btn" onclick="sendChatMessage()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+            </button>
+        </div>
     </div>
 
     <script>
@@ -204,16 +302,12 @@
             const code = document.getElementById('paint-room-code').value.trim();
             const pass = document.getElementById('paint-room-pass').value.trim();
             const errBox = document.getElementById('paint-error');
-            if (!code || !pass) { errBox.innerText = "لطفاً کد و رمز را وارد کنید!"; return; }
+            if (!code || !pass) { errBox.innerText = "کد و رمز را وارد کن!"; return; }
 
             const roomRef = db.ref('paint_rooms/' + code);
             roomRef.once('value', (snapshot) => {
-                if (snapshot.exists()) { errBox.innerText = "این اتاق قبلاً ساخته شده است!"; }
-                else {
-                    roomRef.set({ password: pass }, (error) => {
-                        if (!error) enterPaintRoom(code);
-                    });
-                }
+                if (snapshot.exists()) { errBox.innerText = "این اتاق قبلاً ساخته شده!"; }
+                else { roomRef.set({ password: pass }, (error) => { if (!error) enterPaintRoom(code); }); }
             });
         }
 
@@ -221,11 +315,11 @@
             const code = document.getElementById('paint-room-code').value.trim();
             const pass = document.getElementById('paint-room-pass').value.trim();
             const errBox = document.getElementById('paint-error');
-            if (!code || !pass) { errBox.innerText = "لطفاً کد و رمز را وارد کنید!"; return; }
+            if (!code || !pass) { errBox.innerText = "کد و رمز را وارد کن!"; return; }
 
             db.ref('paint_rooms/' + code).once('value', (snapshot) => {
-                if (!snapshot.exists()) { errBox.innerText = "اتاق یافت نشد!"; return; }
-                if (snapshot.val().password !== pass) { errBox.innerText = "رمز عبور اشتباه است!"; return; }
+                if (!snapshot.exists()) { errBox.innerText = "اتاق پیدا نشد!"; return; }
+                if (snapshot.val().password !== pass) { errBox.innerText = "رمز اشتباه است!"; return; }
                 enterPaintRoom(code);
             });
         }
@@ -233,7 +327,7 @@
         function enterPaintRoom(code) {
             currentRoom = code;
             goToScreen('paint-screen');
-            document.getElementById('paint-room-title').innerText = `کد اتاق: ${code}`;
+            document.getElementById('paint-room-title').innerText = `اتاق: ${code}`;
             setTimeout(() => {
                 initCanvasSize();
                 dbRef = db.ref('paint_rooms/' + currentRoom + '/lines');
@@ -255,7 +349,7 @@
         function updateColor(c) { currentColor = c; }
         function updateSize(s) { currentSize = parseInt(s); }
         function sendStroke(x0, y0, x1, y1) {
-            dbRef.push({ x0: Math.round(x0), y0: Math.round(y0), x1: Math.round(x1), y1: Math.round(y1), color: currentTool === 'eraser' ? '#14141e' : currentColor, size: currentTool === 'eraser' ? currentSize * 2.5 : currentSize });
+            dbRef.push({ x0: Math.round(x0), y0: Math.round(y0), x1: Math.round(x1), y1: Math.round(y1), color: currentTool === 'eraser' ? '#13131a' : currentColor, size: currentTool === 'eraser' ? currentSize * 2.5 : currentSize });
         }
         function drawLineLocally(d) {
             ctx.beginPath(); ctx.moveTo(d.x0, d.y0); ctx.lineTo(d.x1, d.y1);
@@ -269,125 +363,92 @@
         }
 
 
-        /* --- بخش مکالمه صوتی زنده (WebRTC) --- */
-        let audioRoomCode = null;
-        let localStream = null;
-        let peerConnection = null;
-        let isMicActive = false;
+        /* --- بخش چت تلگرامی --- */
+        let chatRoomCode = null;
+        let chatUserName = "";
+        let chatDbRef = null;
 
-        const servers = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
+        function createChatRoom() {
+            const code = document.getElementById('chat-room-code').value.trim();
+            const pass = document.getElementById('chat-room-pass').value.trim();
+            const name = document.getElementById('chat-user-name').value.trim();
+            const errBox = document.getElementById('chat-error');
+            if (!code || !pass || !name) { errBox.innerText = "همه فیلدها را پر کن!"; return; }
 
-        function createAudioRoom() {
-            const code = document.getElementById('audio-room-code').value.trim();
-            const pass = document.getElementById('audio-room-pass').value.trim();
-            const errBox = document.getElementById('audio-error');
-            if (!code || !pass) { errBox.innerText = "کد و رمز را وارد کنید!"; return; }
-
-            const roomRef = db.ref('audio_rooms/' + code);
+            const roomRef = db.ref('chat_rooms/' + code);
             roomRef.once('value', (snapshot) => {
-                if (snapshot.exists()) { errBox.innerText = "اتاق صوتی وجود دارد!"; }
-                else {
-                    roomRef.set({ password: pass }, (error) => {
-                        if (!error) enterAudioRoom(code, true);
-                    });
-                }
+                if (snapshot.exists()) { errBox.innerText = "این چت روم قبلاً ساخته شده!"; }
+                else { roomRef.set({ password: pass }, (error) => { if (!error) enterChatRoom(code, name); }); }
             });
         }
 
-        function joinAudioRoom() {
-            const code = document.getElementById('audio-room-code').value.trim();
-            const pass = document.getElementById('audio-room-pass').value.trim();
-            const errBox = document.getElementById('audio-error');
-            if (!code || !pass) { errBox.innerText = "کد و رمز را وارد کنید!"; return; }
+        function joinChatRoom() {
+            const code = document.getElementById('chat-room-code').value.trim();
+            const pass = document.getElementById('chat-room-pass').value.trim();
+            const name = document.getElementById('chat-user-name').value.trim();
+            const errBox = document.getElementById('chat-error');
+            if (!code || !pass || !name) { errBox.innerText = "همه فیلدها را پر کن!"; return; }
 
-            db.ref('audio_rooms/' + code).once('value', (snapshot) => {
-                if (!snapshot.exists()) { errBox.innerText = "اتاق یافت نشد!"; return; }
+            db.ref('chat_rooms/' + code).once('value', (snapshot) => {
+                if (!snapshot.exists()) { errBox.innerText = "اتاق پیدا نشد!"; return; }
                 if (snapshot.val().password !== pass) { errBox.innerText = "رمز اشتباه است!"; return; }
-                enterAudioRoom(code, false);
+                enterChatRoom(code, name);
             });
         }
 
-        async function enterAudioRoom(code, isCreator) {
-            audioRoomCode = code;
-            goToScreen('audio-call-screen');
-
-            try {
-                localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
-                // صدا در ابتدا میوت است تا کاربر دستی میکروفون را روشن کند
-                localStream.getAudioTracks()[0].enabled = false;
-            } catch (err) {
-                alert("دسترسی به میکروفون داده نشد یا پشتیبانی نمی‌شود.");
-            }
-
-            setupWebRTC(isCreator);
-        }
-
-        function toggleMicrophone() {
-            if (!localStream) return;
-            isMicActive = !isMicActive;
-            localStream.getAudioTracks()[0].enabled = isMicActive;
+        function enterChatRoom(code, name) {
+            chatRoomCode = code;
+            chatUserName = name;
+            goToScreen('chat-screen');
+            document.getElementById('chat-room-title').innerText = `اتاق: ${code}`;
+            document.getElementById('partner-avatar').innerText = name.charAt(0).toUpperCase();
             
-            const micBtn = document.getElementById('mic-btn');
-            const statusText = document.getElementById('audio-status-text');
-            if (isMicActive) {
-                micBtn.classList.add('active');
-                statusText.innerText = "میکروفون روشن است (در حال انتقال صدا...)";
-            } else {
-                micBtn.classList.remove('active');
-                statusText.innerText = "میکروفون خاموش است (روی میکروفون بزنید)";
-            }
+            chatDbRef = db.ref('chat_rooms/' + chatRoomCode + '/messages');
+            chatDbRef.on('child_added', (snapshot) => {
+                const msg = snapshot.val();
+                if (msg) appendMessageToUI(msg);
+            });
         }
 
-        function setupWebRTC(isCreator) {
-            peerConnection = new RTCPeerConnection(servers);
+        function sendChatMessage() {
+            const input = document.getElementById('chat-input-msg');
+            const text = input.value.trim();
+            if (!text) return;
 
-            localStream.getTracks().forEach(track => {
-                peerConnection.addTrack(track, localStream);
+            chatDbRef.push({
+                sender: chatUserName,
+                text: text,
+                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
             });
+            input.value = "";
+        }
 
-            peerConnection.ontrack = (event) => {
-                document.getElementById('remoteAudio').srcObject = event.streams[0];
-            };
+        function addEmoji(emoji) {
+            const input = document.getElementById('chat-input-msg');
+            input.value += emoji;
+            input.focus();
+        }
 
-            const roomRef = db.ref('audio_rooms/' + audioRoomCode);
+        function handleChatKeyPress(e) {
+            if (e.key === 'Enter') sendChatMessage();
+        }
 
-            peerConnection.onicecandidate = (event) => {
-                if (event.candidate) {
-                    roomRef.child(isCreator ? 'offerCandidates' : 'answerCandidates').push(event.candidate.toJSON());
-                }
-            };
-
-            if (isCreator) {
-                peerConnection.createOffer().then(offer => {
-                    peerConnection.setLocalDescription(offer);
-                    roomRef.child('offer').set({ type: offer.type, sdp: offer.sdp });
-                });
-
-                roomRef.child('answer').on('value', snapshot => {
-                    const answer = snapshot.val();
-                    if (answer && !peerConnection.currentRemoteDescription) {
-                        peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
-                    }
-                });
-
-                roomRef.child('answerCandidates').on('child_added', snapshot => {
-                    peerConnection.addIceCandidate(new RTCIceCandidate(snapshot.val()));
-                });
-            } else {
-                roomRef.child('offer').once('value', async snapshot => {
-                    const offer = snapshot.val();
-                    if (offer) {
-                        await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
-                        const answer = await peerConnection.createAnswer();
-                        await peerConnection.setLocalDescription(answer);
-                        roomRef.child('answer').set({ type: answer.type, sdp: answer.sdp });
-                    }
-                });
-
-                roomRef.child('offerCandidates').on('child_added', snapshot => {
-                    peerConnection.addIceCandidate(new RTCIceCandidate(snapshot.val()));
-                });
-            }
+        function appendMessageToUI(msg) {
+            const box = document.getElementById('chat-messages-box');
+            const div = document.createElement('div');
+            div.classList.add('message');
+            
+            const isMine = (msg.sender === chatUserName);
+            div.classList.add(isMine ? 'mine' : 'theirs');
+            
+            div.innerHTML = `
+                <span class="msg-sender">${msg.sender}</span>
+                <span style="display:inline-block; margin-left: 20px;">${msg.text}</span>
+                <span class="msg-time">${msg.time || ''}</span>
+            `;
+            
+            box.appendChild(div);
+            box.scrollTop = box.scrollHeight;
         }
     </script>
 </body>
