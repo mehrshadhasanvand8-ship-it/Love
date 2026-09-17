@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اتاق نقاشی دو نفره شیشه‌ای</title>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: Tahoma, sans-serif; }
+        body {
+            background: linear-gradient(135deg, #1f1c2c, #928dab);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            color: #fff;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            border-radius: 20px;
+        }
+        #auth-screen {
+            width: 380px; padding: 30px; text-align: center;
+            display: flex; flex-direction: column; gap: 15px;
+        }
+        #auth-screen h2 { margin-bottom: 10px; color: #fff; }
+        input {
+            width: 100%; padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px; color: #fff; font-size: 14px; outline: none;
+        }
+        input::placeholder { color: rgba(255, 255, 255, 0.6); }
+        .btn {
+            background: linear-gradient(135deg, #ff416c, #ff4b2b);
+            border: none; color: white; padding: 12px;
+            border-radius: 10px; font-size: 15px; font-weight: bold; cursor: pointer;
+        }
+        .btn-secondary { background: linear-gradient(135deg, #11998e, #38ef7d); }
+        #app-screen {
+            display: none; width: 95vw; height: 92vh;
+            flex-direction: column; padding: 15px; gap: 15px;
+        }
+        header { display: flex; justify-content: space-between; align-items: center; padding: 5px 15px; flex-wrap: wrap; gap: 10px; }
+        .toolbar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        .tool-btn, select, input[type="color"] {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 12px; border-radius: 8px; color: white; cursor: pointer; font-size: 13px;
+        }
+        .tool-btn.active { background: rgba(255, 255, 255, 0.4); border-color: #fff; }
+        input[type="color"] { padding: 2px; width: 38px; height: 34px; }
+        .canvas-container {
+            flex-grow: 1; background: #14141e;
+            border-radius: 15px; border: 1px solid rgba(255, 255, 255, 0.15);
+            overflow: hidden; position: relative;
+        }
+        canvas { display: block; cursor: crosshair; width: 100%; height: 100%; }
+        .error-msg { color: #ffb3b3; font-size: 13px; min-height: 18px; }
+    </style>
+</head>
+<body>
+
+    <div id="auth-screen" class="glass-panel">
+        <h2>🎨 اتاق نقاشی دونفره</h2>
+        <p style="font-size: 13px; color: rgba(255,255,255,0.7);">با پارتنرت آنلاین نقاشی کن!</p>
+        
+        <input type="text" id="room-code" placeholder="کد اتاق (مثلاً: 1234)">
+        <input type="password" id="room-pass" placeholder="رمز عبور اتاق">
+        <div id="error-box" class="error-msg"></div>
+
+        <button class="btn" onclick="joinRoom()">ورود به اتاق</button>
+        <button class="btn btn-secondary" onclick="createRoom()">ساخت اتاق جدید</button>
+    </div>
+
+    <div id="app-screen" class="glass-panel">
+        <header>
+            <div style="font-weight: bold; font-size: 15px;" id="room-title">اتاق: -</div>
+            <div class="toolbar">
+                <button class="tool-btn active" id="btn-pencil" onclick="setTool('pencil')">✏️ مداد</button>
+                <button class="tool-btn" id="btn-brush" onclick="setTool('brush')">🖌️ قلم‌مو</button>
+                <button class="tool-btn" id="btn-eraser" onclick="setTool('eraser')">🧹 پاک‌کن</button>
+                
+                <select id="brush-size" onchange="updateSize(this.value)">
+                    <option value="2">باریک</option>
+                    <option value="5" selected>متوسط</option>
+                    <option value="12">ضخیم</option>
+                    <option value="25">خیلی ضخیم</option>
+                </select>
+
+                <input type="color" id="color-picker" value="#ffffff" onchange="updateColor(this.value)">
+                
+                <button class="tool-btn" style="background: rgba(255, 65, 108, 0.4);" onclick="clearCanvas()">🗑️ شروع مجدد</button>
+                <button class="tool-btn" onclick="leaveRoom()">خروج</button>
+            </div>
+        </header>
+
+        <div class="canvas-container" id="canvas-box">
+            <canvas id="paintCanvas"></canvas>
+        </div>
+    </div>
+
+    <script>
+        const firebaseConfig = {
+            databaseURL: "https://crazyapp-9663a-default-rtdb.firebaseio.com"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        let currentRoom = null;
+        let dbRef = null;
+        let isDrawing = false;
+        let lastX = 0;
+        let lastY = 0;
+        
+        let currentTool = 'pencil';
+        let currentColor = '#ffffff';
+        let currentSize = 5;
+
+        const canvas = document.getElementById('paintCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function initCanvasSize() {
+            const container = document.getElementById('canvas-box');
+            canvas.width = container.clientWidth;
+            canvas.height = container.clientHeight;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+        }
+
+        function createRoom() {
+            const code = document.getElementById('room-code').value.trim();
+            const pass = document.getElementById('room-pass').value.trim();
+            const errBox = document.getElementById('error-box');
+
+            if (!code || !pass) { errBox.innerText = "لطفاً کد و رمز اتاق را وارد کنید!"; return; }
+
+            const roomRef = db.ref('rooms/' + code);
+            roomRef.once('value', (snapshot) => {
+                if (snapshot.exists()) {
+                    errBox.innerText = "این اتاق قبلاً ساخته شده است! از گزینه ورود استفاده کنید.";
+                } else {
+                    roomRef.set({ password: pass }, (error) => {
+                        if (!error) enterRoom(code);
+                        else errBox.innerText = "خطا در اتصال به فایربیس!";
+                    });
+                }
+            });
+        }
+
+        function joinRoom() {
+            const code = document.getElementById('room-code').value.trim();
+            const pass = document.getElementById('room-pass').value.trim();
+            const errBox = document.getElementById('error-box');
+
+            if (!code || !pass) { errBox.innerText = "لطفاً کد و رمز اتاق را وارد کنید!"; return; }
+
+            const roomRef = db.ref('rooms/' + code);
+            roomRef.once('value', (snapshot) => {
+                if (!snapshot.exists()) { errBox.innerText = "اتاقی با این مشخصات یافت نشد!"; return; }
+                if (snapshot.val().password !== pass) { errBox.innerText = "رمز عبور اشتباه است!"; return; }
+                enterRoom(code);
+            });
+        }
+
+        function enterRoom(code) {
+            currentRoom = code;
+            document.getElementById('auth-screen').style.display = 'none';
+            document.getElementById('app-screen').style.display = 'flex';
+            document.getElementById('room-title').innerText = `کد اتاق: ${code}`;
+            
+            setTimeout(() => {
+                initCanvasSize();
+                initDrawingListeners();
+                listenToDatabase();
+            }, 150);
+        }
+
+        function leaveRoom() { location.reload(); }
+
+        function setTool(tool) {
+            currentTool = tool;
+            document.querySelectorAll('.toolbar .tool-btn').forEach(b => b.classList.remove('active'));
+            if(tool === 'pencil') document.getElementById('btn-pencil').classList.add('active');
+            if(tool === 'brush') document.getElementById('btn-brush').classList.add('active');
+            if(tool === 'eraser') document.getElementById('btn-eraser').classList.add('active');
+        }
+
+        function updateColor(color) { currentColor = color; }
+        function updateSize(size) { currentSize = parseInt(size); }
+
+        function getMousePos(e) {
+            const rect = canvas.getBoundingClientRect();
+            return {
+                x: e.clientX - rect.left,
+                y: e.clientY - rect.top
+            };
+        }
+
+        function getTouchPos(e) {
+            const rect = canvas.getBoundingClientRect();
+            const touch = e.touches[0];
+            return {
+                x: touch.clientX - rect.left,
+                y: touch.clientY - rect.top
+            };
+        }
+
+        function initDrawingListeners() {
+            dbRef = db.ref('rooms/' + currentRoom + '/lines');
+
+            canvas.onmousedown = (e) => {
+                isDrawing = true;
+                const pos = getMousePos(e);
+                lastX = pos.x;
+                lastY = pos.y;
+            };
+
+            canvas.onmousemove = (e) => {
+                if (!isDrawing) return;
+                const pos = getMousePos(e);
+                sendStroke(lastX, lastY, pos.x, pos.y);
+                lastX = pos.x;
+                lastY = pos.y;
+            };
+
+            window.onmouseup = () => { isDrawing = false; };
+
+            // رویدادهای لمسی موبایل
+            canvas.ontouchstart = (e) => {
+                isDrawing = true;
+                const pos = getTouchPos(e);
+                lastX = pos.x;
+                lastY = pos.y;
+                e.preventDefault();
+            };
+
+            canvas.ontouchmove = (e) => {
+                if (!isDrawing) return;
+                const pos = getTouchPos(e);
+                sendStroke(lastX, lastY, pos.x, pos.y);
+                lastX = pos.x;
+                lastY = pos.y;
+                e.preventDefault();
+            };
+
+            window.ontouchend = () => { isDrawing = false; };
+        }
+
+        function sendStroke(x0, y0, x1, y1) {
+            const strokeData = {
+                x0: Math.round(x0),
+                y0: Math.round(y0),
+                x1: Math.round(x1),
+                y1: Math.round(y1),
+                color: currentTool === 'eraser' ? '#14141e' : currentColor,
+                size: currentTool === 'eraser' ? currentSize * 2.5 : currentSize
+            };
+            dbRef.push(strokeData);
+        }
+
+        function drawLineLocally(data) {
+            ctx.beginPath();
+            ctx.moveTo(data.x0, data.y0);
+            ctx.lineTo(data.x1, data.y1);
+            ctx.strokeStyle = data.color;
+            ctx.lineWidth = data.size;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.stroke();
+            ctx.closePath();
+        }
+
+        function listenToDatabase() {
+            // بارگذاری خطوط جدید به صورت زنده
+            dbRef.on('child_added', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    drawLineLocally(data);
+                }
+            });
+
+            // پاک کردن صفحه به صورت زنده برای هر دو نفر
+            db.ref('rooms/' + currentRoom + '/clear').on('value', (snapshot) => {
+                if (snapshot.exists()) {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                }
+            });
+        }
+
+        function clearCanvas() {
+            if (confirm("آیا مطمئنی می‌خواهی کل صفحه پاک شود؟")) {
+                db.ref('rooms/' + currentRoom + '/lines').remove();
+                db.ref('rooms/' + currentRoom + '/clear').set(Date.now());
+            }
+        }
+    </script>
+</body>
+</html>
