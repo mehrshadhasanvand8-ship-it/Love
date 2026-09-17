@@ -29,21 +29,23 @@
         .screen {
             display: none;
             width: 380px;
-            padding: 30px;
+            padding: 25px;
             text-align: center;
             flex-direction: column;
-            gap: 15px;
+            gap: 12px;
+            max-height: 95vh;
+            overflow-y: auto;
         }
         .screen.active { display: flex; }
 
-        h2 { margin-bottom: 5px; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+        h2 { margin-bottom: 5px; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.3); font-size: 18px; }
         p { font-size: 13px; color: rgba(255,255,255,0.7); }
 
         input, textarea, select {
-            width: 100%; padding: 12px 15px;
+            width: 100%; padding: 11px 14px;
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 12px; color: #fff; font-size: 14px; outline: none;
+            border-radius: 12px; color: #fff; font-size: 13px; outline: none;
             transition: 0.3s;
         }
         input:focus, textarea:focus, select:focus { border-color: #2481cc; background: rgba(255, 255, 255, 0.15); }
@@ -52,8 +54,8 @@
 
         .btn {
             background: linear-gradient(135deg, #2481cc, #1e72b5);
-            border: none; color: white; padding: 12px;
-            border-radius: 12px; font-size: 15px; font-weight: bold; cursor: pointer;
+            border: none; color: white; padding: 11px;
+            border-radius: 12px; font-size: 14px; font-weight: bold; cursor: pointer;
             box-shadow: 0 4px 15px rgba(36, 129, 204, 0.4);
             transition: 0.3s;
         }
@@ -65,6 +67,8 @@
         .btn-movie { background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045); box-shadow: 0 4px 15px rgba(131, 58, 180, 0.4); }
         .btn-ghor { background: linear-gradient(135deg, #eb3349, #f45c43); box-shadow: 0 4px 15px rgba(235, 51, 73, 0.4); }
         .btn-moment { background: linear-gradient(135deg, #ff9966, #ff5e62); box-shadow: 0 4px 15px rgba(255, 94, 98, 0.4); }
+        .btn-voice { background: linear-gradient(135deg, #00c6ff, #0072ff); box-shadow: 0 4px 15px rgba(0, 198, 255, 0.4); }
+        .btn-video { background: linear-gradient(135deg, #a80077, #667db6); box-shadow: 0 4px 15px rgba(168, 0, 119, 0.4); }
 
         .online-badge {
             background: rgba(76, 209, 55, 0.2);
@@ -89,7 +93,7 @@
         }
         #exit-confirm-modal.active, #delete-room-modal.active { display: flex; }
 
-        /* صفحه نقاشی */
+        /* نقاشی */
         #paint-screen { width: 95vw; height: 92vh; padding: 15px; gap: 15px; }
         header { display: flex; justify-content: space-between; align-items: center; padding: 5px 15px; flex-wrap: wrap; gap: 10px; }
         .toolbar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
@@ -143,7 +147,7 @@
             background: #2481cc; border: none; width: 42px; height: 42px; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 3px 10px rgba(36,129,204,0.5); transition: 0.2s; flex-shrink: 0;
         }
 
-        /* بازی دوز */
+        /* دوز */
         #game-screen { width: 90vw; max-width: 380px; padding: 25px; display: none; flex-direction: column; align-items: center; gap: 20px; }
         #game-screen.active { display: flex; }
         .game-status { font-size: 14px; font-weight: bold; color: #f7b733; text-align: center; }
@@ -154,7 +158,7 @@
         .tic-cell.x { color: #ff416c; text-shadow: 0 0 10px rgba(255,65,108,0.5); }
         .tic-cell.o { color: #38ef7d; text-shadow: 0 0 10px rgba(56,239,125,0.5); }
 
-        /* کارگاه ساخت ایموجی */
+        /* ایموجی‌ساز */
         #emoji-maker-screen { width: 95vw; max-width: 650px; height: 92vh; padding: 15px; display: none; flex-direction: column; gap: 12px; }
         #emoji-maker-screen.active { display: flex; }
         .emoji-canvas-box {
@@ -190,7 +194,7 @@
         }
         #floating-movie-chat.active { display: flex; }
 
-        /* اتاق ثبت لحظات (دوربین عکاسی) */
+        /* لحظات */
         #moment-screen { width: 92vw; max-width: 420px; height: 90vh; padding: 15px; display: none; flex-direction: column; gap: 12px; }
         #moment-screen.active { display: flex; }
         .camera-view-box {
@@ -210,7 +214,7 @@
             background: rgba(235, 51, 73, 0.2); border: 1px solid rgba(235, 51, 73, 0.5); border-radius: 14px; padding: 14px; text-align: center;
         }
         .alert-banner.happy { background: rgba(56, 239, 125, 0.2); border-color: rgba(56, 239, 125, 0.5); }
-        .error-msg { color: #ff8080; font-size: 13px; min-height: 18px; }
+        .error-msg { color: #ff8080; font-size: 12px; min-height: 18px; }
 
         .search-box-container {
             background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); border-radius: 16px; padding: 12px; margin-top: 5px; text-align: right;
@@ -218,12 +222,29 @@
         .user-search-result-item {
             display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.08); padding: 8px 12px; border-radius: 10px; margin-top: 6px; font-size: 13px;
         }
+
+        /* تماس صوتی و تصویری زنده */
+        .call-video-grid {
+            display: flex; flex-direction: column; gap: 12px; width: 100%; flex-grow: 1; min-height: 280px; position: relative;
+        }
+        .video-wrapper {
+            position: relative; width: 100%; flex: 1; background: #000; border-radius: 16px; border: 1px solid rgba(255,255,255,0.2); overflow: hidden; display: flex; align-items: center; justify-content: center;
+        }
+        .video-wrapper video { width: 100%; height: 100%; object-fit: cover; }
+        .video-label { position: absolute; bottom: 8px; right: 12px; background: rgba(0,0,0,0.6); padding: 3px 8px; border-radius: 6px; font-size: 11px; }
+        .call-controls { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 10px; }
+        .pulse-avatar {
+            width: 90px; height: 90px; border-radius: 50%; background: linear-gradient(135deg, #00c6ff, #0072ff);
+            display: flex; align-items: center; justify-content: center; font-size: 36px; margin: 20px auto;
+            box-shadow: 0 0 25px rgba(0, 198, 255, 0.6); animation: pulse 2s infinite;
+        }
+        @keyframes pulse { 0% { transform: scale(0.95); } 50% { transform: scale(1.05); } 100% { transform: scale(0.95); } }
     </style>
 </head>
 <body>
 
     <div id="global-room-alert">
-        <h4 style="font-size: 14px; color: #38ef7d; margin-bottom: 4px;" id="alert-room-title">🔔 اعلان حضور</h4>
+        <h4 style="font-size: 14px; color: #38ef7d; margin-bottom: 4px;" id="alert-room-title">🔔 اعلان جدید</h4>
         <p style="font-size: 12.5px; color: rgba(255,255,255,0.9);" id="alert-room-desc">پیام جدید...</p>
     </div>
 
@@ -238,8 +259,8 @@
 
     <div id="exit-confirm-modal">
         <div class="glass-panel" style="width: 320px; padding: 25px; text-align: center;">
-            <h3 style="margin-bottom: 10px; font-size: 16px;">🚪 خروج از اتاق</h3>
-            <p style="margin-bottom: 20px;">آیا می‌خواهید از اتاق خارج شوید؟</p>
+            <h3 style="margin-bottom: 10px; font-size: 16px;">🚪 خروج از بخش</h3>
+            <p style="margin-bottom: 20px;">آیا می‌خواهید خارج شوید؟</p>
             <div style="display: flex; gap: 10px; justify-content: center;">
                 <button class="btn" style="background: #eb3349; flex: 1;" onclick="confirmExit(true)">بله</button>
                 <button class="btn" style="background: rgba(255,255,255,0.2); flex: 1;" onclick="confirmExit(false)">خیر</button>
@@ -249,8 +270,8 @@
 
     <div id="delete-room-modal">
         <div class="glass-panel" style="width: 320px; padding: 25px; text-align: center;">
-            <h3 style="margin-bottom: 10px; font-size: 16px; color: #eb3349;">⚠️ حذف کامل اتاق</h3>
-            <p style="margin-bottom: 20px; font-size: 13px;">آیا مطمئن هستید؟ با این کار تمام داده‌ها و پیام‌های این اتاق برای همیشه پاک خواهد شد!</p>
+            <h3 style="margin-bottom: 10px; font-size: 16px; color: #eb3349;">⚠️ حذف کامل داده‌ها</h3>
+            <p style="margin-bottom: 20px; font-size: 13px;">آیا مطمئن هستید؟ همه داده‌ها پاک می‌شوند!</p>
             <div style="display: flex; gap: 10px; justify-content: center;">
                 <button class="btn" style="background: #eb3349; flex: 1;" onclick="confirmDeleteRoom(true)">بله، حذف کن</button>
                 <button class="btn" style="background: rgba(255,255,255,0.2); flex: 1;" onclick="confirmDeleteRoom(false)">لغو</button>
@@ -258,45 +279,63 @@
         </div>
     </div>
 
-    <!-- صفحه ورود -->
+    <!-- مرحله 1: ورود / ثبت نام حساب کاربری با آیدی و رمز -->
     <div id="welcome-screen" class="screen glass-panel active">
-        <h2>✨ خوش آمدید</h2>
-        <p>لطفاً نام و آیدی شخصی و انحصاری خود را وارد کنید:</p>
+        <h2>✨ حساب کاربری</h2>
+        <p>لطفاً نام، آیدی و رمز عبور خود را وارد کنید:</p>
         <input type="text" id="global-user-name" placeholder="اسم شما...">
-        <input type="text" id="global-user-id" placeholder="آیدی اختصاصی (مثال: my_id_123)...">
+        <input type="text" id="global-user-id" placeholder="آیدی اختصاصی (مثال: my_id یا 1234)">
+        <input type="password" id="global-user-pass" placeholder="رمز عبور حساب کاربری">
         <div id="welcome-error" class="error-msg"></div>
-        <button class="btn" onclick="registerAndEnterApp()">ثبت و ورود به فضای دونفره 🚀</button>
+        <button class="btn" onclick="registerAndEnterApp()">ورود / ثبت حساب کاربری 🚀</button>
+    </div>
+
+    <!-- مرحله 2: ورود یا ساخت اتاق جدید مشترک (پشتیبانی از عدد و حروف) -->
+    <div id="room-entry-screen" class="screen glass-panel">
+        <h2>🔑 انتخاب یا ساخت اتاق</h2>
+        <p id="room-welcome-user-txt">کد و رمز اتاق مشترک خود را وارد کنید:</p>
+        <input type="text" id="main-room-code" placeholder="کد اتاق (حروف یا عدد، مثلا: love2026 یا 8899)">
+        <input type="password" id="main-room-pass" placeholder="رمز عبور اتاق">
+        <div id="room-entry-error" class="error-msg"></div>
+        <div style="display: flex; gap: 10px;">
+            <button class="btn" style="flex: 1;" onclick="joinMainRoom()">ورود به اتاق 🚪</button>
+            <button class="btn btn-secondary" style="flex: 1;" onclick="createMainRoom()">ساخت اتاق جدید ➕</button>
+        </div>
+        <button class="tool-btn" onclick="goToScreen('welcome-screen')" style="margin-top: 8px;">⬅️ خروج از حساب</button>
     </div>
 
     <!-- ویرایش پروفایل -->
     <div id="profile-edit-screen" class="screen glass-panel">
         <h2>⚙️ ویرایش پروفایل</h2>
-        <p>می‌توانید نام یا آیدی خود را تغییر دهید:</p>
+        <p>می‌توانید نام، آیدی یا رمز خود را تغییر دهید:</p>
         <input type="text" id="edit-user-name" placeholder="نام جدید...">
         <input type="text" id="edit-user-id" placeholder="آیدی جدید...">
+        <input type="password" id="edit-user-pass" placeholder="رمز عبور جدید...">
         <div id="profile-error" class="error-msg"></div>
         <button class="btn" onclick="saveProfileChanges()">ذخیره تغییرات ✅</button>
         <button class="tool-btn" onclick="goToScreen('hub-screen')" style="margin-top: 5px;">⬅️ بازگشت</button>
     </div>
 
     <!-- منوی اصلی (Hub) -->
-    <div id="hub-screen" class="screen glass-panel" style="max-height: 95vh; overflow-y: auto;">
+    <div id="hub-screen" class="screen glass-panel">
         <h2>✨ فضای دونفره شیشه‌ای</h2>
         <p id="welcome-msg-hub">سلام عزیزم!</p>
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 4px;">
-            <div style="font-size: 11px; color: #38ef7d;" id="my-profile-badge">آیدی شما: -</div>
-            <button class="tool-btn" style="font-size: 10px; padding: 4px 8px; background: rgba(255,255,255,0.15);" onclick="openProfileEdit()">✏️ ویرایش پروفایل</button>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 2px;">
+            <div style="font-size: 11px; color: #38ef7d;" id="my-profile-badge">آیدی: - | اتاق: -</div>
+            <button class="tool-btn" style="font-size: 10px; padding: 4px 8px; background: rgba(255,255,255,0.15);" onclick="openProfileEdit()">✏️ ویرایش</button>
         </div>
         
         <div class="search-box-container">
-            <h4 style="font-size: 13px; margin-bottom: 6px; color: #f7b733;">🔍 جستجوی کاربر و دعوت به اتاق:</h4>
+            <h4 style="font-size: 12px; margin-bottom: 6px; color: #f7b733;">🔍 جستجوی کاربر و دعوت:</h4>
             <div style="display: flex; gap: 6px; margin-bottom: 6px;">
-                <input type="text" id="search-user-input" placeholder="جستجوی آیدی..." style="padding: 8px 10px; font-size: 13px;">
-                <button class="btn" style="padding: 8px 12px; font-size: 13px;" onclick="searchUser()">پیدا کن</button>
+                <input type="text" id="search-user-input" placeholder="جستجوی آیدی..." style="padding: 8px 10px; font-size: 12px;">
+                <button class="btn" style="padding: 8px 12px; font-size: 12px;" onclick="searchUser()">پیدا کن</button>
             </div>
             <div id="search-result-box"></div>
         </div>
 
+        <button class="btn btn-voice" onclick="goToScreen('voice-screen')">🎙️ تماس صوتی زنده (وویس آنلاین)</button>
+        <button class="btn btn-video" onclick="goToScreen('video-screen')">📹 تماس تصویری زنده (دوربین آنلاین)</button>
         <button class="btn" onclick="goToScreen('paint-auth-screen')">🎨 اتاق نقاشی آنلاین</button>
         <button class="btn btn-chat" onclick="goToScreen('chat-auth-screen')">💬 چت روم تلگرامی</button>
         <button class="btn btn-game" onclick="goToScreen('game-auth-screen')">🎮 بازی دوز دو نفره</button>
@@ -304,12 +343,62 @@
         <button class="btn btn-movie" onclick="goToScreen('movie-auth-screen')">🎬 فیلم دیدن ♥️🥹</button>
         <button class="btn btn-moment" onclick="goToScreen('moment-auth-screen')">📸 ثبت لحظات (عکاسی دونفره)</button>
         <button class="btn btn-ghor" onclick="goToScreen('ghor-auth-screen')">🤬 اتاق غر و قور 🤬</button>
+        
+        <button class="tool-btn" style="background: rgba(235, 51, 73, 0.5); margin-top: 10px;" onclick="leaveCurrentRoom()">🚪 خروج از اتاق فعلی</button>
+    </div>
+
+    <!-- تماس صوتی زنده (Voice Call) -->
+    <div id="voice-screen" class="screen glass-panel">
+        <header style="padding:0; width:100%;">
+            <div style="font-weight:bold; font-size:14px;" id="voice-room-title">تماس صوتی زنده</div>
+            <button class="tool-btn" style="background: rgba(56, 239, 125, 0.3); padding: 4px 8px; font-size: 11px;" onclick="goToScreen('hub-screen')">🏠 منو</button>
+        </header>
+
+        <div class="pulse-avatar">🎙️</div>
+        <div id="voice-status-text" style="font-size: 13px; color: #f7b733; margin-bottom: 10px;">آماده برقراری تماس صوتی...</div>
+
+        <div class="call-controls">
+            <button class="btn btn-secondary" id="btn-start-voice" onclick="startCall('audio')">📞 شروع تماس صوتی</button>
+            <button class="btn btn-chat" id="btn-answer-voice" style="display:none;" onclick="answerCall('audio')">🟢 پاسخ به تماس</button>
+            <button class="btn tool-btn" id="btn-mute-voice" onclick="toggleMuteAudio()">🎙️ قطع/وصل میکروفون</button>
+            <button class="btn btn-ghor" onclick="endCall('audio')">🔴 قطع تماس</button>
+        </div>
+        <audio id="remoteAudio" autoplay></audio>
+    </div>
+
+    <!-- تماس تصویری زنده (Video Call) -->
+    <div id="video-screen" class="screen glass-panel" style="width: 95vw; max-width: 500px; height: 90vh;">
+        <header style="padding:0; width:100%;">
+            <div style="font-weight:bold; font-size:14px;" id="video-room-title">تماس تصویری زنده</div>
+            <button class="tool-btn" style="background: rgba(56, 239, 125, 0.3); padding: 4px 8px; font-size: 11px;" onclick="goToScreen('hub-screen')">🏠 منو</button>
+        </header>
+
+        <div class="call-video-grid">
+            <div class="video-wrapper">
+                <video id="remoteVideo" autoplay playsinline></video>
+                <span class="video-label">تصویر پارتنر</span>
+            </div>
+            <div class="video-wrapper" style="max-height: 140px;">
+                <video id="localVideo" autoplay playsinline muted></video>
+                <span class="video-label">تصویر شما</span>
+            </div>
+        </div>
+
+        <div id="video-status-text" style="font-size: 12px; color: #f7b733;">آماده برای تماس تصویری...</div>
+
+        <div class="call-controls">
+            <button class="btn btn-video" id="btn-start-video" onclick="startCall('video')">📹 شروع تماس تصویری</button>
+            <button class="btn btn-secondary" id="btn-answer-video" style="display:none;" onclick="answerCall('video')">🟢 پاسخ به تماس</button>
+            <button class="btn tool-btn" onclick="toggleMuteAudio()">🎙️ میکروفون</button>
+            <button class="btn tool-btn" onclick="toggleMuteVideo()">📷 دوربین</button>
+            <button class="btn btn-ghor" onclick="endCall('video')">🔴 قطع تماس</button>
+        </div>
     </div>
 
     <!-- نقاشی: احراز هویت -->
     <div id="paint-auth-screen" class="screen glass-panel">
         <h2>🎨 اتاق نقاشی</h2>
-        <input type="text" id="paint-room-code" placeholder="کد اتاق (مثلاً: 1234)">
+        <input type="text" id="paint-room-code" placeholder="کد اتاق (مثلاً: 1234 یا art)">
         <input type="password" id="paint-room-pass" placeholder="رمز عبور اتاق">
         <div id="paint-error" class="error-msg"></div>
         <button class="btn" onclick="joinPaintRoom()">ورود به اتاق</button>
@@ -322,7 +411,7 @@
         <header>
             <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 4px;">
                 <div style="font-weight: bold; font-size: 14px;" id="paint-room-title">اتاق: -</div>
-                <div class="online-badge" id="paint-online-count">🟢 افراد آنلاین: 1</div>
+                <div class="online-badge" id="paint-online-count">🟢 آنلاین: 1</div>
             </div>
             <div class="toolbar">
                 <button class="tool-btn active" id="btn-pencil" onclick="setTool('pencil')">✏️ مداد</button>
@@ -348,7 +437,7 @@
     <!-- چت: احراز هویت -->
     <div id="chat-auth-screen" class="screen glass-panel">
         <h2>💬 چت روم تلگرامی</h2>
-        <input type="text" id="chat-room-code" placeholder="کد اتاق (مثلاً: 5678)">
+        <input type="text" id="chat-room-code" placeholder="کد اتاق (مثلاً: 5678 یا chat1)">
         <input type="password" id="chat-room-pass" placeholder="رمز عبور اتاق">
         <div id="chat-error" class="error-msg"></div>
         <button class="btn btn-chat" onclick="joinChatRoom()">ورود به چت روم</button>
@@ -356,7 +445,7 @@
         <button class="tool-btn" onclick="goToScreen('hub-screen')" style="margin-top: 10px;">⬅️ بازگشت به منو</button>
     </div>
 
-    <!-- چت: بستر پیام‌رسانی -->
+    <!-- چت: پیام‌رسان -->
     <div id="chat-screen" class="screen glass-panel">
         <div class="tg-header">
             <div class="tg-profile">
@@ -394,7 +483,7 @@
     <!-- دوز: احراز هویت -->
     <div id="game-auth-screen" class="screen glass-panel">
         <h2>🎮 بازی دوز آنلاین</h2>
-        <input type="text" id="game-room-code" placeholder="کد اتاق دوز (مثلاً: 9090)">
+        <input type="text" id="game-room-code" placeholder="کد اتاق (مثلاً: 9090 یا game)">
         <input type="password" id="game-room-pass" placeholder="رمز عبور اتاق">
         <div id="game-error" class="error-msg"></div>
         <button class="btn btn-game" onclick="joinGameRoom()">ورود به بازی (بازیکن O)</button>
@@ -402,7 +491,7 @@
         <button class="tool-btn" onclick="goToScreen('hub-screen')" style="margin-top: 10px;">⬅️ بازگشت به منو</button>
     </div>
 
-    <!-- دوز: بورد بازی -->
+    <!-- دوز: بورد -->
     <div id="game-screen" class="screen glass-panel" style="width: 380px;">
         <header style="padding: 0; width: 100%; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center;">
             <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 3px;">
@@ -433,7 +522,7 @@
     <!-- ایموجی‌ساز: احراز هویت -->
     <div id="emoji-auth-screen" class="screen glass-panel">
         <h2>🧩 کارگاه ساخت ایموجی</h2>
-        <input type="text" id="emoji-room-code" placeholder="کد اتاق ایموجی (مثلاً: 7788)">
+        <input type="text" id="emoji-room-code" placeholder="کد اتاق (مثلاً: 7788 یا emoji)">
         <input type="password" id="emoji-room-pass" placeholder="رمز عبور اتاق">
         <div id="emoji-auth-error" class="error-msg"></div>
         <button class="btn btn-emoji" onclick="joinEmojiRoom()">ورود به کارگاه</button>
@@ -441,7 +530,7 @@
         <button class="tool-btn" onclick="goToScreen('hub-screen')" style="margin-top: 10px;">⬅️ بازگشت به منو</button>
     </div>
 
-    <!-- ایموجی‌ساز: بوم طراحی -->
+    <!-- ایموجی‌ساز: بوم -->
     <div id="emoji-maker-screen" class="screen glass-panel">
         <header style="padding: 0; display: flex; justify-content: space-between; align-items: center; width: 100%;">
             <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 3px;">
@@ -466,7 +555,7 @@
     <!-- فیلم: احراز هویت -->
     <div id="movie-auth-screen" class="screen glass-panel">
         <h2>🎬 فیلم دیدن ♥️🥹</h2>
-        <input type="text" id="movie-room-code" placeholder="کد اتاق فیلم (مثلاً: 3344)">
+        <input type="text" id="movie-room-code" placeholder="کد اتاق فیلم (مثلاً: 3344 یا cinema)">
         <input type="password" id="movie-room-pass" placeholder="رمز عبور اتاق">
         <div id="movie-auth-error" class="error-msg"></div>
         <button class="btn btn-movie" onclick="joinMovieRoom()">ورود به سینما</button>
@@ -474,7 +563,7 @@
         <button class="tool-btn" onclick="goToScreen('hub-screen')" style="margin-top: 10px;">⬅️ بازگشت به منو</button>
     </div>
 
-    <!-- فیلم: پخش‌کننده و چت همزمان -->
+    <!-- فیلم: پخش‌کننده -->
     <div id="movie-screen" class="screen glass-panel">
         <header style="padding: 0; display: flex; justify-content: space-between; align-items: center; width: 100%;">
             <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 3px;">
@@ -512,7 +601,6 @@
         </div>
     </div>
 
-    <!-- چت شناور در حالت تمام‌صفحه فیلم -->
     <div id="floating-movie-chat">
         <div class="tg-header" style="padding: 8px 12px;">
             <span style="font-size: 13px; font-weight: bold; color: #38ef7d;">💬 چت همزمان (فول‌اسکرین)</span>
@@ -530,7 +618,7 @@
     <!-- لحظات: احراز هویت -->
     <div id="moment-auth-screen" class="screen glass-panel">
         <h2>📸 ثبت لحظات دونفره</h2>
-        <input type="text" id="moment-room-code" placeholder="کد اتاق لحظات (مثلاً: 5566)">
+        <input type="text" id="moment-room-code" placeholder="کد اتاق (مثلاً: 5566 یا photo)">
         <input type="password" id="moment-room-pass" placeholder="رمز عبور اتاق">
         <div id="moment-auth-error" class="error-msg"></div>
         <button class="btn btn-moment" onclick="joinMomentRoom()">ورود به ثبت لحظات</button>
@@ -538,7 +626,7 @@
         <button class="tool-btn" onclick="goToScreen('hub-screen')" style="margin-top: 10px;">⬅️ بازگشت به منو</button>
     </div>
 
-    <!-- لحظات: دوربین و گالری -->
+    <!-- لحظات: دوربین -->
     <div id="moment-screen" class="screen glass-panel">
         <header style="padding: 0; display: flex; justify-content: space-between; align-items: center; width: 100%;">
             <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 3px;">
@@ -559,7 +647,7 @@
 
         <button class="btn btn-moment" style="padding: 12px; font-size: 15px;" onclick="captureAndSendPhoto()">📸 گرفتن عکس و ارسال برای پارتنر</button>
 
-        <h4 style="font-size: 12px; text-align: right; color: rgba(255,255,255,0.7); margin-top: 4px;">📷 آلبوم خاطرات ذخیره‌شده در اتاق:</h4>
+        <h4 style="font-size: 12px; text-align: right; color: rgba(255,255,255,0.7); margin-top: 4px;">📷 آلبوم خاطرات ذخیره‌شده:</h4>
         <div class="moments-gallery" id="moments-gallery-box">
             <span style="font-size: 11px; color: rgba(255,255,255,0.4); align-self: center;">هنوز عکسی ثبت نشده...</span>
         </div>
@@ -568,7 +656,7 @@
     <!-- غر و قور: احراز هویت -->
     <div id="ghor-auth-screen" class="screen glass-panel">
         <h2>🤬 اتاق غر و قور 🤬</h2>
-        <input type="text" id="ghor-room-code" placeholder="کد اتاق (مثلاً: 9988)">
+        <input type="text" id="ghor-room-code" placeholder="کد اتاق (مثلاً: 9988 یا ghor)">
         <input type="password" id="ghor-room-pass" placeholder="رمز عبور اتاق">
         <div id="ghor-auth-error" class="error-msg"></div>
         <button class="btn btn-ghor" onclick="joinGhorRoom()">ورود به اتاق</button>
@@ -576,7 +664,7 @@
         <button class="tool-btn" onclick="goToScreen('hub-screen')" style="margin-top: 10px;">⬅️ بازگشت به منو</button>
     </div>
 
-    <!-- غر و قور: پنل ارسال اعلان ناراحتی یا شادی -->
+    <!-- غر و قور: پنل -->
     <div id="ghor-screen" class="screen glass-panel" style="width: 425px;">
         <header style="padding: 0; display: flex; justify-content: space-between; align-items: center; width: 100%;">
             <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 3px;">
@@ -612,7 +700,7 @@
         </div>
     </div>
 
-    <!-- جاوااسکریپت منطق اپلیکیشن -->
+    <!-- جاوااسکریپت و منطق برنامه -->
     <script>
         const firebaseConfig = {
             databaseURL: "https://crazyapp-9663a-default-rtdb.firebaseio.com"
@@ -622,94 +710,151 @@
 
         let globalUserName = localStorage.getItem('global_user_name') || "";
         let globalUserId = localStorage.getItem('global_user_id') || "";
+        let globalUserPass = localStorage.getItem('global_user_pass') || "";
+        let activeMainRoomCode = localStorage.getItem('active_main_room_code') || "";
 
         window.onload = function() {
-            if (globalUserName && globalUserId) {
-                document.getElementById('welcome-msg-hub').innerText = `سلام ${globalUserName} عزیز!`;
-                document.getElementById('my-profile-badge').innerText = `آیدی شما: @${globalUserId}`;
-                goToScreen('hub-screen');
+            if (globalUserName && globalUserId && globalUserPass) {
+                if (activeMainRoomCode) {
+                    enterMainHub(activeMainRoomCode);
+                } else {
+                    document.getElementById('room-welcome-user-txt').innerText = `سلام ${globalUserName} عزیز! کد و رمز اتاق مشترک را وارد کنید:`;
+                    goToScreen('room-entry-screen');
+                }
                 initGlobalAppPresence(globalUserId, globalUserName);
-            }
-            
-            const savedRoom = localStorage.getItem('active_room_session');
-            if (savedRoom && globalUserName) {
-                try {
-                    const data = JSON.parse(savedRoom);
-                    if (data.type && data.code) {
-                        if (data.type === 'paint') enterPaintRoom(data.code);
-                        else if (data.type === 'chat') enterChatRoom(data.code);
-                        else if (data.type === 'game') enterGameRoom(data.code, data.role || 'O');
-                        else if (data.type === 'emoji') enterEmojiRoom(data.code);
-                        else if (data.type === 'movie') enterMovieRoom(data.code);
-                        else if (data.type === 'moment') enterMomentRoom(data.code);
-                        else if (data.type === 'ghor') enterGhorRoomDirect(data.code);
-                    }
-                } catch(e) { console.log(e); }
+            } else {
+                goToScreen('welcome-screen');
             }
 
             populateEmojiTray();
         };
 
+        function sanitizeKey(str) {
+            return str.replace(/[.#$\[\]]/g, "_");
+        }
+
+        /* --- 1. ثبت نام / ورود کاربر با آیدی و رمز --- */
         function registerAndEnterApp() {
             const name = document.getElementById('global-user-name').value.trim();
-            const uid = document.getElementById('global-user-id').value.trim().toLowerCase();
+            const uid = sanitizeKey(document.getElementById('global-user-id').value.trim().toLowerCase());
+            const pass = document.getElementById('global-user-pass').value.trim();
             const err = document.getElementById('welcome-error');
-            if(!name || !uid) { err.innerText = "لطفاً نام و آیدی خود را کامل وارد کنید!"; return; }
-            if(uid.length < 3 || uid.includes(' ') || uid.includes('.')) { err.innerText = "آیدی نباید شامل فاصله یا کاراکتر غیرمجاز باشد!"; return; }
+
+            if(!name || !uid || !pass) { err.innerText = "لطفاً تمام فیلدها را پر کنید!"; return; }
 
             db.ref('users/' + uid).once('value', (snapshot) => {
-                if(snapshot.exists() && snapshot.val().name !== name) {
-                    err.innerText = "این آیدی قبلاً توسط شخص دیگری ثبت شده است!";
-                    return;
-                }
-                db.ref('users/' + uid).set({ name: name, online: true, lastSeen: Date.now() }, (error) => {
-                    if(!error) {
-                        globalUserName = name;
-                        globalUserId = uid;
-                        localStorage.setItem('global_user_name', name);
-                        localStorage.setItem('global_user_id', uid);
-                        document.getElementById('welcome-msg-hub').innerText = `سلام ${name} عزیز!`;
-                        document.getElementById('my-profile-badge').innerText = `آیدی شما: @${uid}`;
-                        goToScreen('hub-screen');
-                        initGlobalAppPresence(uid, name);
+                if(snapshot.exists()) {
+                    const uData = snapshot.val();
+                    if(uData.pass && uData.pass !== pass) {
+                        err.innerText = "رمز عبور این آیدی اشتباه است!";
+                        return;
                     }
+                    saveUserDataLocal(name, uid, pass);
+                    goToRoomSelectScreen();
+                } else {
+                    db.ref('users/' + uid).set({ name: name, pass: pass, online: true, lastSeen: Date.now() }, (error) => {
+                        if(!error) {
+                            saveUserDataLocal(name, uid, pass);
+                            goToRoomSelectScreen();
+                        }
+                    });
+                }
+            });
+        }
+
+        function saveUserDataLocal(name, uid, pass) {
+            globalUserName = name;
+            globalUserId = uid;
+            globalUserPass = pass;
+            localStorage.setItem('global_user_name', name);
+            localStorage.setItem('global_user_id', uid);
+            localStorage.setItem('global_user_pass', pass);
+            initGlobalAppPresence(uid, name);
+        }
+
+        function goToRoomSelectScreen() {
+            document.getElementById('room-welcome-user-txt').innerText = `سلام ${globalUserName} عزیز! کد و رمز اتاق مشترک را وارد کنید:`;
+            goToScreen('room-entry-screen');
+        }
+
+        /* --- 2. ساخت و ورود به اتاق اصلی (با کلمه یا عدد) --- */
+        function createMainRoom() {
+            const rawCode = document.getElementById('main-room-code').value.trim();
+            const pass = document.getElementById('main-room-pass').value.trim();
+            const err = document.getElementById('room-entry-error');
+            if(!rawCode || !pass) { err.innerText = "کد اتاق و رمز عبور را کامل وارد کنید!"; return; }
+
+            const code = sanitizeKey(rawCode);
+            db.ref('main_rooms/' + code).once('value', (s) => {
+                if(s.exists()) { err.innerText = "این اتاق قبلاً ساخته شده! دکمه ورود را بزنید."; return; }
+                db.ref('main_rooms/' + code).set({ pass: pass, createdBy: globalUserId, createdAt: Date.now() }, (e) => {
+                    if(!e) enterMainHub(code);
                 });
             });
+        }
+
+        function joinMainRoom() {
+            const rawCode = document.getElementById('main-room-code').value.trim();
+            const pass = document.getElementById('main-room-pass').value.trim();
+            const err = document.getElementById('room-entry-error');
+            if(!rawCode || !pass) { err.innerText = "کد اتاق و رمز عبور را کامل وارد کنید!"; return; }
+
+            const code = sanitizeKey(rawCode);
+            db.ref('main_rooms/' + code).once('value', (s) => {
+                if(!s.exists()) { err.innerText = "اتاقی با این کد وجود ندارد! ابتدا بسازید."; return; }
+                if(s.val().pass !== pass) { err.innerText = "رمز عبور اتاق اشتباه است!"; return; }
+                enterMainHub(code);
+            });
+        }
+
+        function enterMainHub(code) {
+            activeMainRoomCode = code;
+            localStorage.setItem('active_main_room_code', code);
+            document.getElementById('welcome-msg-hub').innerText = `سلام ${globalUserName} عزیز! خوش آمدید.`;
+            document.getElementById('my-profile-badge').innerText = `آیدی: @${globalUserId} | اتاق: ${code}`;
+            goToScreen('hub-screen');
+            listenToCallsInRoom(code);
+        }
+
+        function leaveCurrentRoom() {
+            localStorage.removeItem('active_main_room_code');
+            activeMainRoomCode = "";
+            goToRoomSelectScreen();
         }
 
         function openProfileEdit() {
             document.getElementById('edit-user-name').value = globalUserName;
             document.getElementById('edit-user-id').value = globalUserId;
+            document.getElementById('edit-user-pass').value = globalUserPass;
             document.getElementById('profile-error').innerText = '';
             goToScreen('profile-edit-screen');
         }
 
         function saveProfileChanges() {
             const newName = document.getElementById('edit-user-name').value.trim();
-            const newUid = document.getElementById('edit-user-id').value.trim().toLowerCase();
+            const newUid = sanitizeKey(document.getElementById('edit-user-id').value.trim().toLowerCase());
+            const newPass = document.getElementById('edit-user-pass').value.trim();
             const err = document.getElementById('profile-error');
-            if(!newName || !newUid) { err.innerText = "فیلدها نمی‌توانند خالی باشند!"; return; }
+
+            if(!newName || !newUid || !newPass) { err.innerText = "فیلدها نمی‌توانند خالی باشند!"; return; }
 
             if(newUid !== globalUserId) {
                 db.ref('users/' + newUid).once('value', (s) => {
                     if(s.exists()) { err.innerText = "این آیدی قبلاً گرفته شده است!"; return; }
                     db.ref('users/' + globalUserId).remove();
-                    updateProfileDataInDb(newName, newUid);
+                    updateProfileDataInDb(newName, newUid, newPass);
                 });
             } else {
-                updateProfileDataInDb(newName, newUid);
+                updateProfileDataInDb(newName, newUid, newPass);
             }
         }
 
-        function updateProfileDataInDb(name, uid) {
-            db.ref('users/' + uid).set({ name: name, online: true, lastSeen: Date.now() }, (e) => {
+        function updateProfileDataInDb(name, uid, pass) {
+            db.ref('users/' + uid).set({ name: name, pass: pass, online: true, lastSeen: Date.now() }, (e) => {
                 if(!e) {
-                    globalUserName = name;
-                    globalUserId = uid;
-                    localStorage.setItem('global_user_name', name);
-                    localStorage.setItem('global_user_id', uid);
+                    saveUserDataLocal(name, uid, pass);
                     document.getElementById('welcome-msg-hub').innerText = `سلام ${name} عزیز!`;
-                    document.getElementById('my-profile-badge').innerText = `آیدی شما: @${uid}`;
+                    document.getElementById('my-profile-badge').innerText = `آیدی: @${uid} | اتاق: ${activeMainRoomCode}`;
                     goToScreen('hub-screen');
                 }
             });
@@ -751,7 +896,7 @@
                     let dbPath = prefixMap[pendingDeleteType];
                     if(dbPath) {
                         db.ref(dbPath + '/' + code).remove().then(() => {
-                            alert("اتاق و تمام داده‌های آن با موفقیت حذف شد.");
+                            alert("اتاق و تمام داده‌های آن حذف شد.");
                             localStorage.removeItem('active_room_session');
                             goToScreen('hub-screen');
                         });
@@ -800,7 +945,7 @@
         }
 
         function searchUser() {
-            const queryId = document.getElementById('search-user-input').value.trim().toLowerCase();
+            const queryId = sanitizeKey(document.getElementById('search-user-input').value.trim().toLowerCase());
             const resBox = document.getElementById('search-result-box');
             if(!queryId) return;
 
@@ -813,15 +958,15 @@
                 resBox.innerHTML = `
                     <div class="user-search-result-item">
                         <span>👤 ${userData.name} (@${queryId}) ${userData.online ? '🟢' : '⚪'}</span>
-                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 11px;" onclick="sendInviteToUser('${queryId}', '${userData.name}')">دعوت به اتاق 📨</button>
+                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 11px;" onclick="sendInviteToUser('${queryId}', '${userData.name}')">دعوت 📨</button>
                     </div>
                 `;
             });
         }
 
         function sendInviteToUser(targetUid, targetName) {
-            const roomCode = prompt("کد اتاق دلخواه برای دعوت را وارد کنید:", "1234");
-            const roomType = prompt("نوع بخش را وارد کنید (paint, chat, game, emoji, movie, moment, ghor):", "chat");
+            const roomCode = prompt("کد اتاق برای دعوت:", activeMainRoomCode || "room123");
+            const roomType = prompt("نوع بخش (paint, chat, game, emoji, movie, moment, ghor, voice, video):", "chat");
             if(!roomCode || !roomType) return;
 
             db.ref(`invites/${targetUid}`).push({
@@ -837,7 +982,7 @@
 
         function showInviteModal(senderName, roomType, roomCode) {
             document.getElementById('invite-title').innerText = `📩 دعوت از ${senderName}`;
-            document.getElementById('invite-desc').innerText = `${senderName} شما را به بخش "${roomType}" (کد: ${roomCode}) دعوت کرده است.`;
+            document.getElementById('invite-desc').innerText = `${senderName} شما را به بخش "${roomType}" (کد: ${roomCode}) دعوت کرد.`;
             document.getElementById('invite-modal-alert').classList.add('show');
             if('vibrate' in navigator) navigator.vibrate([200, 100, 200]);
         }
@@ -862,6 +1007,8 @@
                 else if(currentInviteData.roomType === 'movie') enterMovieRoom(currentInviteData.roomCode);
                 else if(currentInviteData.roomType === 'moment') enterMomentRoom(currentInviteData.roomCode);
                 else if(currentInviteData.roomType === 'ghor') enterGhorRoomDirect(currentInviteData.roomCode);
+                else if(currentInviteData.roomType === 'voice') goToScreen('voice-screen');
+                else if(currentInviteData.roomType === 'video') goToScreen('video-screen');
             }
             currentInviteData = null;
         }
@@ -888,9 +1035,179 @@
             });
         }
 
-        /* --- 1. اتاق نقاشی --- */
+        /* --- 3. تماس صوتی و تصویری زنده (WebRTC) --- */
+        let localStream = null;
+        let peerConnection = null;
+        let activeCallType = null;
+        const rtcConfig = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
+
+        function listenToCallsInRoom(roomCode) {
+            db.ref(`calls/${roomCode}`).on('value', (snapshot) => {
+                const callData = snapshot.val();
+                if(!callData) return;
+
+                if(callData.audio && callData.audio.offer && callData.audio.callerId !== globalUserId) {
+                    document.getElementById('btn-answer-voice').style.display = 'inline-block';
+                    document.getElementById('voice-status-text').innerText = `📞 تماس صوتی ورودی از طرف پارتنر...`;
+                }
+                if(callData.video && callData.video.offer && callData.video.callerId !== globalUserId) {
+                    document.getElementById('btn-answer-video').style.display = 'inline-block';
+                    document.getElementById('video-status-text').innerText = `📹 تماس تصویری ورودی از طرف پارتنر...`;
+                }
+            });
+        }
+
+        async function startCall(type) {
+            activeCallType = type;
+            const statusEl = document.getElementById(`${type}-status-text`);
+            statusEl.innerText = "در حال دریافت دسترسی و ایجاد تماس...";
+
+            try {
+                localStream = await navigator.mediaDevices.getUserMedia({
+                    audio: true,
+                    video: type === 'video'
+                });
+
+                if(type === 'video') {
+                    document.getElementById('localVideo').srcObject = localStream;
+                }
+
+                peerConnection = new RTCPeerConnection(rtcConfig);
+                localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
+
+                peerConnection.ontrack = (event) => {
+                    if(type === 'video') {
+                        document.getElementById('remoteVideo').srcObject = event.streams[0];
+                    } else {
+                        document.getElementById('remoteAudio').srcObject = event.streams[0];
+                    }
+                };
+
+                const callRef = db.ref(`calls/${activeMainRoomCode}/${type}`);
+                peerConnection.onicecandidate = (e) => {
+                    if(e.candidate) callRef.child('callerCandidates').push(e.candidate.toJSON());
+                };
+
+                const offer = await peerConnection.createOffer();
+                await peerConnection.setLocalDescription(offer);
+
+                callRef.set({
+                    callerId: globalUserId,
+                    callerName: globalUserName,
+                    offer: { type: offer.type, sdp: offer.sdp }
+                });
+
+                statusEl.innerText = "در حال زنگ زدن به پارتنر... ⏳";
+
+                callRef.child('answer').on('value', async (snapshot) => {
+                    const answer = snapshot.val();
+                    if(answer && peerConnection && !peerConnection.currentRemoteDescription) {
+                        await peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
+                        statusEl.innerText = "تماس برقرار شد! 🟢";
+                    }
+                });
+
+                callRef.child('calleeCandidates').on('child_added', (snapshot) => {
+                    const candidate = new RTCIceCandidate(snapshot.val());
+                    if(peerConnection) peerConnection.addIceCandidate(candidate);
+                });
+
+            } catch (err) {
+                statusEl.innerText = "خطا در دسترسی به میکروفون/دوربین!";
+                console.error(err);
+            }
+        }
+
+        async function answerCall(type) {
+            activeCallType = type;
+            const statusEl = document.getElementById(`${type}-status-text`);
+            statusEl.innerText = "در حال اتصال به تماس...";
+
+            try {
+                localStream = await navigator.mediaDevices.getUserMedia({
+                    audio: true,
+                    video: type === 'video'
+                });
+
+                if(type === 'video') {
+                    document.getElementById('localVideo').srcObject = localStream;
+                }
+
+                peerConnection = new RTCPeerConnection(rtcConfig);
+                localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
+
+                peerConnection.ontrack = (event) => {
+                    if(type === 'video') {
+                        document.getElementById('remoteVideo').srcObject = event.streams[0];
+                    } else {
+                        document.getElementById('remoteAudio').srcObject = event.streams[0];
+                    }
+                };
+
+                const callRef = db.ref(`calls/${activeMainRoomCode}/${type}`);
+                peerConnection.onicecandidate = (e) => {
+                    if(e.candidate) callRef.child('calleeCandidates').push(e.candidate.toJSON());
+                };
+
+                const snapshot = await callRef.child('offer').once('value');
+                const offer = snapshot.val();
+                await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
+
+                const answer = await peerConnection.createAnswer();
+                await peerConnection.setLocalDescription(answer);
+
+                await callRef.child('answer').set({ type: answer.type, sdp: answer.sdp });
+
+                callRef.child('callerCandidates').on('child_added', (snapshot) => {
+                    const candidate = new RTCIceCandidate(snapshot.val());
+                    if(peerConnection) peerConnection.addIceCandidate(candidate);
+                });
+
+                statusEl.innerText = "تماس برقرار شد! 🟢";
+                document.getElementById(`btn-answer-${type}`).style.display = 'none';
+
+            } catch(err) {
+                statusEl.innerText = "خطا در پاسخ به تماس!";
+                console.error(err);
+            }
+        }
+
+        function toggleMuteAudio() {
+            if(localStream && localStream.getAudioTracks().length > 0) {
+                const enabled = localStream.getAudioTracks()[0].enabled;
+                localStream.getAudioTracks()[0].enabled = !enabled;
+                alert(enabled ? "میکروفون قطع شد." : "میکروفون وصل شد.");
+            }
+        }
+
+        function toggleMuteVideo() {
+            if(localStream && localStream.getVideoTracks().length > 0) {
+                const enabled = localStream.getVideoTracks()[0].enabled;
+                localStream.getVideoTracks()[0].enabled = !enabled;
+                alert(enabled ? "دوربین خاموش شد." : "دوربین روشن شد.");
+            }
+        }
+
+        function endCall(type) {
+            if(peerConnection) {
+                peerConnection.close();
+                peerConnection = null;
+            }
+            if(localStream) {
+                localStream.getTracks().forEach(t => t.stop());
+                localStream = null;
+            }
+            if(activeMainRoomCode) {
+                db.ref(`calls/${activeMainRoomCode}/${type}`).remove();
+            }
+            document.getElementById(`${type}-status-text`).innerText = "تماس پایان یافت.";
+            document.getElementById(`btn-answer-${type}`).style.display = 'none';
+        }
+
+        /* --- 4. اتاق نقاشی --- */
         let isDrawing = false, lastX = 0, lastY = 0;
         let currentTool = 'pencil', currentColor = '#ffffff', currentSize = 5;
+        let currentRoom = null;
         const paintCanvas = document.getElementById('paintCanvas');
         const paintCtx = paintCanvas.getContext('2d');
 
@@ -903,7 +1220,7 @@
         }
 
         function createPaintRoom() {
-            const code = document.getElementById('paint-room-code').value.trim();
+            const code = sanitizeKey(document.getElementById('paint-room-code').value.trim());
             const pass = document.getElementById('paint-room-pass').value.trim();
             const err = document.getElementById('paint-error');
             if(!code || !pass) { err.innerText = "کد و رمز عبور را وارد کنید!"; return; }
@@ -917,7 +1234,7 @@
         }
 
         function joinPaintRoom() {
-            const code = document.getElementById('paint-room-code').value.trim();
+            const code = sanitizeKey(document.getElementById('paint-room-code').value.trim());
             const pass = document.getElementById('paint-room-pass').value.trim();
             const err = document.getElementById('paint-error');
             if(!code || !pass) { err.innerText = "کد و رمز عبور را وارد کنید!"; return; }
@@ -936,8 +1253,7 @@
             document.getElementById('paint-room-title').innerText = `اتاق نقاشی: ${code}`;
             setupPresence('paint', code);
 
-            dbRef = db.ref('paint_rooms/' + code + '/drawings');
-            dbRef.on('child_added', (snapshot) => {
+            db.ref('paint_rooms/' + code + '/drawings').on('child_added', (snapshot) => {
                 const data = snapshot.val();
                 if(data) drawLineOnCanvas(data.x0, data.y0, data.x1, data.y1, data.color, data.size, data.tool);
             });
@@ -1022,11 +1338,11 @@
             db.ref('paint_rooms/' + currentRoom + '/clear').set(Date.now());
         }
 
-        /* --- 2. چت روم تلگرامی --- */
+        /* --- 5. چت روم تلگرامی --- */
         let chatRoomCode = null;
 
         function createChatRoom() {
-            const code = document.getElementById('chat-room-code').value.trim();
+            const code = sanitizeKey(document.getElementById('chat-room-code').value.trim());
             const pass = document.getElementById('chat-room-pass').value.trim();
             const err = document.getElementById('chat-error');
             if(!code || !pass) { err.innerText = "کد و رمز را وارد کنید!"; return; }
@@ -1040,7 +1356,7 @@
         }
 
         function joinChatRoom() {
-            const code = document.getElementById('chat-room-code').value.trim();
+            const code = sanitizeKey(document.getElementById('chat-room-code').value.trim());
             const pass = document.getElementById('chat-room-pass').value.trim();
             const err = document.getElementById('chat-error');
             if(!code || !pass) { err.innerText = "کد و رمز را وارد کنید!"; return; }
@@ -1101,11 +1417,11 @@
             box.scrollTop = box.scrollHeight;
         }
 
-        /* --- 3. بازی دوز --- */
-        let gameRoomCode = null, myRole = 'O', currentTurn = 'X';
+        /* --- 6. بازی دوز --- */
+        let gameRoomCode = null, myRole = 'O';
 
         function createGameRoom() {
-            const code = document.getElementById('game-room-code').value.trim();
+            const code = sanitizeKey(document.getElementById('game-room-code').value.trim());
             const pass = document.getElementById('game-room-pass').value.trim();
             const err = document.getElementById('game-error');
             if(!code || !pass) { err.innerText = "کد و رمز را وارد کنید!"; return; }
@@ -1124,7 +1440,7 @@
         }
 
         function joinGameRoom() {
-            const code = document.getElementById('game-room-code').value.trim();
+            const code = sanitizeKey(document.getElementById('game-room-code').value.trim());
             const pass = document.getElementById('game-room-pass').value.trim();
             const err = document.getElementById('game-error');
             if(!code || !pass) { err.innerText = "کد و رمز را وارد کنید!"; return; }
@@ -1204,7 +1520,7 @@
             });
         }
 
-        /* --- 4. کارگاه ساخت ایموجی --- */
+        /* --- 7. ایموجی‌ساز --- */
         let emojiRoomCode = null;
         const availableEmojis = ['😀','😂','😍','🥰','😎','🥳','🥹','❤️','💖','🔥','✨','⭐','🌹','🎁','🍕','🧸','👑','🚀'];
 
@@ -1218,7 +1534,7 @@
         }
 
         function createEmojiRoom() {
-            const code = document.getElementById('emoji-room-code').value.trim();
+            const code = sanitizeKey(document.getElementById('emoji-room-code').value.trim());
             const pass = document.getElementById('emoji-room-pass').value.trim();
             const err = document.getElementById('emoji-auth-error');
             if(!code || !pass) { err.innerText = "کد و رمز را وارد کنید!"; return; }
@@ -1232,7 +1548,7 @@
         }
 
         function joinEmojiRoom() {
-            const code = document.getElementById('emoji-room-code').value.trim();
+            const code = sanitizeKey(document.getElementById('emoji-room-code').value.trim());
             const pass = document.getElementById('emoji-room-pass').value.trim();
             const err = document.getElementById('emoji-auth-error');
             if(!code || !pass) { err.innerText = "کد و رمز را وارد کنید!"; return; }
@@ -1310,11 +1626,11 @@
             db.ref('emoji_rooms/' + emojiRoomCode + '/items').remove();
         }
 
-        /* --- 5. سینما --- */
+        /* --- 8. سینما --- */
         let movieRoomCode = null, isSyncingFromFirebase = false;
 
         function createMovieRoom() {
-            const code = document.getElementById('movie-room-code').value.trim();
+            const code = sanitizeKey(document.getElementById('movie-room-code').value.trim());
             const pass = document.getElementById('movie-room-pass').value.trim();
             const err = document.getElementById('movie-auth-error');
             if(!code || !pass) { err.innerText = "کد و رمز را وارد کنید!"; return; }
@@ -1328,7 +1644,7 @@
         }
 
         function joinMovieRoom() {
-            const code = document.getElementById('movie-room-code').value.trim();
+            const code = sanitizeKey(document.getElementById('movie-room-code').value.trim());
             const pass = document.getElementById('movie-room-pass').value.trim();
             const err = document.getElementById('movie-auth-error');
             if(!code || !pass) { err.innerText = "کد و رمز را وارد کنید!"; return; }
@@ -1445,11 +1761,11 @@
         function handleMovieChatKeyPress(e) { if(e.key === 'Enter') sendMovieChatMessage(); }
         function handleFloatingChatKeyPress(e) { if(e.key === 'Enter') sendFloatingChatMessage(); }
 
-        /* --- 6. ثبت لحظات (عکاسی دونفره) --- */
+        /* --- 9. ثبت لحظات --- */
         let momentRoomCode = null, cameraStream = null;
 
         function createMomentRoom() {
-            const code = document.getElementById('moment-room-code').value.trim();
+            const code = sanitizeKey(document.getElementById('moment-room-code').value.trim());
             const pass = document.getElementById('moment-room-pass').value.trim();
             const err = document.getElementById('moment-auth-error');
             if(!code || !pass) { err.innerText = "کد و رمز را وارد کنید!"; return; }
@@ -1463,7 +1779,7 @@
         }
 
         function joinMomentRoom() {
-            const code = document.getElementById('moment-room-code').value.trim();
+            const code = sanitizeKey(document.getElementById('moment-room-code').value.trim());
             const pass = document.getElementById('moment-room-pass').value.trim();
             const err = document.getElementById('moment-auth-error');
             if(!code || !pass) { err.innerText = "کد و رمز را وارد کنید!"; return; }
@@ -1547,11 +1863,11 @@
             });
         }
 
-        /* --- 7. اتاق غر و قور --- */
+        /* --- 10. اتاق غر و قور --- */
         let ghorRoomCode = null;
 
         function createGhorRoom() {
-            const code = document.getElementById('ghor-room-code').value.trim();
+            const code = sanitizeKey(document.getElementById('ghor-room-code').value.trim());
             const pass = document.getElementById('ghor-room-pass').value.trim();
             const err = document.getElementById('ghor-auth-error');
             if(!code || !pass) { err.innerText = "کد و رمز را وارد کنید!"; return; }
@@ -1565,7 +1881,7 @@
         }
 
         function joinGhorRoom() {
-            const code = document.getElementById('ghor-room-code').value.trim();
+            const code = sanitizeKey(document.getElementById('ghor-room-code').value.trim());
             const pass = document.getElementById('ghor-room-pass').value.trim();
             const err = document.getElementById('ghor-auth-error');
             if(!code || !pass) { err.innerText = "کد و رمز را وارد کنید!"; return; }
@@ -1617,7 +1933,7 @@
             db.ref('ghor_rooms/' + ghorRoomCode + '/history').push(alertData);
 
             document.getElementById('ghor-reason-input').value = '';
-            alert("اعلان شما با موفقیت برای پارتنر ارسال شد!");
+            alert("اعلان شما با موفقیت ارسال شد!");
         }
 
         function showGhorBanner(data) {
