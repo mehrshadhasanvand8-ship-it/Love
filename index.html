@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>فضای دو نفره شیشه‌ای (نقاشی و چت تلگرامی)</title>
+    <title>فضای دو نفره شیشه‌ای (نقاشی، چت، دوز، ایموجی، سینما و غرور)</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <style>
@@ -39,15 +39,16 @@
         h2 { margin-bottom: 5px; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
         p { font-size: 13px; color: rgba(255,255,255,0.7); }
 
-        input, textarea {
+        input, textarea, select {
             width: 100%; padding: 12px 15px;
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 12px; color: #fff; font-size: 14px; outline: none;
             transition: 0.3s;
         }
-        input:focus { border-color: #2481cc; background: rgba(255, 255, 255, 0.15); }
-        input::placeholder { color: rgba(255, 255, 255, 0.5); }
+        input:focus, textarea:focus, select:focus { border-color: #2481cc; background: rgba(255, 255, 255, 0.15); }
+        input::placeholder, textarea::placeholder { color: rgba(255, 255, 255, 0.5); }
+        option { background: #24243e; color: #fff; }
 
         .btn {
             background: linear-gradient(135deg, #2481cc, #1e72b5);
@@ -59,6 +60,39 @@
         .btn:hover { opacity: 0.9; transform: translateY(-2px); }
         .btn-secondary { background: linear-gradient(135deg, #11998e, #38ef7d); box-shadow: 0 4px 15px rgba(17, 153, 142, 0.4); }
         .btn-chat { background: linear-gradient(135deg, #2b98f0, #0077db); }
+        .btn-game { background: linear-gradient(135deg, #f7b733, #fc4a1a); box-shadow: 0 4px 15px rgba(247, 183, 51, 0.4); }
+        .btn-emoji { background: linear-gradient(135deg, #ff416c, #ff4b2b); box-shadow: 0 4px 15px rgba(255, 65, 108, 0.4); }
+        .btn-movie { background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045); box-shadow: 0 4px 15px rgba(131, 58, 180, 0.4); }
+        .btn-ghor { background: linear-gradient(135deg, #eb3349, #f45c43); box-shadow: 0 4px 15px rgba(235, 51, 73, 0.4); }
+
+        .online-badge {
+            background: rgba(76, 209, 55, 0.2);
+            border: 1px solid rgba(76, 209, 55, 0.4);
+            color: #4cd137; padding: 3px 8px; border-radius: 8px;
+            font-size: 11px; display: inline-flex; align-items: center; gap: 4px;
+        }
+
+        /* سیستم اعلان جهانی ورود پارتنر به اتاق‌ها */
+        #global-room-alert {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-150px);
+            background: rgba(20, 20, 35, 0.95);
+            border: 1px solid rgba(56, 239, 125, 0.6);
+            backdrop-filter: blur(15px);
+            padding: 15px 22px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            z-index: 99999;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-align: center;
+            width: 90%;
+            max-width: 360px;
+        }
+        #global-room-alert.show {
+            transform: translateX(-50%) translateY(0);
+        }
 
         /* صفحه نقاشی */
         #paint-screen {
@@ -67,7 +101,7 @@
         }
         header { display: flex; justify-content: space-between; align-items: center; padding: 5px 15px; flex-wrap: wrap; gap: 10px; }
         .toolbar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
-        .tool-btn, select, input[type="color"] {
+        .tool-btn, input[type="color"] {
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.2);
             padding: 8px 12px; border-radius: 10px; color: white; cursor: pointer; font-size: 13px;
@@ -81,7 +115,7 @@
         }
         canvas { display: block; cursor: crosshair; width: 100%; height: 100%; }
 
-        /* === چت روم کاملاً شبیه تلگرام (شیشه‌ای) === */
+        /* چت روم تلگرامی */
         #chat-screen {
             width: 92vw; max-width: 420px; height: 90vh;
             padding: 0; display: none; flex-direction: column; justify-content: space-between;
@@ -89,7 +123,6 @@
         }
         #chat-screen.active { display: flex; }
         
-        /* هدر تلگرامی */
         .tg-header {
             background: rgba(20, 20, 35, 0.7);
             backdrop-filter: blur(10px);
@@ -105,24 +138,18 @@
             font-weight: bold; font-size: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.3);
         }
         .tg-info h3 { font-size: 15px; color: #fff; }
-        .tg-info span { font-size: 11px; color: #4cd137; }
 
-        /* بدنه پیام‌ها */
         .chat-messages {
             flex-grow: 1; padding: 15px; overflow-y: auto;
             display: flex; flex-direction: column; gap: 8px;
             background: radial-gradient(circle at center, rgba(25,25,45,0.4) 0%, rgba(10,10,20,0.7) 100%);
         }
         
-        /* حباب پیام تلگرام */
         .message {
             max-width: 80%; padding: 10px 14px; border-radius: 16px;
             font-size: 13.5px; line-height: 1.5; word-break: break-word;
             position: relative; box-shadow: 0 3px 10px rgba(0,0,0,0.2);
-            animation: fadeIn 0.2s ease-out;
         }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-
         .message.mine {
             background: rgba(43, 152, 240, 0.25);
             border: 1px solid rgba(43, 152, 240, 0.4);
@@ -138,7 +165,6 @@
         .msg-sender { font-size: 11px; font-weight: bold; color: #4cd137; margin-bottom: 3px; display: block; }
         .msg-time { font-size: 9px; color: rgba(255, 255, 255, 0.5); float: left; margin-top: 4px; margin-right: 8px; }
 
-        /* نوار ایموجی سریع */
         .emoji-bar {
             background: rgba(15, 15, 25, 0.5);
             padding: 6px 12px; display: flex; gap: 8px; overflow-x: auto;
@@ -148,7 +174,6 @@
         .emoji-bar span { cursor: pointer; font-size: 18px; transition: 0.2s; }
         .emoji-bar span:hover { transform: scale(1.3); }
 
-        /* بخش پایین و ارسال پیام */
         .tg-input-area {
             background: rgba(20, 20, 35, 0.8);
             backdrop-filter: blur(10px);
@@ -168,17 +193,133 @@
         }
         .send-btn:hover { transform: scale(1.05); background: #1e72b5; }
 
+        /* بازی دوز */
+        #game-screen {
+            width: 90vw; max-width: 380px; height: auto;
+            padding: 25px; display: none; flex-direction: column; align-items: center; gap: 20px;
+        }
+        #game-screen.active { display: flex; }
+        .game-status { font-size: 14px; font-weight: bold; color: #f7b733; text-align: center; }
+        .tic-tac-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+            width: 100%; aspect-ratio: 1;
+        }
+        .tic-cell {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px; font-size: 40px; font-weight: bold;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: 0.2s; user-select: none;
+        }
+        .tic-cell:hover { background: rgba(255, 255, 255, 0.15); transform: scale(1.02); }
+        .tic-cell.x { color: #ff416c; text-shadow: 0 0 10px rgba(255,65,108,0.5); }
+        .tic-cell.o { color: #38ef7d; text-shadow: 0 0 10px rgba(56,239,125,0.5); }
+
+        /* کارگاه ساخت ایموجی */
+        #emoji-maker-screen {
+            width: 95vw; max-width: 600px; height: 90vh;
+            padding: 15px; display: none; flex-direction: column; gap: 12px;
+        }
+        #emoji-maker-screen.active { display: flex; }
+        
+        .emoji-canvas-box {
+            flex-grow: 1; background: rgba(15, 15, 25, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 16px;
+            position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center;
+        }
+        .placed-emoji {
+            position: absolute; font-size: 50px; cursor: grab; user-select: none;
+            padding: 5px; transition: transform 0.1s;
+        }
+        .placed-emoji:active { cursor: grabbing; }
+
+        .emoji-tray {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 14px; padding: 10px; display: flex; gap: 8px;
+            overflow-x: auto; white-space: nowrap; align-items: center;
+        }
+        .tray-item {
+            font-size: 26px; cursor: pointer; padding: 6px; background: rgba(255,255,255,0.08);
+            border-radius: 10px; transition: 0.2s; display: inline-block;
+        }
+        .tray-item:hover { transform: scale(1.2); background: rgba(255,255,255,0.2); }
+
+        /* سینمای آنلاین */
+        #movie-screen {
+            width: 95vw; max-width: 950px; height: 92vh;
+            padding: 15px; display: none; flex-direction: column; gap: 12px;
+        }
+        #movie-screen.active { display: flex; }
+
+        .movie-layout {
+            display: flex; gap: 15px; flex-grow: 1; overflow: hidden;
+        }
+        @media (max-width: 768px) {
+            .movie-layout { flex-direction: column; }
+        }
+
+        .movie-player-section { flex: 3; display: flex; flex-direction: column; gap: 10px; }
+        .video-box {
+            flex-grow: 1; background: #000; border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.15); overflow: hidden;
+            display: flex; align-items: center; justify-content: center; position: relative;
+        }
+        .video-box video { width: 100%; height: 100%; object-fit: contain; outline: none; }
+        .movie-url-bar {
+            display: flex; gap: 8px; align-items: center; background: rgba(255,255,255,0.05);
+            padding: 8px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);
+        }
+        .movie-chat-section {
+            flex: 1.2; background: rgba(15, 15, 25, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 16px;
+            display: flex; flex-direction: column; overflow: hidden; max-height: 100%;
+        }
+
+        /* اتاق غر و قور 🤬 */
+        #ghor-screen {
+            width: 90vw; max-width: 440px; height: auto;
+            padding: 25px; display: none; flex-direction: column; gap: 15px;
+        }
+        #ghor-screen.active { display: flex; }
+        
+        .alert-banner {
+            background: rgba(235, 51, 73, 0.2);
+            border: 1px solid rgba(235, 51, 73, 0.5);
+            border-radius: 14px; padding: 14px; text-align: center;
+            animation: pulse-alert 2s infinite;
+        }
+        @keyframes pulse-alert {
+            0% { box-shadow: 0 0 0 0 rgba(235, 51, 73, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(235, 51, 73, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(235, 51, 73, 0); }
+        }
+        .alert-banner.happy {
+            background: rgba(56, 239, 125, 0.2);
+            border-color: rgba(56, 239, 125, 0.5);
+        }
+
         .error-msg { color: #ff8080; font-size: 13px; min-height: 18px; }
     </style>
 </head>
 <body>
 
+    <!-- کادر اعلان جهانی ورود پارتنر به اتاق -->
+    <div id="global-room-alert">
+        <h4 style="font-size: 14px; color: #38ef7d; margin-bottom: 4px;" id="alert-room-title">🔔 اعلان حضور پارتنر</h4>
+        <p style="font-size: 12.5px; color: rgba(255,255,255,0.9);" id="alert-room-desc">پارتنرت وارد اتاق شد و منتظرتته!</p>
+    </div>
+
     <!-- ۱. منوی اصلی انتخاب بخش -->
     <div id="hub-screen" class="screen glass-panel active">
         <h2>✨ فضای دونفره شیشه‌ای</h2>
-        <p>یکی از قابلیت‌ها را انتخاب کن:</p>
+        <p>لطفاً قابلیت مورد نظر رو انتخاب کن:</p>
         <button class="btn" onclick="goToScreen('paint-auth-screen')">🎨 اتاق نقاشی آنلاین</button>
         <button class="btn btn-chat" onclick="goToScreen('chat-auth-screen')">💬 چت روم تلگرامی</button>
+        <button class="btn btn-game" onclick="goToScreen('game-auth-screen')">🎮 بازی دوز دو نفره</button>
+        <button class="btn btn-emoji" onclick="goToScreen('emoji-auth-screen')">🧩 کارگاه ساخت ایموجی</button>
+        <button class="btn btn-movie" onclick="goToScreen('movie-auth-screen')">🎬 فیلم دیدن ♥️🥹</button>
+        <button class="btn btn-ghor" onclick="goToScreen('ghor-auth-screen')">🤬 اتاق غر و قور 🤬</button>
     </div>
 
     <!-- ۲. صفحه ورود/ساخت اتاق نقاشی -->
@@ -186,6 +327,7 @@
         <h2>🎨 اتاق نقاشی</h2>
         <input type="text" id="paint-room-code" placeholder="کد اتاق (مثلاً: 1234)">
         <input type="password" id="paint-room-pass" placeholder="رمز عبور اتاق">
+        <input type="text" id="paint-user-name" placeholder="اسم شما">
         <div id="paint-error" class="error-msg"></div>
         <button class="btn" onclick="joinPaintRoom()">ورود به اتاق</button>
         <button class="btn btn-secondary" onclick="createPaintRoom()">ساخت اتاق جدید</button>
@@ -195,7 +337,10 @@
     <!-- ۳. صفحه نقاشی اصلی -->
     <div id="paint-screen" class="screen glass-panel">
         <header>
-            <div style="font-weight: bold; font-size: 15px;" id="paint-room-title">اتاق: -</div>
+            <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 4px;">
+                <div style="font-weight: bold; font-size: 14px;" id="paint-room-title">اتاق: -</div>
+                <div class="online-badge" id="paint-online-count">🟢 افراد آنلاین: 1</div>
+            </div>
             <div class="toolbar">
                 <button class="tool-btn active" id="btn-pencil" onclick="setTool('pencil')">✏️ مداد</button>
                 <button class="tool-btn" id="btn-brush" onclick="setTool('brush')">🖌️ قلم‌مو</button>
@@ -207,7 +352,7 @@
                 </select>
                 <input type="color" id="color-picker" value="#ffffff" onchange="updateColor(this.value)">
                 <button class="tool-btn" style="background: rgba(255, 65, 108, 0.4);" onclick="clearCanvas()">🗑️ پاکسازی</button>
-                <button class="tool-btn" onclick="location.reload()">خروج</button>
+                <button class="tool-btn" style="background: rgba(235, 51, 73, 0.5);" onclick="exitRoomAndClean('paint')">🚪 خروج و حذف اتاق</button>
             </div>
         </header>
         <div class="canvas-container" id="canvas-box">
@@ -221,31 +366,26 @@
         <p>گفتگوی زنده با استایل تلگرام</p>
         <input type="text" id="chat-room-code" placeholder="کد اتاق (مثلاً: 5678)">
         <input type="password" id="chat-room-pass" placeholder="رمز عبور اتاق">
-        <input type="text" id="chat-user-name" placeholder="اسم شما (مثلاً: پارتنر)">
+        <input type="text" id="chat-user-name" placeholder="اسم شما">
         <div id="chat-error" class="error-msg"></div>
         <button class="btn btn-chat" onclick="joinChatRoom()">ورود به چت روم</button>
         <button class="btn btn-secondary" onclick="createChatRoom()">ساخت اتاق جدید</button>
         <button class="tool-btn" onclick="goToScreen('hub-screen')" style="margin-top: 10px;">⬅️ بازگشت به منو</button>
     </div>
 
-    <!-- ۵. صفحه محیط چت کاملاً شبیه تلگرام -->
+    <!-- ۵. صفحه محیط چت تلگرامی -->
     <div id="chat-screen" class="screen glass-panel">
-        <!-- هدر تلگرامی -->
         <div class="tg-header">
             <div class="tg-profile">
                 <div class="tg-avatar" id="partner-avatar">💬</div>
                 <div class="tg-info">
                     <h3 id="chat-room-title">چت روم</h3>
-                    <span>● آنلاین و زنده</span>
+                    <span id="chat-online-count" style="font-size: 11px; color: #4cd137;">● افراد آنلاین: 1</span>
                 </div>
             </div>
-            <button class="tool-btn" onclick="location.reload()" style="padding: 5px 10px; font-size: 11px;">خروج</button>
+            <button class="tool-btn" style="background: rgba(235, 51, 73, 0.5); padding: 5px 10px; font-size: 11px;" onclick="exitRoomAndClean('chat')">🚪 خروج و حذف اتاق</button>
         </div>
-
-        <!-- پیام‌ها -->
         <div class="chat-messages" id="chat-messages-box"></div>
-
-        <!-- نوار ایموجی سریع -->
         <div class="emoji-bar">
             <span onclick="addEmoji('❤️')">❤️</span>
             <span onclick="addEmoji('😍')">😍</span>
@@ -255,17 +395,187 @@
             <span onclick="addEmoji('👍')">👍</span>
             <span onclick="addEmoji('😘')">😘</span>
             <span onclick="addEmoji('🌹')">🌹</span>
-            <span onclick="addEmoji('🥺')">🥺</span>
-            <span onclick="addEmoji('😎')">😎</span>
-            <span onclick="addEmoji('💯')">💯</span>
         </div>
-
-        <!-- بخش ارسال پیام -->
         <div class="tg-input-area">
             <input type="text" id="chat-input-msg" placeholder="پیام..." onkeypress="handleChatKeyPress(event)">
             <button class="send-btn" onclick="sendChatMessage()">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
             </button>
+        </div>
+    </div>
+
+    <!-- ۶. صفحه ورود/ساخت بازی دوز -->
+    <div id="game-auth-screen" class="screen glass-panel">
+        <h2>🎮 بازی دوز آنلاین</h2>
+        <p>با پارتنرت دوز بازی کن!</p>
+        <input type="text" id="game-room-code" placeholder="کد اتاق دوز (مثلاً: 9090)">
+        <input type="password" id="game-room-pass" placeholder="رمز عبور اتاق">
+        <input type="text" id="game-user-name" placeholder="اسم شما">
+        <div id="game-error" class="error-msg"></div>
+        <button class="btn btn-game" onclick="joinGameRoom()">ورود به بازی (بازیکن O)</button>
+        <button class="btn btn-secondary" onclick="createGameRoom()">ساخت اتاق (بازیکن X)</button>
+        <button class="tool-btn" onclick="goToScreen('hub-screen')" style="margin-top: 10px;">⬅️ بازگشت به منو</button>
+    </div>
+
+    <!-- ۷. صفحه محیط بازی دوز -->
+    <div id="game-screen" class="screen glass-panel" style="width: 380px;">
+        <header style="padding: 0; width: 100%; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center;">
+            <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 3px;">
+                <div style="font-weight: bold; font-size: 13px;" id="game-room-title">دوز: -</div>
+                <div class="online-badge" id="game-online-count" style="font-size: 10px; padding: 2px 6px;">🟢 آنلاین: 1</div>
+            </div>
+            <button class="tool-btn" style="background: rgba(235, 51, 73, 0.5); padding: 4px 8px; font-size: 11px;" onclick="exitRoomAndClean('game')">🚪 خروج و حذف اتاق</button>
+        </header>
+        <div class="game-status" id="game-status-text">منتظر اتصال پارتنر...</div>
+        <div class="tic-tac-grid" id="tic-grid">
+            <div class="tic-cell" data-index="0" onclick="makeMove(0)"></div>
+            <div class="tic-cell" data-index="1" onclick="makeMove(1)"></div>
+            <div class="tic-cell" data-index="2" onclick="makeMove(2)"></div>
+            <div class="tic-cell" data-index="3" onclick="makeMove(3)"></div>
+            <div class="tic-cell" data-index="4" onclick="makeMove(4)"></div>
+            <div class="tic-cell" data-index="5" onclick="makeMove(5)"></div>
+            <div class="tic-cell" data-index="6" onclick="makeMove(6)"></div>
+            <div class="tic-cell" data-index="7" onclick="makeMove(7)"></div>
+            <div class="tic-cell" data-index="8" onclick="makeMove(8)"></div>
+        </div>
+        <button class="btn btn-game" style="padding: 8px; font-size: 13px; display: none;" id="reset-game-btn" onclick="resetGame()">شروع مجدد بازی</button>
+    </div>
+
+    <!-- ۸. صفحه ورود/ساخت کارگاه ایموجی‌ساز -->
+    <div id="emoji-auth-screen" class="screen glass-panel">
+        <h2>🧩 کارگاه ساخت ایموجی</h2>
+        <p>با پارتنرت ایموجی ترکیبی بساز!</p>
+        <input type="text" id="emoji-room-code" placeholder="کد اتاق ایموجی (مثلاً: 7788)">
+        <input type="password" id="emoji-room-pass" placeholder="رمز عبور اتاق">
+        <input type="text" id="emoji-user-name" placeholder="اسم شما">
+        <div id="emoji-auth-error" class="error-msg"></div>
+        <button class="btn btn-emoji" onclick="joinEmojiRoom()">ورود به کارگاه</button>
+        <button class="btn btn-secondary" onclick="createEmojiRoom()">ساخت کارگاه جدید</button>
+        <button class="tool-btn" onclick="goToScreen('hub-screen')" style="margin-top: 10px;">⬅️ بازگشت به منو</button>
+    </div>
+
+    <!-- ۹. صفحه محیط کارگاه ایموجی‌ساز -->
+    <div id="emoji-maker-screen" class="screen glass-panel">
+        <header style="padding: 0; display: flex; justify-content: space-between; align-items: center; width: 100%;">
+            <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 3px;">
+                <div style="font-weight: bold; font-size: 14px;" id="emoji-room-title">کارگاه: -</div>
+                <div class="online-badge" id="emoji-online-count" style="font-size: 10px; padding: 2px 6px;">🟢 آنلاین: 1</div>
+            </div>
+            <div style="display: flex; gap: 8px;">
+                <button class="tool-btn" style="background: rgba(255, 65, 108, 0.4);" onclick="clearEmojiCanvas()">🗑️ پاکسازی</button>
+                <button class="tool-btn" style="background: rgba(235, 51, 73, 0.5);" onclick="exitRoomAndClean('emoji')">🚪 خروج و حذف اتاق</button>
+            </div>
+        </header>
+
+        <div class="emoji-canvas-box" id="emoji-canvas-box">
+            <span style="position: absolute; color: rgba(255,255,255,0.3); font-size: 13px; pointer-events: none;">ایموجی‌ها را به دلخواه جابجا کن!</span>
+        </div>
+
+        <div class="emoji-tray">
+            <span class="tray-item" onclick="spawnEmoji('😀')">😀</span>
+            <span class="tray-item" onclick="spawnEmoji('😂')">😂</span>
+            <span class="tray-item" onclick="spawnEmoji('😎')">😎</span>
+            <span class="tray-item" onclick="spawnEmoji('😍')">😍</span>
+            <span class="tray-item" onclick="spawnEmoji('🥳')">🥳</span>
+            <span class="tray-item" onclick="spawnEmoji('🔥')">🔥</span>
+            <span class="tray-item" onclick="spawnEmoji('💖')">💖</span>
+            <span class="tray-item" onclick="spawnEmoji('🌹')">🌹</span>
+        </div>
+    </div>
+
+    <!-- ۱۰. صفحه ورود/ساخت سینمای آنلاین -->
+    <div id="movie-auth-screen" class="screen glass-panel">
+        <h2>🎬 فیلم دیدن ♥️🥹</h2>
+        <p>با پارتنرت فیلم آنلاین ببین و چت کن!</p>
+        <input type="text" id="movie-room-code" placeholder="کد اتاق فیلم (مثلاً: 3344)">
+        <input type="password" id="movie-room-pass" placeholder="رمز عبور اتاق">
+        <input type="text" id="movie-user-name" placeholder="اسم شما">
+        <div id="movie-auth-error" class="error-msg"></div>
+        <button class="btn btn-movie" onclick="joinMovieRoom()">ورود به سینما</button>
+        <button class="btn btn-secondary" onclick="createMovieRoom()">ساخت اتاق جدید</button>
+        <button class="tool-btn" onclick="goToScreen('hub-screen')" style="margin-top: 10px;">⬅️ بازگشت به منو</button>
+    </div>
+
+    <!-- ۱۱. صفحه محیط پخش فیلم و چت -->
+    <div id="movie-screen" class="screen glass-panel">
+        <header style="padding: 0; display: flex; justify-content: space-between; align-items: center; width: 100%;">
+            <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 3px;">
+                <div style="font-weight: bold; font-size: 14px;" id="movie-room-title">سینما: -</div>
+                <div class="online-badge" id="movie-online-count" style="font-size: 10px; padding: 2px 6px;">🟢 آنلاین: 1</div>
+            </div>
+            <button class="tool-btn" style="background: rgba(235, 51, 73, 0.5); padding: 5px 10px; font-size: 11px;" onclick="exitRoomAndClean('movie')">🚪 خروج و حذف اتاق</button>
+        </header>
+
+        <div class="movie-layout">
+            <div class="movie-player-section">
+                <div class="video-box">
+                    <video id="sync-video" controls playsinline>مرورگر شما پشتیبانی نمی‌کند.</video>
+                </div>
+                <div class="movie-url-bar">
+                    <input type="text" id="movie-url-input" placeholder="لینک مستقیم فیلم (مثل mp4.)">
+                    <button class="btn btn-movie" style="padding: 10px 16px; font-size: 13px;" onclick="changeMovieUrl()">بارگذاری</button>
+                </div>
+            </div>
+            <div class="movie-chat-section">
+                <div class="tg-header" style="padding: 8px 12px;">
+                    <span style="font-size: 13px; font-weight: bold;">💬 چت سینما</span>
+                </div>
+                <div class="chat-messages" id="movie-chat-messages-box" style="flex-grow: 1; padding: 10px;"></div>
+                <div class="tg-input-area" style="padding: 8px;">
+                    <input type="text" id="movie-chat-input" placeholder="پیام..." onkeypress="handleMovieChatKeyPress(event)">
+                    <button class="send-btn" style="width: 36px; height: 36px;" onclick="sendMovieChatMessage()">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ۱۲. صفحه ورود/ساخت اتاق غر و قور 🤬 -->
+    <div id="ghor-auth-screen" class="screen glass-panel">
+        <h2>🤬 اتاق غر و قور 🤬</h2>
+        <p>ثبت احساس امروز و اعلان آنی به پارتنر</p>
+        <input type="text" id="ghor-room-code" placeholder="کد اتاق (مثلاً: 9988)">
+        <input type="password" id="ghor-room-pass" placeholder="رمز عبور اتاق">
+        <input type="text" id="ghor-user-name" placeholder="اسم شما">
+        <div id="ghor-auth-error" class="error-msg"></div>
+        <button class="btn btn-ghor" onclick="joinGhorRoom()">ورود به اتاق غر و قور</button>
+        <button class="btn btn-secondary" onclick="createGhorRoom()">ساخت اتاق جدید</button>
+        <button class="tool-btn" onclick="goToScreen('hub-screen')" style="margin-top: 10px;">⬅️ بازگشت به منو</button>
+    </div>
+
+    <!-- ۱۳. صفحه محیط اتاق غر و قور 🤬 -->
+    <div id="ghor-screen" class="screen glass-panel" style="width: 425px;">
+        <header style="padding: 0; display: flex; justify-content: space-between; align-items: center; width: 100%;">
+            <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 3px;">
+                <div style="font-weight: bold; font-size: 14px;" id="ghor-room-title">اتاق غر و قور: -</div>
+                <div class="online-badge" id="ghor-online-count" style="font-size: 10px; padding: 2px 6px;">🟢 آنلاین: 1</div>
+            </div>
+            <button class="tool-btn" style="background: rgba(235, 51, 73, 0.5); padding: 5px 10px; font-size: 11px;" onclick="exitRoomAndClean('ghor')">🚪 خروج و حذف اتاق</button>
+        </header>
+
+        <!-- بخش اعلان لحظه‌ای وضعیت پارتنر -->
+        <div id="ghor-alert-box" class="alert-banner" style="display: none;">
+            <h3 id="ghor-alert-title" style="font-size: 15px; margin-bottom: 4px;">⚠️ اعلان جدید</h3>
+            <p id="ghor-alert-text" style="font-size: 13px;"></p>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 10px; text-align: right;">
+            <label style="font-size: 13px; color: rgba(255,255,255,0.8);">وضعیت امروزت نسبت به پارتنرت:</label>
+            <select id="ghor-status-select" style="padding: 10px;">
+                <option value="happy">😊 امروز خوشحالم از دستش</option>
+                <option value="angry">🤬 امروز عصبیم و غر دارم!</option>
+            </select>
+
+            <label style="font-size: 13px; color: rgba(255,255,255,0.8);">دلیلش چیه؟ (چرا این حسو داری؟):</label>
+            <textarea id="ghor-reason-input" rows="3" placeholder="امروز چکار کرده یا چه حالی داری؟ بنویس..." style="resize: none;"></textarea>
+            
+            <button class="btn btn-ghor" onclick="submitGhorStatus()">ثبت و ارسال اعلان فوری به پارتنر 🚀</button>
+        </div>
+
+        <div style="background: rgba(0,0,0,0.2); border-radius: 12px; padding: 12px; text-align: right; max-height: 140px; overflow-y: auto;">
+            <h4 style="font-size: 13px; margin-bottom: 6px; color: #f45c43;">📜 آخرین ثبت‌های پارتنرت:</h4>
+            <div id="ghor-history-box" style="font-size: 12px; color: rgba(255,255,255,0.8); line-height: 1.5;">هنوز پیامی ثبت نشده...</div>
         </div>
     </div>
 
@@ -281,8 +591,119 @@
             document.getElementById(screenId).classList.add('active');
         }
 
-        /* --- بخش نقاشی --- */
-        let currentRoom = null;
+        // سیستم اعلان جهانی ورود پارتنر به هر اتاق
+        let globalActivityListenerRef = null;
+        let lastNotifiedTimestamp = Date.now();
+
+        function listenToPartnerActivity(roomType, roomCode, userName) {
+            if (globalActivityListenerRef) {
+                globalActivityListenerRef.off();
+            }
+            globalActivityListenerRef = db.ref(`${roomType}_rooms/${roomCode}/activity`);
+            
+            // ثبت زمان ورود خودمان به اتاق
+            const myEntryTime = Date.now();
+            globalActivityListenerRef.set({
+                user: userName,
+                roomType: roomType,
+                roomCode: roomCode,
+                timestamp: myEntryTime
+            });
+
+            // گوش دادن به تغییرات فعالیت پارتنر در این اتاق
+            globalActivityListenerRef.on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data && data.user !== userName && data.timestamp > lastNotifiedTimestamp) {
+                    lastNotifiedTimestamp = data.timestamp;
+                    showGlobalRoomAlert(data.user, roomType, roomCode);
+                }
+            });
+        }
+
+        function showGlobalRoomAlert(partnerName, roomType, roomCode) {
+            const roomNames = {
+                'paint': '🎨 اتاق نقاشی',
+                'chat': '💬 چت روم تلگرامی',
+                'tic': '🎮 بازی دوز',
+                'emoji': '🧩 کارگاه ساخت ایموجی',
+                'movie': '🎬 سینمای آنلاین',
+                'ghor': '🤬 اتاق غر و قور'
+            };
+            const roomTitle = roomNames[roomType] || 'اتاق دونفره';
+            
+            document.getElementById('alert-room-title').innerText = `🔔 ${partnerName} وارد اتاق شد!`;
+            document.getElementById('alert-room-desc').innerText = `پارتنرت الان وارد ${roomTitle} (کد: ${roomCode}) شده و منتظرتته!`;
+
+            const alertBox = document.getElementById('global-room-alert');
+            alertBox.classList.add('show');
+
+            // پخش صدای هشدار کوتاه (اختیاری و ملایم)
+            if ('vibrate' in navigator) {
+                navigator.vibrate([200, 100, 200]);
+            }
+
+            setTimeout(() => {
+                alertBox.classList.remove('show');
+            }, 6000);
+        }
+
+        // ذخیره اتاق فعال در مرورگر برای ماندگاری تا زمان خروج دستی
+        window.onload = function() {
+            const savedRoom = localStorage.getItem('active_room_session');
+            if (savedRoom) {
+                try {
+                    const data = JSON.parse(savedRoom);
+                    if (data.type && data.code) {
+                        if (data.type === 'paint') enterPaintRoom(data.code, data.name || 'کاربر');
+                        else if (data.type === 'chat') enterChatRoom(data.code, data.name || 'کاربر');
+                        else if (data.type === 'game') enterGameRoom(data.code, data.name || 'کاربر', data.role || 'O');
+                        else if (data.type === 'emoji') enterEmojiRoom(data.code, data.name || 'کاربر');
+                        else if (data.type === 'movie') enterMovieRoom(data.code, data.name || 'کاربر');
+                        else if (data.type === 'ghor') enterGhorRoomDirect(data.code, data.name || 'کاربر');
+                    }
+                } catch(e) { console.log(e); }
+            }
+        };
+
+        function saveSession(type, code, name='', role='') {
+            localStorage.setItem('active_room_session', JSON.stringify({ type, code, name, role }));
+        }
+
+        function exitRoomAndClean(roomType) {
+            if (confirm("آیا مطمئنی می‌خواهی از اتاق خارج شوی؟ (با خروج، اتاق و اطلاعات آن پاک خواهد شد)")) {
+                let code = "";
+                if (roomType === 'paint') code = currentRoom;
+                else if (roomType === 'chat') code = chatRoomCode;
+                else if (roomType === 'game') code = gameRoomCode;
+                else if (roomType === 'emoji') code = emojiRoomCode;
+                else if (roomType === 'movie') code = movieRoomCode;
+                else if (roomType === 'ghor') code = ghorRoomCode;
+
+                if (code) {
+                    db.ref(`${roomType}_rooms/${code}`).remove();
+                }
+                if (globalActivityListenerRef) globalActivityListenerRef.off();
+                localStorage.removeItem('active_room_session');
+                location.reload();
+            }
+        }
+
+        // سیستم حضور آنلاین (Presence)
+        function setupPresence(roomType, roomCode) {
+            const userPresenceRef = db.ref(`${roomType}_rooms/${roomCode}/presence`).push();
+            userPresenceRef.set(true);
+            userPresenceRef.onDisconnect().remove();
+
+            db.ref(`${roomType}_rooms/${roomCode}/presence`).on('value', (snapshot) => {
+                const count = snapshot.exists() ? Object.keys(snapshot.val()).length : 0;
+                const badgeId = roomType === 'tic' ? 'game' : roomType;
+                const el = document.getElementById(`${badgeId}-online-count`);
+                if (el) el.innerText = `🟢 آنلاین: ${count}`;
+            });
+        }
+
+        /* --- نقاشی --- */
+        let currentRoom = null, paintUserName = "";
         let dbRef = null;
         let isDrawing = false;
         let lastX = 0, lastY = 0;
@@ -301,50 +722,44 @@
         function createPaintRoom() {
             const code = document.getElementById('paint-room-code').value.trim();
             const pass = document.getElementById('paint-room-pass').value.trim();
+            const name = document.getElementById('paint-user-name').value.trim();
             const errBox = document.getElementById('paint-error');
-            if (!code || !pass) { errBox.innerText = "کد و رمز را وارد کن!"; return; }
-
+            if (!code || !pass || !name) { errBox.innerText = "همه فیلدها را پر کن!"; return; }
             const roomRef = db.ref('paint_rooms/' + code);
             roomRef.once('value', (snapshot) => {
                 if (snapshot.exists()) { errBox.innerText = "این اتاق قبلاً ساخته شده!"; }
-                else { roomRef.set({ password: pass }, (error) => { if (!error) enterPaintRoom(code); }); }
+                else { roomRef.set({ password: pass }, (error) => { if (!error) enterPaintRoom(code, name); }); }
             });
         }
-
         function joinPaintRoom() {
             const code = document.getElementById('paint-room-code').value.trim();
             const pass = document.getElementById('paint-room-pass').value.trim();
+            const name = document.getElementById('paint-user-name').value.trim();
             const errBox = document.getElementById('paint-error');
-            if (!code || !pass) { errBox.innerText = "کد و رمز را وارد کن!"; return; }
-
+            if (!code || !pass || !name) { errBox.innerText = "همه فیلدها را پر کن!"; return; }
             db.ref('paint_rooms/' + code).once('value', (snapshot) => {
                 if (!snapshot.exists()) { errBox.innerText = "اتاق پیدا نشد!"; return; }
                 if (snapshot.val().password !== pass) { errBox.innerText = "رمز اشتباه است!"; return; }
-                enterPaintRoom(code);
+                enterPaintRoom(code, name);
             });
         }
-
-        function enterPaintRoom(code) {
-            currentRoom = code;
+        function enterPaintRoom(code, name) {
+            currentRoom = code; paintUserName = name;
+            saveSession('paint', code, name);
             goToScreen('paint-screen');
             document.getElementById('paint-room-title').innerText = `اتاق: ${code}`;
+            setupPresence('paint', code);
+            listenToPartnerActivity('paint', code, name);
+
             setTimeout(() => {
                 initCanvasSize();
                 dbRef = db.ref('paint_rooms/' + currentRoom + '/lines');
-                
                 canvas.onmousedown = (e) => { isDrawing = true; const r = canvas.getBoundingClientRect(); lastX = e.clientX - r.left; lastY = e.clientY - r.top; };
                 canvas.onmousemove = (e) => { if (!isDrawing) return; const r = canvas.getBoundingClientRect(); const x = e.clientX - r.left, y = e.clientY - r.top; sendStroke(lastX, lastY, x, y); lastX = x; lastY = y; };
                 window.onmouseup = () => { isDrawing = false; };
-
-                canvas.ontouchstart = (e) => { isDrawing = true; const r = canvas.getBoundingClientRect(); const t = e.touches[0]; lastX = t.clientX - r.left; lastY = t.clientY - r.top; e.preventDefault(); };
-                canvas.ontouchmove = (e) => { if (!isDrawing) return; const r = canvas.getBoundingClientRect(); const t = e.touches[0]; const x = t.clientX - r.left, y = t.clientY - r.top; sendStroke(lastX, lastY, x, y); lastX = x; lastY = y; e.preventDefault(); };
-                window.ontouchend = () => { isDrawing = false; };
-
                 dbRef.on('child_added', (snapshot) => { const d = snapshot.val(); if (d) drawLineLocally(d); });
-                db.ref('paint_rooms/' + currentRoom + '/clear').on('value', (snapshot) => { if (snapshot.exists()) ctx.clearRect(0, 0, canvas.width, canvas.height); });
             }, 150);
         }
-
         function setTool(t) { currentTool = t; document.querySelectorAll('.toolbar .tool-btn').forEach(b => b.classList.remove('active')); document.getElementById('btn-' + t).classList.add('active'); }
         function updateColor(c) { currentColor = c; }
         function updateSize(s) { currentSize = parseInt(s); }
@@ -356,97 +771,305 @@
             ctx.strokeStyle = d.color; ctx.lineWidth = d.size; ctx.stroke(); ctx.closePath();
         }
         function clearCanvas() {
-            if (confirm("صفحه پاک شود؟")) {
-                db.ref('paint_rooms/' + currentRoom + '/lines').remove();
-                db.ref('paint_rooms/' + currentRoom + '/clear').set(Date.now());
-            }
+            if (confirm("صفحه پاک شود؟")) { db.ref('paint_rooms/' + currentRoom + '/lines').remove(); }
         }
 
-
-        /* --- بخش چت تلگرامی --- */
-        let chatRoomCode = null;
-        let chatUserName = "";
-        let chatDbRef = null;
-
+        /* --- چت تلگرامی --- */
+        let chatRoomCode = null, chatUserName = "", chatDbRef = null;
         function createChatRoom() {
             const code = document.getElementById('chat-room-code').value.trim();
             const pass = document.getElementById('chat-room-pass').value.trim();
             const name = document.getElementById('chat-user-name').value.trim();
             const errBox = document.getElementById('chat-error');
             if (!code || !pass || !name) { errBox.innerText = "همه فیلدها را پر کن!"; return; }
-
-            const roomRef = db.ref('chat_rooms/' + code);
-            roomRef.once('value', (snapshot) => {
-                if (snapshot.exists()) { errBox.innerText = "این چت روم قبلاً ساخته شده!"; }
-                else { roomRef.set({ password: pass }, (error) => { if (!error) enterChatRoom(code, name); }); }
+            db.ref('chat_rooms/' + code).once('value', (snapshot) => {
+                if (snapshot.exists()) { errBox.innerText = "اتاق موجود است!"; }
+                else { db.ref('chat_rooms/' + code).set({ password: pass }, (error) => { if (!error) enterChatRoom(code, name); }); }
             });
         }
-
         function joinChatRoom() {
             const code = document.getElementById('chat-room-code').value.trim();
             const pass = document.getElementById('chat-room-pass').value.trim();
             const name = document.getElementById('chat-user-name').value.trim();
             const errBox = document.getElementById('chat-error');
             if (!code || !pass || !name) { errBox.innerText = "همه فیلدها را پر کن!"; return; }
-
             db.ref('chat_rooms/' + code).once('value', (snapshot) => {
                 if (!snapshot.exists()) { errBox.innerText = "اتاق پیدا نشد!"; return; }
                 if (snapshot.val().password !== pass) { errBox.innerText = "رمز اشتباه است!"; return; }
                 enterChatRoom(code, name);
             });
         }
-
         function enterChatRoom(code, name) {
-            chatRoomCode = code;
-            chatUserName = name;
+            chatRoomCode = code; chatUserName = name;
+            saveSession('chat', code, name);
             goToScreen('chat-screen');
             document.getElementById('chat-room-title').innerText = `اتاق: ${code}`;
             document.getElementById('partner-avatar').innerText = name.charAt(0).toUpperCase();
-            
-            chatDbRef = db.ref('chat_rooms/' + chatRoomCode + '/messages');
-            chatDbRef.on('child_added', (snapshot) => {
-                const msg = snapshot.val();
-                if (msg) appendMessageToUI(msg);
-            });
-        }
+            setupPresence('chat', code);
+            listenToPartnerActivity('chat', code, name);
 
+            chatDbRef = db.ref('chat_rooms/' + chatRoomCode + '/messages');
+            chatDbRef.on('child_added', (snapshot) => { const msg = snapshot.val(); if (msg) appendMessageToUI(msg); });
+        }
         function sendChatMessage() {
             const input = document.getElementById('chat-input-msg');
             const text = input.value.trim();
             if (!text) return;
-
-            chatDbRef.push({
-                sender: chatUserName,
-                text: text,
-                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-            });
+            chatDbRef.push({ sender: chatUserName, text: text, time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) });
             input.value = "";
         }
-
-        function addEmoji(emoji) {
-            const input = document.getElementById('chat-input-msg');
-            input.value += emoji;
-            input.focus();
-        }
-
-        function handleChatKeyPress(e) {
-            if (e.key === 'Enter') sendChatMessage();
-        }
-
+        function addEmoji(emoji) { document.getElementById('chat-input-msg').value += emoji; }
+        function handleChatKeyPress(e) { if (e.key === 'Enter') sendChatMessage(); }
         function appendMessageToUI(msg) {
             const box = document.getElementById('chat-messages-box');
             const div = document.createElement('div');
             div.classList.add('message');
+            div.classList.add(msg.sender === chatUserName ? 'mine' : 'theirs');
+            div.innerHTML = `<span class="msg-sender">${msg.sender}</span><span>${msg.text}</span><span class="msg-time">${msg.time || ''}</span>`;
+            box.appendChild(div); box.scrollTop = box.scrollHeight;
+        }
+
+        /* --- بازی دوز --- */
+        let gameRoomCode = null, gameUserName = "", myRole = '', gameDbRef = null;
+        function createGameRoom() {
+            const code = document.getElementById('game-room-code').value.trim();
+            const pass = document.getElementById('game-room-pass').value.trim();
+            const name = document.getElementById('game-user-name').value.trim();
+            if (!code || !pass || !name) return;
+            db.ref('tic_rooms/' + code).set({ password: pass, turn: 'X', board: ['', '', '', '', '', '', '', '', ''], winner: null }, (e) => { if(!e) enterGameRoom(code, name, 'X'); });
+        }
+        function joinGameRoom() {
+            const code = document.getElementById('game-room-code').value.trim();
+            const pass = document.getElementById('game-room-pass').value.trim();
+            const name = document.getElementById('game-user-name').value.trim();
+            if(!code || !pass || !name) return;
+            db.ref('tic_rooms/' + code).once('value', (s) => {
+                if (s.exists() && s.val().password === pass) enterGameRoom(code, name, 'O');
+            });
+        }
+        function enterGameRoom(code, name, role) {
+            gameRoomCode = code; gameUserName = name; myRole = role;
+            saveSession('game', code, name, role);
+            goToScreen('game-screen');
+            document.getElementById('game-room-title').innerText = `دوز (${role})`;
+            setupPresence('tic', code);
+            listenToPartnerActivity('tic', code, name);
+
+            gameDbRef = db.ref('tic_rooms/' + gameRoomCode);
+            gameDbRef.on('value', (snapshot) => { if (snapshot.val()) updateGameUI(snapshot.val()); });
+        }
+        function makeMove(index) {
+            gameDbRef.once('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data.winner || data.turn !== myRole || data.board[index] !== '') return;
+                let board = data.board; board[index] = myRole;
+                let nextTurn = myRole === 'X' ? 'O' : 'X';
+                let winner = checkWinner(board);
+                gameDbRef.update({ board: board, turn: winner ? null : nextTurn, winner: winner });
+            });
+        }
+        function checkWinner(b) {
+            const wins = [[0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [2,4,6]];
+            for (let w of wins) { if (b[w[0]] && b[w[0]] === b[w[1]] && b[w[0]] === b[w[2]]) return b[w[0]]; }
+            return b.includes('') ? null : 'draw';
+        }
+        function updateGameUI(data) {
+            document.querySelectorAll('.tic-cell').forEach((cell, idx) => {
+                cell.innerText = data.board[idx] || '';
+                cell.className = 'tic-cell';
+                if (data.board[idx] === 'X') cell.classList.add('x');
+                if (data.board[idx] === 'O') cell.classList.add('o');
+            });
+            document.getElementById('game-status-text').innerText = data.winner ? (data.winner === 'draw' ? "مساوی شد!" : `برنده: ${data.winner}`) : (data.turn === myRole ? "نوبت شماست!" : "نوبت حریف است");
+            document.getElementById('reset-game-btn').style.display = data.winner ? 'block' : 'none';
+        }
+        function resetGame() { gameDbRef.update({ board: ['', '', '', '', '', '', '', '', ''], turn: 'X', winner: null }); }
+
+        /* --- کارگاه ایموجی --- */
+        let emojiRoomCode = null, emojiUserName = "", emojiDbRef = null;
+        function createEmojiRoom() {
+            const code = document.getElementById('emoji-room-code').value.trim();
+            const pass = document.getElementById('emoji-room-pass').value.trim();
+            const name = document.getElementById('emoji-user-name').value.trim();
+            if(!code || !pass || !name) return;
+            db.ref('emoji_rooms/' + code).set({ password: pass }, (e)=>{ if(!e) enterEmojiRoom(code, name); });
+        }
+        function joinEmojiRoom() {
+            const code = document.getElementById('emoji-room-code').value.trim();
+            const pass = document.getElementById('emoji-room-pass').value.trim();
+            const name = document.getElementById('emoji-user-name').value.trim();
+            if(!code || !pass || !name) return;
+            db.ref('emoji_rooms/'+code).once('value', (s)=>{ if(s.exists() && s.val().password === pass) enterEmojiRoom(code, name); });
+        }
+        function enterEmojiRoom(code, name) {
+            emojiRoomCode = code; emojiUserName = name;
+            saveSession('emoji', code, name);
+            goToScreen('emoji-maker-screen');
+            document.getElementById('emoji-room-title').innerText = `کارگاه: ${code}`;
+            setupPresence('emoji', code);
+            listenToPartnerActivity('emoji', code, name);
+
+            emojiDbRef = db.ref('emoji_rooms/' + code + '/items');
+            emojiDbRef.on('value', (s) => { renderEmojiCanvas(s.val()); });
+        }
+        function spawnEmoji(char) { emojiDbRef.push({ char, x: 150, y: 150 }); }
+        function renderEmojiCanvas(items) {
+            const box = document.getElementById('emoji-canvas-box');
+            box.innerHTML = !items ? '<span style="color:rgba(255,255,255,0.3)">ایموجی‌ها را بکشید!</span>' : '';
+            if(!items) return;
+            for(let id in items) {
+                let item = items[id];
+                let el = document.createElement('div');
+                el.className = 'placed-emoji'; el.innerText = item.char;
+                el.style.left = item.x + 'px'; el.style.top = item.y + 'px';
+                el.ondblclick = () => emojiDbRef.child(id).remove();
+                box.appendChild(el);
+            }
+        }
+        function clearEmojiCanvas() { emojiDbRef.remove(); }
+
+        /* --- سینمای آنلاین --- */
+        let movieRoomCode = null, movieUserName = "", movieDbRef = null, movieChatDbRef = null;
+        function createMovieRoom() {
+            const code = document.getElementById('movie-room-code').value.trim();
+            const pass = document.getElementById('movie-room-pass').value.trim();
+            const name = document.getElementById('movie-user-name').value.trim();
+            if(!code || !pass || !name) return;
+            db.ref('movie_rooms/' + code).set({ password: pass, url: "", time: 0, isPlaying: false }, (e)=>{ if(!e) enterMovieRoom(code, name); });
+        }
+        function joinMovieRoom() {
+            const code = document.getElementById('movie-room-code').value.trim();
+            const pass = document.getElementById('movie-room-pass').value.trim();
+            const name = document.getElementById('movie-user-name').value.trim();
+            if(!code || !pass || !name) return;
+            db.ref('movie_rooms/' + code).once('value', (s)=>{ if(s.exists() && s.val().password === pass) enterMovieRoom(code, name); });
+        }
+        function enterMovieRoom(code, name) {
+            movieRoomCode = code; movieUserName = name;
+            saveSession('movie', code, name);
+            goToScreen('movie-screen');
+            document.getElementById('movie-room-title').innerText = `سینما: ${code}`;
+            setupPresence('movie', code);
+            listenToPartnerActivity('movie', code, name);
+
+            movieDbRef = db.ref('movie_rooms/' + code);
+            movieChatDbRef = db.ref('movie_rooms/' + code + '/messages');
             
-            const isMine = (msg.sender === chatUserName);
-            div.classList.add(isMine ? 'mine' : 'theirs');
-            
-            div.innerHTML = `
-                <span class="msg-sender">${msg.sender}</span>
-                <span style="display:inline-block; margin-left: 20px;">${msg.text}</span>
-                <span class="msg-time">${msg.time || ''}</span>
-            `;
-            
+            const video = document.getElementById('sync-video');
+            movieDbRef.on('value', (s) => {
+                const data = s.val();
+                if(!data) return;
+                if(data.url && video.src !== data.url) video.src = data.url;
+                if(Math.abs(video.currentTime - data.time) > 1.5) video.currentTime = data.time;
+                if(data.isPlaying && video.paused) video.play().catch(e=>{});
+                else if(!data.isPlaying && !video.paused) video.pause();
+            });
+            video.onplay = () => movieDbRef.update({ isPlaying: true, time: video.currentTime });
+            video.onpause = () => movieDbRef.update({ isPlaying: false, time: video.currentTime });
+            movieChatDbRef.on('child_added', (s) => { if(s.val()) appendMovieMsg(s.val()); });
+        }
+        function changeMovieUrl() {
+            const url = document.getElementById('movie-url-input').value.trim();
+            if(url) movieDbRef.update({ url, time: 0, isPlaying: false });
+        }
+        function sendMovieChatMessage() {
+            const input = document.getElementById('movie-chat-input');
+            if(!input.value.trim()) return;
+            movieChatDbRef.push({ sender: movieUserName, text: input.value.trim(), time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) });
+            input.value = "";
+        }
+        function handleMovieChatKeyPress(e) { if(e.key === 'Enter') sendMovieChatMessage(); }
+        function appendMovieMsg(msg) {
+            const box = document.getElementById('movie-chat-messages-box');
+            const div = document.createElement('div');
+            div.classList.add('message'); div.classList.add(msg.sender === movieUserName ? 'mine' : 'theirs');
+            div.innerHTML = `<span class="msg-sender">${msg.sender}</span><span>${msg.text}</span>`;
+            box.appendChild(div); box.scrollTop = box.scrollHeight;
+        }
+
+        /* --- اتاق غر و قور 🤬 --- */
+        let ghorRoomCode = null, ghorUserName = "", ghorDbRef = null;
+        function createGhorRoom() {
+            const code = document.getElementById('ghor-room-code').value.trim();
+            const pass = document.getElementById('ghor-room-pass').value.trim();
+            const name = document.getElementById('ghor-user-name').value.trim();
+            const errBox = document.getElementById('ghor-auth-error');
+            if(!code || !pass || !name) { errBox.innerText = "همه فیلدها را پر کن!"; return; }
+            db.ref('ghor_rooms/' + code).once('value', (s) => {
+                if(s.exists()) errBox.innerText = "این اتاق وجود دارد!";
+                else db.ref('ghor_rooms/' + code).set({ password: pass }, (e)=>{ if(!e) enterGhorRoomDirect(code, name); });
+            });
+        }
+        function joinGhorRoom() {
+            const code = document.getElementById('ghor-room-code').value.trim();
+            const pass = document.getElementById('ghor-room-pass').value.trim();
+            const name = document.getElementById('ghor-user-name').value.trim();
+            const errBox = document.getElementById('ghor-auth-error');
+            if(!code || !pass || !name) { errBox.innerText = "همه فیلدها را پر کن!"; return; }
+            db.ref('ghor_rooms/' + code).once('value', (s) => {
+                if(!s.exists()) errBox.innerText = "اتاق پیدا نشد!";
+                else if(s.val().password !== pass) errBox.innerText = "رمز اشتباه است!";
+                else enterGhorRoomDirect(code, name);
+            });
+        }
+        function enterGhorRoomDirect(code, name) {
+            ghorRoomCode = code; ghorUserName = name;
+            saveSession('ghor', code, name);
+            goToScreen('ghor-screen');
+            document.getElementById('ghor-room-title').innerText = `اتاق غر و قور: ${code}`;
+            setupPresence('ghor', code);
+            listenToPartnerActivity('ghor', code, name);
+
+            ghorDbRef = db.ref('ghor_rooms/' + code + '/updates');
+            ghorDbRef.on('child_added', (snapshot) => {
+                const data = snapshot.val();
+                if(data) {
+                    appendGhorHistory(data);
+                    if(data.sender !== ghorUserName) {
+                        showGhorAlert(data);
+                    }
+                }
+            });
+        }
+        function submitGhorStatus() {
+            const status = document.getElementById('ghor-status-select').value;
+            const reason = document.getElementById('ghor-reason-input').value.trim();
+            if(!reason) { alert("لطفاً دلیلش رو بنویس!"); return; }
+
+            ghorDbRef.push({
+                sender: ghorUserName,
+                status: status,
+                reason: reason,
+                time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})
+            });
+            alert("وضعیت شما با موفقیت به پارتنرت اعلام شد!");
+            document.getElementById('ghor-reason-input').value = "";
+        }
+        function showGhorAlert(data) {
+            const box = document.getElementById('ghor-alert-box');
+            const title = document.getElementById('ghor-alert-title');
+            const text = document.getElementById('ghor-alert-text');
+
+            box.style.display = 'block';
+            if(data.status === 'angry') {
+                box.classList.remove('happy');
+                title.innerText = `🤬 هشدار فوری! ${data.sender} عصبیه!`;
+                text.innerText = `دلیل: "${data.reason}"`;
+            } else {
+                box.classList.add('happy');
+                title.innerText = `😊 خبر خوب! ${data.sender} خوشحاله!`;
+                text.innerText = `دلیل: "${data.reason}"`;
+            }
+        }
+        function appendGhorHistory(data) {
+            const box = document.getElementById('ghor-history-box');
+            if(box.innerText.includes("هنوز پیامی")) box.innerHTML = "";
+            const div = document.createElement('div');
+            div.style.marginBottom = '6px';
+            div.style.borderBottom = '1px solid rgba(255,255,255,0.1)';
+            div.style.paddingBottom = '4px';
+            const icon = data.status === 'angry' ? '🤬' : '😊';
+            div.innerHTML = `<b>${icon} ${data.sender}:</b> ${data.reason} <span style="font-size:10px; color:rgba(255,255,255,0.5);">(${data.time})</span>`;
             box.appendChild(div);
             box.scrollTop = box.scrollHeight;
         }
