@@ -304,7 +304,7 @@
         </div>
     </div>
 
-    <!-- پاپ‌آپ سراسری دریافت تماس ورودی (صوتی و تصویری) -->
+    <!-- پاپ‌آپ سراسری دریافت تماس ورودی -->
     <div id="incoming-call-modal">
         <h4 style="font-size: 15px; color: #00c6ff; margin-bottom: 6px;" id="call-modal-title">📞 تماس ورودی</h4>
         <p style="font-size: 13px; color: rgba(255,255,255,0.9); margin-bottom: 14px;" id="call-modal-desc">پارتنر شما در حال زنگ زدن است...</p>
@@ -337,7 +337,7 @@
         </div>
     </div>
 
-    <!-- مرحله 1: منوی شروع (دارای گزینه‌های ورود و ثبت نام) -->
+    <!-- مرحله 1: منوی شروع -->
     <div id="welcome-screen" class="screen glass-panel active">
         <h2>✨ فضای اختصاصی دو نفره</h2>
         <p>لطفاً وارد حساب خود شوید یا حساب جدید بسازید:</p>
@@ -390,7 +390,7 @@
         <button class="tool-btn" onclick="goToScreen('hub-screen')" style="margin-top: 5px;">⬅️ بازگشت</button>
     </div>
 
-    <!-- منوی اصلی (Hub) - تمامی بخش‌ها بر اساس همین اتاق باز می‌شوند -->
+    <!-- منوی اصلی (Hub) -->
     <div id="hub-screen" class="screen glass-panel">
         <h2>✨ فضای دونفره شیشه‌ای</h2>
         <p id="welcome-msg-hub">سلام عزیزم!</p>
@@ -425,7 +425,7 @@
         </div>
     </div>
 
-    <!-- تماس صوتی زنده (Voice Call) -->
+    <!-- تماس صوتی زنده -->
     <div id="voice-screen" class="screen glass-panel">
         <header style="padding:0; width:100%;">
             <div style="font-weight:bold; font-size:14px;" id="voice-room-title">تماس صوتی زنده</div>
@@ -444,7 +444,7 @@
         <audio id="remoteAudio" autoplay playsinline></audio>
     </div>
 
-    <!-- تماس تصویری زنده (Video Call) -->
+    <!-- تماس تصویری زنده -->
     <div id="video-screen" class="screen glass-panel" style="width: 95vw; max-width: 500px; height: 90vh;">
         <header style="padding:0; width:100%;">
             <div style="font-weight:bold; font-size:14px;" id="video-room-title">تماس تصویری زنده</div>
@@ -473,7 +473,7 @@
         </div>
     </div>
 
-    <!-- نقاشی: بوم اصلی -->
+    <!-- نقاشی -->
     <div id="paint-screen" class="screen glass-panel">
         <header>
             <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 4px;">
@@ -500,7 +500,7 @@
         </div>
     </div>
 
-    <!-- چت: پیام‌رسان -->
+    <!-- چت -->
     <div id="chat-screen" class="screen glass-panel">
         <div class="tg-header">
             <div class="tg-profile">
@@ -534,7 +534,7 @@
         </div>
     </div>
 
-    <!-- دوز: بورد -->
+    <!-- دوز -->
     <div id="game-screen" class="screen glass-panel">
         <header style="padding: 0; width: 100%; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center;">
             <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 3px;">
@@ -547,7 +547,6 @@
             </div>
         </header>
 
-        <!-- انتخاب نماد X و O -->
         <div style="display: flex; gap: 10px; margin-bottom: 8px; width: 100%;">
             <button class="btn" style="flex: 1; padding: 8px; font-size: 12px; background: #ff416c;" onclick="chooseSymbol('X')">انتخاب ❌</button>
             <button class="btn" style="flex: 1; padding: 8px; font-size: 12px; background: #38ef7d;" onclick="chooseSymbol('O')">انتخاب ⭕</button>
@@ -589,16 +588,14 @@
 
             <p style="font-size: 12px; color: rgba(255,255,255,0.8); width: 100%; text-align: right;">🎴 دست شما (۱۳ کارت):</p>
             
-            <!-- ردیف بالا: ۷ کارت -->
             <div class="cards-row" id="pasor-top-row"></div>
-            <!-- ردیف پایین: ۶ کارت -->
             <div class="cards-row" id="pasor-bottom-row" style="margin-top: 4px;"></div>
         </div>
 
         <button class="btn btn-pasor" style="padding: 9px; font-size: 13px;" onclick="initPasorGame()">🔄 شروع دست جدید</button>
     </div>
 
-    <!-- ایموجی‌ساز: بوم -->
+    <!-- ایموجی‌ساز -->
     <div id="emoji-maker-screen" class="screen glass-panel">
         <header style="padding: 0; display: flex; justify-content: space-between; align-items: center; width: 100%;">
             <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 3px;">
@@ -618,7 +615,7 @@
         <div class="emoji-tray-container" id="emoji-tray-container"></div>
     </div>
 
-    <!-- فیلم: پخش‌کننده -->
+    <!-- فیلم -->
     <div id="movie-screen" class="screen glass-panel">
         <header style="padding: 0; display: flex; justify-content: space-between; align-items: center; width: 100%;">
             <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 3px;">
@@ -668,7 +665,7 @@
         </div>
     </div>
 
-    <!-- لحظات: دوربین -->
+    <!-- لحظات -->
     <div id="moment-screen" class="screen glass-panel">
         <header style="padding: 0; display: flex; justify-content: space-between; align-items: center; width: 100%;">
             <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 3px;">
@@ -693,7 +690,7 @@
         </div>
     </div>
 
-    <!-- غر و قور: پنل -->
+    <!-- غر و قور -->
     <div id="ghor-screen" class="screen glass-panel">
         <header style="padding: 0; display: flex; justify-content: space-between; align-items: center; width: 100%;">
             <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 3px;">
@@ -1139,7 +1136,7 @@
             });
         }
 
-        /* --- 4. اصلاح باگ‌های تماس صوتی و تصویری WebRTC --- */
+        /* --- 4. تماس صوتی و تصویری WebRTC --- */
         let localStream = null;
         let peerConnection = null;
         let activeCallType = null;
@@ -1194,7 +1191,7 @@
         async function startCall(type) {
             activeCallType = type;
             const statusEl = document.getElementById(`${type}-status-text`);
-            statusEl.innerText = "در حال گرفتن دسترسی به رسانه...";
+            statusEl.innerText = "در حال برقراری تماس...";
 
             try {
                 localStream = await navigator.mediaDevices.getUserMedia({
@@ -1208,53 +1205,55 @@
                 localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
 
                 peerConnection.ontrack = (event) => {
-                    const targetEl = type === 'video' ? document.getElementById('remoteVideo') : document.getElementById('remoteAudio');
-                    if (event.streams && event.streams[0]) {
-                        targetEl.srcObject = event.streams[0];
-                        targetEl.play().catch(e => console.log(e));
-                    }
+                    const remoteMedia = type === 'video' ? document.getElementById('remoteVideo') : document.getElementById('remoteAudio');
+                    if(remoteMedia) remoteMedia.srcObject = event.streams[0];
                 };
 
                 const callRef = db.ref(`calls/${activeMainRoomCode}/${type}`);
-                peerConnection.onicecandidate = (e) => {
-                    if(e.candidate) callRef.child('callerCandidates').push(e.candidate.toJSON());
+
+                peerConnection.onicecandidate = (event) => {
+                    if(event.candidate) {
+                        callRef.child('callerCandidates').push(event.candidate.toJSON());
+                    }
                 };
 
                 const offer = await peerConnection.createOffer();
                 await peerConnection.setLocalDescription(offer);
 
-                callRef.set({
+                await callRef.set({
                     callerId: globalUserId,
                     callerName: globalUserName,
                     status: 'ringing',
                     offer: { type: offer.type, sdp: offer.sdp }
                 });
 
-                statusEl.innerText = "در حال زنگ زدن به پارتنر... ⏳";
+                statusEl.innerText = "در حال زنگ زدن به پارتنر...";
 
                 callRef.child('answer').on('value', async (snapshot) => {
                     const answer = snapshot.val();
                     if(answer && peerConnection && !peerConnection.currentRemoteDescription) {
                         await peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
-                        statusEl.innerText = "تماس برقرار شد! 🟢";
+                        statusEl.innerText = "تماس برقرار شد 🟢";
                     }
                 });
 
                 callRef.child('calleeCandidates').on('child_added', (snapshot) => {
-                    const candidate = new RTCIceCandidate(snapshot.val());
-                    if(peerConnection) peerConnection.addIceCandidate(candidate);
+                    const candidate = snapshot.val();
+                    if(candidate && peerConnection) {
+                        peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
+                    }
                 });
 
-            } catch (err) {
-                statusEl.innerText = "خطا در دسترسی به میکروفون/دوربین!";
-                console.error(err);
+            } catch(e) {
+                console.error(e);
+                statusEl.innerText = "خطا در دسترسی به دوربین یا میکروفون!";
             }
         }
 
         async function answerCall(type) {
             activeCallType = type;
             const statusEl = document.getElementById(`${type}-status-text`);
-            statusEl.innerText = "در حال اتصال تماس...";
+            statusEl.innerText = "در حال پاسخگویی...";
 
             try {
                 localStream = await navigator.mediaDevices.getUserMedia({
@@ -1268,565 +1267,819 @@
                 localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
 
                 peerConnection.ontrack = (event) => {
-                    const targetEl = type === 'video' ? document.getElementById('remoteVideo') : document.getElementById('remoteAudio');
-                    if (event.streams && event.streams[0]) {
-                        targetEl.srcObject = event.streams[0];
-                        targetEl.play().catch(e => console.log(e));
-                    }
+                    const remoteMedia = type === 'video' ? document.getElementById('remoteVideo') : document.getElementById('remoteAudio');
+                    if(remoteMedia) remoteMedia.srcObject = event.streams[0];
                 };
 
                 const callRef = db.ref(`calls/${activeMainRoomCode}/${type}`);
-                peerConnection.onicecandidate = (e) => {
-                    if(e.candidate) callRef.child('calleeCandidates').push(e.candidate.toJSON());
+
+                peerConnection.onicecandidate = (event) => {
+                    if(event.candidate) {
+                        callRef.child('calleeCandidates').push(event.candidate.toJSON());
+                    }
                 };
 
-                const snapshot = await callRef.child('offer').once('value');
-                const offer = snapshot.val();
-                await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
+                const callSnapshot = await callRef.once('value');
+                const callData = callSnapshot.val();
 
-                const answer = await peerConnection.createAnswer();
-                await peerConnection.setLocalDescription(answer);
+                if(callData && callData.offer) {
+                    await peerConnection.setRemoteDescription(new RTCSessionDescription(callData.offer));
+                    const answer = await peerConnection.createAnswer();
+                    await peerConnection.setLocalDescription(answer);
 
-                await callRef.child('answer').set({ type: answer.type, sdp: answer.sdp });
-                await callRef.update({ status: 'connected' });
+                    await callRef.update({
+                        status: 'connected',
+                        answer: { type: answer.type, sdp: answer.sdp }
+                    });
 
-                callRef.child('callerCandidates').on('child_added', (snapshot) => {
-                    const candidate = new RTCIceCandidate(snapshot.val());
-                    if(peerConnection) peerConnection.addIceCandidate(candidate);
-                });
+                    statusEl.innerText = "تماس برقرار شد 🟢";
 
-                statusEl.innerText = "تماس برقرار شد! 🟢";
-
-            } catch(err) {
-                statusEl.innerText = "خطا در پاسخ به تماس!";
-                console.error(err);
+                    callRef.child('callerCandidates').on('child_added', (snapshot) => {
+                        const candidate = snapshot.val();
+                        if(candidate && peerConnection) {
+                            peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
+                        }
+                    });
+                }
+            } catch(e) {
+                console.error(e);
+                statusEl.innerText = "خطا در اتصال تماس!";
             }
         }
 
         function toggleMuteAudio() {
-            if(localStream && localStream.getAudioTracks().length > 0) {
-                const enabled = localStream.getAudioTracks()[0].enabled;
-                localStream.getAudioTracks()[0].enabled = !enabled;
-                alert(enabled ? "میکروفون قطع شد." : "میکروفون وصل شد.");
+            if(localStream) {
+                const audioTrack = localStream.getAudioTracks()[0];
+                if(audioTrack) {
+                    audioTrack.enabled = !audioTrack.enabled;
+                    alert(audioTrack.enabled ? "میکروفون وصل شد 🎙️" : "میکروفون قطع شد 🔇");
+                }
             }
         }
 
         function toggleMuteVideo() {
-            if(localStream && localStream.getVideoTracks().length > 0) {
-                const enabled = localStream.getVideoTracks()[0].enabled;
-                localStream.getVideoTracks()[0].enabled = !enabled;
-                alert(enabled ? "دوربین خاموش شد." : "دوربین روشن شد.");
+            if(localStream) {
+                const videoTrack = localStream.getVideoTracks()[0];
+                if(videoTrack) {
+                    videoTrack.enabled = !videoTrack.enabled;
+                    alert(videoTrack.enabled ? "دوربین روشن شد 📷" : "دوربین خاموش شد 🚫");
+                }
             }
         }
 
         function endCall(type) {
-            if(peerConnection) { peerConnection.close(); peerConnection = null; }
-            if(localStream) { localStream.getTracks().forEach(t => t.stop()); localStream = null; }
-            if(activeMainRoomCode) db.ref(`calls/${activeMainRoomCode}/${type}`).remove();
-            document.getElementById(`${type}-status-text`).innerText = "تماس پایان یافت.";
+            if(peerConnection) {
+                peerConnection.close();
+                peerConnection = null;
+            }
+            if(localStream) {
+                localStream.getTracks().forEach(track => track.stop());
+                localStream = null;
+            }
+            if(activeMainRoomCode && type) {
+                db.ref(`calls/${activeMainRoomCode}/${type}`).remove();
+            }
+            const statusEl = document.getElementById(`${type}-status-text`);
+            if(statusEl) statusEl.innerText = "تماس پایان یافت.";
+            goToScreen('hub-screen');
         }
 
-        /* --- 5. بوم نقاشی آنلاین --- */
-        let isDrawing = false, lastX = 0, lastY = 0;
-        let currentTool = 'pencil', currentColor = '#ffffff', currentSize = 5;
-        const paintCanvas = document.getElementById('paintCanvas');
-        const paintCtx = paintCanvas.getContext('2d');
-
-        function initCanvasSize() {
-            const box = document.getElementById('canvas-box');
-            if(!box) return;
-            paintCanvas.width = box.clientWidth;
-            paintCanvas.height = box.clientHeight;
-            paintCtx.fillStyle = '#13131a';
-            paintCtx.fillRect(0, 0, paintCanvas.width, paintCanvas.height);
-        }
+        /* --- 5. نقاشی --- */
+        let canvas, ctx;
+        let isDrawing = false;
+        let currentTool = 'pencil';
+        let currentColor = '#ffffff';
+        let currentSize = 5;
 
         function enterPaintRoom(code) {
-            document.getElementById('paint-room-title').innerText = `اتاق: ${code}`;
-            goToScreen('paint-screen');
+            document.getElementById('paint-room-title').innerText = `اتاق نقاشی: ${code}`;
             setupPresence('paint', code);
-            initPaintListeners(code);
+            goToScreen('paint-screen');
+            initPaintEvents(code);
+        }
+
+        function initCanvasSize() {
+            canvas = document.getElementById('paintCanvas');
+            if(!canvas) return;
+            const box = document.getElementById('canvas-box');
+            canvas.width = box.clientWidth;
+            canvas.height = box.clientHeight;
+            ctx = canvas.getContext('2d');
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
         }
 
         function setTool(tool) {
             currentTool = tool;
             document.querySelectorAll('.toolbar .tool-btn').forEach(b => b.classList.remove('active'));
-            if(document.getElementById('btn-' + tool)) document.getElementById('btn-' + tool).classList.add('active');
+            if(tool === 'pencil') document.getElementById('btn-pencil').classList.add('active');
+            if(tool === 'brush') document.getElementById('btn-brush').classList.add('active');
+            if(tool === 'eraser') document.getElementById('btn-eraser').classList.add('active');
         }
 
-        function updateSize(val) { currentSize = parseInt(val); }
-        function updateColor(val) { currentColor = val; }
-
-        function drawLineOnCanvas(x0, y0, x1, y1, color, size, tool) {
-            paintCtx.beginPath();
-            paintCtx.moveTo(x0 * paintCanvas.width, y0 * paintCanvas.height);
-            paintCtx.lineTo(x1 * paintCanvas.width, y1 * paintCanvas.height);
-            paintCtx.strokeStyle = tool === 'eraser' ? '#13131a' : color;
-            paintCtx.lineWidth = tool === 'brush' ? size * 2 : size;
-            paintCtx.lineCap = 'round';
-            paintCtx.stroke();
-        }
-
-        function initPaintListeners(code) {
-            const paintRef = db.ref(`paint_rooms/${code}/draws`);
-            
-            paintCanvas.onmousedown = (e) => startDraw(e.offsetX, e.offsetY);
-            paintCanvas.onmousemove = (e) => draw(e.offsetX, e.offsetY);
-            paintCanvas.onmouseup = () => stopDraw();
-
-            paintCanvas.ontouchstart = (e) => {
-                const rect = paintCanvas.getBoundingClientRect();
-                startDraw(e.touches[0].clientX - rect.left, e.touches[0].clientY - rect.top);
-            };
-            paintCanvas.ontouchmove = (e) => {
-                const rect = paintCanvas.getBoundingClientRect();
-                draw(e.touches[0].clientX - rect.left, e.touches[0].clientY - rect.top);
-            };
-            paintCanvas.ontouchend = () => stopDraw();
-
-            function startDraw(x, y) {
-                isDrawing = true;
-                lastX = x / paintCanvas.width;
-                lastY = y / paintCanvas.height;
-            }
-
-            function draw(x, y) {
-                if(!isDrawing) return;
-                const currX = x / paintCanvas.width;
-                const currY = y / paintCanvas.height;
-                paintRef.push({ x0: lastX, y0: lastY, x1: currX, y1: currY, color: currentColor, size: currentSize, tool: currentTool });
-                lastX = currX;
-                lastY = currY;
-            }
-
-            function stopDraw() { isDrawing = false; }
-
-            paintRef.on('child_added', (snapshot) => {
-                const d = snapshot.val();
-                drawLineOnCanvas(d.x0, d.y0, d.x1, d.y1, d.color, d.size, d.tool);
-            });
-
-            db.ref(`paint_rooms/${code}/clear`).on('value', (s) => {
-                if(s.exists()) initCanvasSize();
-            });
-        }
+        function updateSize(size) { currentSize = parseInt(size); }
+        function updateColor(color) { currentColor = color; }
 
         function clearCanvas() {
-            if(activeMainRoomCode) {
-                db.ref(`paint_rooms/${activeMainRoomCode}/clear`).set(Date.now());
-                db.ref(`paint_rooms/${activeMainRoomCode}/draws`).remove();
-            }
+            if(!canvas || !ctx) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            if(activeMainRoomCode) db.ref(`paint_rooms/${activeMainRoomCode}/lines`).remove();
         }
 
-        /* --- 6. چت روم --- */
+        function initPaintEvents(code) {
+            initCanvasSize();
+            if(!canvas) return;
+
+            let prevPos = null;
+
+            function getPos(e) {
+                const rect = canvas.getBoundingClientRect();
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                return {
+                    x: (clientX - rect.left) / canvas.width,
+                    y: (clientY - rect.top) / canvas.height
+                };
+            }
+
+            function startDraw(e) {
+                isDrawing = true;
+                prevPos = getPos(e);
+            }
+
+            function draw(e) {
+                if(!isDrawing || !prevPos) return;
+                const currentPos = getPos(e);
+                const lineData = {
+                    p1: prevPos,
+                    p2: currentPos,
+                    color: currentTool === 'eraser' ? '#13131a' : currentColor,
+                    size: currentTool === 'brush' ? currentSize * 2 : currentSize
+                };
+                db.ref(`paint_rooms/${code}/lines`).push(lineData);
+                prevPos = currentPos;
+            }
+
+            function stopDraw() { isDrawing = false; prevPos = null; }
+
+            canvas.onmousedown = startDraw;
+            canvas.onmousemove = draw;
+            canvas.onmouseup = stopDraw;
+            canvas.ontouchstart = (e) => { e.preventDefault(); startDraw(e); };
+            canvas.ontouchmove = (e) => { e.preventDefault(); draw(e); };
+            canvas.ontouchend = stopDraw;
+
+            db.ref(`paint_rooms/${code}/lines`).on('child_added', (snapshot) => {
+                const line = snapshot.val();
+                if(line && ctx) drawLineLocal(line);
+            });
+
+            db.ref(`paint_rooms/${code}/lines`).on('value', (snapshot) => {
+                if(!snapshot.exists() && ctx && canvas) {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                }
+            });
+        }
+
+        function drawLineLocal(line) {
+            if(!ctx || !canvas) return;
+            ctx.beginPath();
+            ctx.strokeStyle = line.color;
+            ctx.lineWidth = line.size;
+            ctx.moveTo(line.p1.x * canvas.width, line.p1.y * canvas.height);
+            ctx.lineTo(line.p2.x * canvas.width, line.p2.y * canvas.height);
+            ctx.stroke();
+            ctx.closePath();
+        }
+
+        /* --- 6. چت تلگرامی --- */
         function enterChatRoom(code) {
             document.getElementById('chat-room-title').innerText = `چت: ${code}`;
-            goToScreen('chat-screen');
             setupPresence('chat', code);
-            
-            const msgBox = document.getElementById('chat-messages-box');
-            msgBox.innerHTML = '';
+            goToScreen('chat-screen');
+            listenChatMessages(code);
+        }
 
-            db.ref(`chat_rooms/${code}/messages`).on('child_added', (s) => {
-                const m = s.val();
-                const isMine = m.senderId === globalUserId;
-                const time = new Date(m.timestamp).toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' });
-                
-                const div = document.createElement('div');
-                div.className = `message ${isMine ? 'mine' : 'theirs'}`;
-                div.innerHTML = `
-                    <span class="msg-sender">${m.senderName}</span>
-                    ${m.text}
-                    <span class="msg-time">${time}</span>
-                `;
-                msgBox.appendChild(div);
-                msgBox.scrollTop = msgBox.scrollHeight;
+        function listenChatMessages(code) {
+            const box = document.getElementById('chat-messages-box');
+            db.ref(`chat_rooms/${code}/messages`).on('value', (snapshot) => {
+                box.innerHTML = '';
+                if(!snapshot.exists()) return;
+                snapshot.forEach(child => {
+                    const msg = child.val();
+                    const isMine = msg.senderUid === globalUserId;
+                    const msgDiv = document.createElement('div');
+                    msgDiv.className = `message ${isMine ? 'mine' : 'theirs'}`;
+                    const timeStr = new Date(msg.timestamp).toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' });
+                    msgDiv.innerHTML = `
+                        ${!isMine ? `<span class="msg-sender">${msg.senderName}</span>` : ''}
+                        <div>${msg.text}</div>
+                        <span class="msg-time">${timeStr}</span>
+                    `;
+                    box.appendChild(msgDiv);
+                });
+                box.scrollTop = box.scrollHeight;
             });
         }
 
         function sendChatMessage() {
             const input = document.getElementById('chat-input-msg');
-            const txt = input.value.trim();
-            if(!txt || !activeMainRoomCode) return;
+            const text = input.value.trim();
+            if(!text || !activeMainRoomCode) return;
 
             db.ref(`chat_rooms/${activeMainRoomCode}/messages`).push({
-                senderId: globalUserId,
+                senderUid: globalUserId,
                 senderName: globalUserName,
-                text: txt,
+                text: text,
                 timestamp: Date.now()
             });
             input.value = '';
         }
 
         function handleChatKeyPress(e) { if(e.key === 'Enter') sendChatMessage(); }
-        function addEmoji(e) { document.getElementById('chat-input-msg').value += e; }
+        function addEmoji(emoji) { document.getElementById('chat-input-msg').value += emoji; }
 
-        /* --- 7. اصلاح کامل بازی دوز (انتخاب نقش X و O) --- */
+        /* --- 7. دوز --- */
         let mySymbol = null;
+        let boardState = Array(9).fill(null);
+
         function enterGameRoom(code) {
             document.getElementById('game-room-title').innerText = `دوز: ${code}`;
-            goToScreen('game-screen');
             setupPresence('tic', code);
-            initTicTacToe(code);
+            goToScreen('game-screen');
+            listenGameRoom(code);
         }
 
-        function chooseSymbol(symbol) {
-            mySymbol = symbol;
-            alert(`شما نماد ${symbol} را انتخاب کردید!`);
-            document.getElementById('game-status-text').innerText = `شما با نماد (${symbol}) بازی می‌کنید.`;
+        function chooseSymbol(sym) {
+            mySymbol = sym;
+            document.getElementById('game-status-text').innerText = `شما نماد ${sym} را انتخاب کردید.`;
         }
 
-        function initTicTacToe(code) {
-            const gameRef = db.ref(`tic_rooms/${code}`);
-            gameRef.on('value', (s) => {
-                const data = s.val() || { board: Array(9).fill(''), turn: 'X' };
-                renderTicBoard(data.board);
-                
-                if(data.winner) {
-                    document.getElementById('game-status-text').innerText = data.winner === 'draw' ? "بازی مساوی شد!" : `برنده: ${data.winner} 🎉`;
-                    document.getElementById('reset-game-btn').style.display = 'block';
+        function listenGameRoom(code) {
+            db.ref(`tic_rooms/${code}`).on('value', (snapshot) => {
+                const game = snapshot.val() || {};
+                boardState = game.board || Array(9).fill(null);
+                renderBoard();
+
+                const statusEl = document.getElementById('game-status-text');
+                const resetBtn = document.getElementById('reset-game-btn');
+
+                if(game.winner) {
+                    statusEl.innerText = game.winner === 'draw' ? 'بازی مساوی شد! 🤝' : `برنده: ${game.winner} 🎉`;
+                    resetBtn.style.display = 'block';
+                } else if(game.turn) {
+                    statusEl.innerText = `نوبت بازیکن: ${game.turn}`;
+                    resetBtn.style.display = 'none';
                 } else {
-                    document.getElementById('game-status-text').innerText = `نوبت نماد: ${data.turn}` + (mySymbol ? ` (شما: ${mySymbol})` : '');
-                    document.getElementById('reset-game-btn').style.display = 'none';
+                    statusEl.innerText = 'نماد خود را انتخاب کرده و اولین حرکت را بزنید!';
+                    resetBtn.style.display = 'none';
                 }
             });
         }
 
-        function renderTicBoard(board) {
-            document.querySelectorAll('.tic-cell').forEach((cell, idx) => {
-                cell.innerText = board[idx] || '';
-                cell.className = `tic-cell ${board[idx] ? board[idx].toLowerCase() : ''}`;
+        function renderBoard() {
+            const cells = document.querySelectorAll('.tic-cell');
+            cells.forEach((cell, idx) => {
+                const val = boardState[idx];
+                cell.innerText = val || '';
+                cell.className = 'tic-cell' + (val ? ` ${val.toLowerCase()}` : '');
             });
         }
 
-        function makeMove(index) {
-            if(!mySymbol) { alert("لطفاً ابتدا نماد خود (X یا O) را انتخاب کنید!"); return; }
-            
-            const gameRef = db.ref(`tic_rooms/${activeMainRoomCode}`);
-            gameRef.once('value', (s) => {
-                const data = s.val() || { board: Array(9).fill(''), turn: 'X' };
-                if(data.winner || data.board[index] !== '' || data.turn !== mySymbol) return;
+        function makeMove(idx) {
+            if(!mySymbol) { alert('لطفاً ابتدا نماد X یا O را انتخاب کنید!'); return; }
+            if(boardState[idx]) return;
 
-                data.board[index] = mySymbol;
-                const win = checkTicWin(data.board);
-                data.turn = mySymbol === 'X' ? 'O' : 'X';
-                
-                if(win) data.winner = win;
-                else if(!data.board.includes('')) data.winner = 'draw';
+            db.ref(`tic_rooms/${activeMainRoomCode}`).once('value', (snapshot) => {
+                const game = snapshot.val() || {};
+                const currentTurn = game.turn || 'X';
 
-                gameRef.set(data);
+                if(mySymbol !== currentTurn && game.turn) {
+                    alert('نوبت شما نیست!');
+                    return;
+                }
+
+                boardState[idx] = mySymbol;
+                const winner = checkTicWinner(boardState);
+                const nextTurn = mySymbol === 'X' ? 'O' : 'X';
+
+                db.ref(`tic_rooms/${activeMainRoomCode}`).set({
+                    board: boardState,
+                    turn: winner ? null : nextTurn,
+                    winner: winner || null
+                });
             });
         }
 
-        function checkTicWin(b) {
-            const wins = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
-            for(let w of wins) {
-                if(b[w[0]] && b[w[0]] === b[w[1]] && b[w[0]] === b[w[2]]) return b[w[0]];
+        function checkTicWinner(b) {
+            const lines = [
+                [0,1,2], [3,4,5], [6,7,8],
+                [0,3,6], [1,4,7], [2,5,8],
+                [0,4,8], [2,4,6]
+            ];
+            for(let l of lines) {
+                if(b[l[0]] && b[l[0]] === b[l[1]] && b[l[0]] === b[l[2]]) return b[l[0]];
             }
-            return null;
+            return b.includes(null) ? null : 'draw';
         }
 
         function resetGame() {
-            db.ref(`tic_rooms/${activeMainRoomCode}`).set({ board: Array(9).fill(''), turn: 'X' });
+            if(activeMainRoomCode) {
+                db.ref(`tic_rooms/${activeMainRoomCode}`).remove();
+            }
         }
 
-        /* --- 8. بازی جدید پاسور / حکم شیشه‌ای --- */
-        let myPasorHand = [];
+        /* --- 8. پاسور حکم --- */
+        let myHandCards = [];
+
         function enterPasorRoom(code) {
-            goToScreen('pasor-screen');
             setupPresence('pasor', code);
-            initPasorGame();
+            goToScreen('pasor-screen');
+            listenPasorRoom(code);
         }
 
         function initPasorGame() {
-            const suits = ['♠️', '♥️', '♦️', '♣️'];
+            if(!activeMainRoomCode) return;
+            const suits = ['♠', '♥', '♦', '♣'];
             const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
             let deck = [];
-            suits.forEach(s => ranks.forEach(r => deck.push({ rank: r, suit: s, red: (s==='♥️'||s==='♦️') })));
-            
-            // برزدن
+            suits.forEach(s => ranks.forEach(r => deck.push({ rank: r, suit: s })));
             deck.sort(() => Math.random() - 0.5);
 
-            // ۱۳ کارت برای دست بازیکن
-            myPasorHand = deck.slice(0, 13);
-            renderPasorHand();
+            const player1Hand = deck.slice(0, 13);
+            const player2Hand = deck.slice(13, 26);
 
-            db.ref(`pasor_rooms/${activeMainRoomCode}`).on('value', (s) => {
-                const data = s.val() || { turn: 'پارتنر ۱', played: [], score1: 0, score2: 0 };
-                document.getElementById('pasor-turn-txt').innerText = `نوبت بازی: ${data.turn}`;
-                document.getElementById('pasor-my-score').innerText = data.score1 || 0;
-                document.getElementById('pasor-partner-score').innerText = data.score2 || 0;
-                
-                const table = document.getElementById('pasor-played-table');
-                table.innerHTML = '';
-                (data.played || []).forEach(c => {
-                    const cardDiv = document.createElement('div');
-                    cardDiv.className = `glass-card ${c.red ? 'red' : 'black'}`;
-                    cardDiv.innerText = `${c.rank}\n${c.suit}`;
-                    table.appendChild(cardDiv);
-                });
+            db.ref(`pasor_rooms/${activeMainRoomCode}`).set({
+                player1: globalUserId,
+                player1Hand: player1Hand,
+                player2Hand: player2Hand,
+                playedCards: [],
+                turn: globalUserId,
+                score1: 0,
+                score2: 0
+            });
+        }
 
-                if((data.score1 >= 7 || data.score2 >= 7)) {
-                    alert(`بازی تمام شد! برنده: ${data.score1 >= 7 ? 'شما 🎉' : 'حریف 🔴'}`);
+        function listenPasorRoom(code) {
+            db.ref(`pasor_rooms/${code}`).on('value', (snapshot) => {
+                const data = snapshot.val();
+                if(!data) {
+                    document.getElementById('pasor-top-row').innerHTML = '';
+                    document.getElementById('pasor-bottom-row').innerHTML = '';
+                    document.getElementById('pasor-played-table').innerHTML = '<span style="font-size: 11px; color: rgba(255,255,255,0.4);">کارت‌های زمین...</span>';
+                    document.getElementById('pasor-turn-txt').innerText = 'دکمه شروع دست جدید را بزنید!';
+                    return;
                 }
+
+                const isP1 = data.player1 === globalUserId;
+                myHandCards = isP1 ? (data.player1Hand || []) : (data.player2Hand || []);
+
+                renderPasorHand(myHandCards);
+                renderPlayedCards(data.playedCards || []);
+
+                document.getElementById('pasor-my-score').innerText = isP1 ? data.score1 || 0 : data.score2 || 0;
+                document.getElementById('pasor-partner-score').innerText = isP1 ? data.score2 || 0 : data.score1 || 0;
+                document.getElementById('pasor-turn-txt').innerText = data.turn === globalUserId ? 'نوبت شماست! 🎴' : 'نوبت پارتنر شماست...';
             });
         }
 
-        function renderPasorHand() {
+        function renderPasorHand(cards) {
             const topRow = document.getElementById('pasor-top-row');
-            const bottomRow = document.getElementById('pasor-bottom-row');
+            const btmRow = document.getElementById('pasor-bottom-row');
             topRow.innerHTML = '';
-            bottomRow.innerHTML = '';
+            btmRow.innerHTML = '';
 
-            myPasorHand.forEach((c, idx) => {
-                const cardDiv = document.createElement('div');
-                cardDiv.className = `glass-card ${c.red ? 'red' : 'black'}`;
-                cardDiv.innerText = `${c.rank}\n${c.suit}`;
-                cardDiv.onclick = () => playPasorCard(idx);
+            cards.forEach((card, i) => {
+                const cDiv = document.createElement('div');
+                const isRed = card.suit === '♥' || card.suit === '♦';
+                cDiv.className = `glass-card ${isRed ? 'red' : 'black'}`;
+                cDiv.innerHTML = `<span>${card.rank}</span><span>${card.suit}</span>`;
+                cDiv.onclick = () => playPasorCard(i, card);
 
-                if(idx < 7) topRow.appendChild(cardDiv);
-                else bottomRow.appendChild(cardDiv);
+                if(i < 7) topRow.appendChild(cDiv);
+                else btmRow.appendChild(cDiv);
             });
         }
 
-        function playPasorCard(index) {
-            const card = myPasorHand[index];
-            if(!card) return;
+        function renderPlayedCards(cards) {
+            const table = document.getElementById('pasor-played-table');
+            table.innerHTML = '';
+            if(cards.length === 0) {
+                table.innerHTML = '<span style="font-size: 11px; color: rgba(255,255,255,0.4);">کارت‌های زمین...</span>';
+                return;
+            }
+            cards.forEach(card => {
+                const cDiv = document.createElement('div');
+                const isRed = card.suit === '♥' || card.suit === '♦';
+                cDiv.className = `glass-card ${isRed ? 'red' : 'black'}`;
+                cDiv.innerHTML = `<span>${card.rank}</span><span>${card.suit}</span>`;
+                table.appendChild(cDiv);
+            });
+        }
 
-            myPasorHand.splice(index, 1);
-            renderPasorHand();
+        function playPasorCard(cardIdx, card) {
+            if(!activeMainRoomCode) return;
 
-            const pRef = db.ref(`pasor_rooms/${activeMainRoomCode}`);
-            pRef.once('value', (s) => {
-                const data = s.val() || { played: [], score1: 0, score2: 0 };
-                let played = data.played || [];
-                played.push(card);
+            db.ref(`pasor_rooms/${activeMainRoomCode}`).once('value', (snapshot) => {
+                const data = snapshot.val();
+                if(!data) return;
+                if(data.turn !== globalUserId) { alert('نوبت شما نیست!'); return; }
 
-                let score1 = data.score1 || 0;
-                let score2 = data.score2 || 0;
+                const isP1 = data.player1 === globalUserId;
+                let currentHand = isP1 ? (data.player1Hand || []) : (data.player2Hand || []);
+                currentHand.splice(cardIdx, 1);
+
+                let played = data.playedCards || [];
+                played.push({ ...card, player: globalUserId });
+
+                let updates = {};
+                if(isP1) updates.player1Hand = currentHand;
+                else updates.player2Hand = currentHand;
 
                 if(played.length >= 2) {
-                    score1 += 1; // دادن امتیاز
-                    played = [];
+                    updates.playedCards = [];
+                    updates.score1 = (data.score1 || 0) + (isP1 ? 1 : 0);
+                    updates.score2 = (data.score2 || 0) + (!isP1 ? 1 : 0);
+                } else {
+                    updates.playedCards = played;
                 }
 
-                pRef.set({
-                    turn: globalUserName,
-                    played: played,
-                    score1: score1,
-                    score2: score2
-                });
+                db.ref(`pasor_rooms/${activeMainRoomCode}`).update(updates);
             });
         }
 
-        /* --- 9. کارگاه ساخت ایموجی --- */
+        /* --- 9. کارگاه ایموجی --- */
+        const emojiList = ['😀','😍','😎','🥳','😡','😭','👑','🎩','🕶️','❤️','🔥','⭐','🎉','🎈','🐱','🐶','🍕','💎'];
+
         function enterEmojiRoom(code) {
             document.getElementById('emoji-room-title').innerText = `کارگاه: ${code}`;
-            goToScreen('emoji-maker-screen');
             setupPresence('emoji', code);
-            initEmojiCanvasSync(code);
+            goToScreen('emoji-maker-screen');
+            listenEmojiCanvas(code);
         }
 
         function populateEmojiTray() {
-            const emojis = ['😀','😂','😍','😎','😡','💩','👻','🎉','❤️','👑','🔥','🦄','🍕','⭐'];
             const container = document.getElementById('emoji-tray-container');
-            container.innerHTML = '<div class="emoji-tray">' + emojis.map(e => `<span class="tray-item" onclick="addEmojiToCanvas('${e}')">${e}</span>`).join('') + '</div>';
+            if(!container) return;
+            container.innerHTML = '';
+            const tray = document.createElement('div');
+            tray.className = 'emoji-tray';
+            emojiList.forEach(emoji => {
+                const item = document.createElement('span');
+                item.className = 'tray-item';
+                item.innerText = emoji;
+                item.onclick = () => addEmojiToCanvas(emoji);
+                tray.appendChild(item);
+            });
+            container.appendChild(tray);
         }
 
-        function addEmojiToCanvas(emojiStr) {
+        function addEmojiToCanvas(emoji) {
             if(!activeMainRoomCode) return;
-            db.ref(`emoji_rooms/${activeMainRoomCode}/items`).push({
-                emoji: emojiStr, x: 100, y: 100, id: Date.now()
+            const emojiData = {
+                symbol: emoji,
+                x: 50,
+                y: 50,
+                id: 'emoji_' + Date.now()
+            };
+            db.ref(`emoji_rooms/${activeMainRoomCode}/elements`).push(emojiData);
+        }
+
+        function listenEmojiCanvas(code) {
+            const box = document.getElementById('emoji-canvas-box');
+            db.ref(`emoji_rooms/${code}/elements`).on('value', (snapshot) => {
+                box.innerHTML = '<span style="position: absolute; top: 10px; left: 50%; transform: translateX(-50%); color: rgba(255,255,255,0.4); font-size: 11px; pointer-events: none;">کشیدن با انگشت=جابجایی | دو بار کلیک=حذف</span>';
+                if(!snapshot.exists()) return;
+
+                snapshot.forEach(child => {
+                    const elData = child.val();
+                    const key = child.key;
+
+                    const span = document.createElement('span');
+                    span.className = 'placed-emoji';
+                    span.innerText = elData.symbol;
+                    span.style.left = `${elData.x}%`;
+                    span.style.top = `${elData.y}%`;
+
+                    makeDraggableEmoji(span, key, code);
+                    box.appendChild(span);
+                });
             });
         }
 
-        function initEmojiCanvasSync(code) {
-            const box = document.getElementById('emoji-canvas-box');
-            box.querySelectorAll('.placed-emoji').forEach(e => e.remove());
+        function makeDraggableEmoji(el, key, roomCode) {
+            let isDragging = false;
 
-            db.ref(`emoji_rooms/${code}/items`).on('child_added', (s) => {
-                const item = s.val();
-                const key = s.key;
-                
-                const span = document.createElement('span');
-                span.className = 'placed-emoji';
-                span.innerText = item.emoji;
-                span.style.left = item.x + 'px';
-                span.style.top = item.y + 'px';
-                span.id = 'emoji-' + key;
+            function startDrag(e) {
+                isDragging = true;
+            }
 
-                let isDrag = false, offsetLeft = 0, offsetTop = 0;
+            function doDrag(e) {
+                if(!isDragging) return;
+                const box = document.getElementById('emoji-canvas-box');
+                const rect = box.getBoundingClientRect();
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
 
-                span.onmousedown = (e) => {
-                    isDrag = true;
-                    offsetLeft = e.clientX - span.offsetLeft;
-                    offsetTop = e.clientY - span.offsetTop;
-                };
+                let newX = ((clientX - rect.left) / rect.width) * 100;
+                let newY = ((clientY - rect.top) / rect.height) * 100;
 
-                window.onmousemove = (e) => {
-                    if(!isDrag) return;
-                    let newX = e.clientX - offsetLeft;
-                    let newY = e.clientY - offsetTop;
-                    span.style.left = newX + 'px';
-                    span.style.top = newY + 'px';
-                    db.ref(`emoji_rooms/${code}/items/${key}`).update({ x: newX, y: newY });
-                };
+                el.style.left = `${newX}%`;
+                el.style.top = `${newY}%`;
+            }
 
-                window.onmouseup = () => isDrag = false;
+            function stopDrag() {
+                if(isDragging) {
+                    isDragging = false;
+                    const newX = parseFloat(el.style.left);
+                    const newY = parseFloat(el.style.top);
+                    db.ref(`emoji_rooms/${roomCode}/elements/${key}`).update({ x: newX, y: newY });
+                }
+            }
 
-                span.ondblclick = () => db.ref(`emoji_rooms/${code}/items/${key}`).remove();
+            el.onmousedown = startDrag;
+            window.onmousemove = doDrag;
+            window.onmouseup = stopDrag;
 
-                box.appendChild(span);
-            });
+            el.ontouchstart = (e) => { startDrag(e); };
+            window.ontouchmove = (e) => { doDrag(e); };
+            window.ontouchend = stopDrag;
 
-            db.ref(`emoji_rooms/${code}/items`).on('child_changed', (s) => {
-                const item = s.val();
-                const el = document.getElementById('emoji-' + s.key);
-                if(el) { el.style.left = item.x + 'px'; el.style.top = item.y + 'px'; }
-            });
-
-            db.ref(`emoji_rooms/${code}/items`).on('child_removed', (s) => {
-                const el = document.getElementById('emoji-' + s.key);
-                if(el) el.remove();
-            });
+            el.ondblclick = () => {
+                db.ref(`emoji_rooms/${roomCode}/elements/${key}`).remove();
+            };
         }
 
         function clearEmojiCanvas() {
-            if(activeMainRoomCode) db.ref(`emoji_rooms/${activeMainRoomCode}/items`).remove();
+            if(activeMainRoomCode) {
+                db.ref(`emoji_rooms/${activeMainRoomCode}/elements`).remove();
+            }
         }
 
-        /* --- 10. سینما همزمان --- */
+        /* --- 10. سینما --- */
         function enterMovieRoom(code) {
             document.getElementById('movie-room-title').innerText = `سینما: ${code}`;
-            goToScreen('movie-screen');
             setupPresence('movie', code);
-            initMovieSync(code);
-        }
-
-        function initMovieSync(code) {
-            const vid = document.getElementById('sync-video');
-            const mRef = db.ref(`movie_rooms/${code}`);
-
-            mRef.child('url').on('value', (s) => {
-                if(s.exists() && vid.src !== s.val()) vid.src = s.val();
-            });
-
-            vid.onplay = () => mRef.child('state').set({ playing: true, time: vid.currentTime });
-            vid.onpause = () => mRef.child('state').set({ playing: false, time: vid.currentTime });
-
-            mRef.child('state').on('value', (s) => {
-                const st = s.val();
-                if(!st) return;
-                if(Math.abs(vid.currentTime - st.time) > 1.5) vid.currentTime = st.time;
-                if(st.playing && vid.paused) vid.play().catch(e=>e);
-                else if(!st.playing && !vid.paused) vid.pause();
-            });
+            goToScreen('movie-screen');
+            listenMovieSync(code);
+            listenMovieChat(code);
         }
 
         function changeMovieUrl() {
             const url = document.getElementById('movie-url-input').value.trim();
-            if(url && activeMainRoomCode) db.ref(`movie_rooms/${activeMainRoomCode}/url`).set(url);
+            if(!url || !activeMainRoomCode) return;
+            db.ref(`movie_rooms/${activeMainRoomCode}/video`).set({
+                url: url,
+                currentTime: 0,
+                isPlaying: false,
+                updatedBy: globalUserName
+            });
         }
 
-        function toggleVideoFullscreen() {
-            const v = document.getElementById('sync-video');
-            if(v.requestFullscreen) v.requestFullscreen();
+        function listenMovieSync(code) {
+            const video = document.getElementById('sync-video');
+
+            db.ref(`movie_rooms/${code}/video`).on('value', (snapshot) => {
+                const vData = snapshot.val();
+                if(!vData || !video) return;
+
+                if(video.src !== vData.url) {
+                    video.src = vData.url;
+                    document.getElementById('movie-url-input').value = vData.url;
+                }
+
+                if(Math.abs(video.currentTime - vData.currentTime) > 1.5) {
+                    video.currentTime = vData.currentTime;
+                }
+
+                if(vData.isPlaying && video.paused) {
+                    video.play().catch(() => {});
+                } else if(!vData.isPlaying && !video.paused) {
+                    video.pause();
+                }
+            });
+
+            video.onplay = () => {
+                if(!activeMainRoomCode) return;
+                db.ref(`movie_rooms/${activeMainRoomCode}/video`).update({ isPlaying: true, currentTime: video.currentTime });
+            };
+
+            video.onpause = () => {
+                if(!activeMainRoomCode) return;
+                db.ref(`movie_rooms/${activeMainRoomCode}/video`).update({ isPlaying: false, currentTime: video.currentTime });
+            };
+
+            video.onseeked = () => {
+                if(!activeMainRoomCode) return;
+                db.ref(`movie_rooms/${activeMainRoomCode}/video`).update({ currentTime: video.currentTime });
+            };
+        }
+
+        function listenMovieChat(code) {
+            const box = document.getElementById('movie-chat-messages-box');
+            const floatBox = document.getElementById('floating-chat-messages-box');
+
+            db.ref(`movie_rooms/${code}/chat`).on('value', (snapshot) => {
+                if(!box) return;
+                box.innerHTML = '';
+                if(floatBox) floatBox.innerHTML = '';
+
+                if(!snapshot.exists()) return;
+
+                snapshot.forEach(child => {
+                    const msg = child.val();
+                    const isMine = msg.senderUid === globalUserId;
+                    const div = document.createElement('div');
+                    div.className = `message ${isMine ? 'mine' : 'theirs'}`;
+                    div.innerHTML = `<span class="msg-sender">${msg.senderName}</span><div>${msg.text}</div>`;
+
+                    box.appendChild(div);
+                    if(floatBox) floatBox.appendChild(div.cloneNode(true));
+                });
+
+                box.scrollTop = box.scrollHeight;
+                if(floatBox) floatBox.scrollTop = floatBox.scrollHeight;
+            });
+        }
+
+        function sendMovieChatMessage() {
+            const input = document.getElementById('movie-chat-input');
+            const text = input.value.trim();
+            if(!text || !activeMainRoomCode) return;
+
+            db.ref(`movie_rooms/${activeMainRoomCode}/chat`).push({
+                senderUid: globalUserId,
+                senderName: globalUserName,
+                text: text,
+                timestamp: Date.now()
+            });
+            input.value = '';
+        }
+
+        function sendFloatingChatMessage() {
+            const input = document.getElementById('floating-chat-input');
+            const text = input.value.trim();
+            if(!text || !activeMainRoomCode) return;
+
+            db.ref(`movie_rooms/${activeMainRoomCode}/chat`).push({
+                senderUid: globalUserId,
+                senderName: globalUserName,
+                text: text,
+                timestamp: Date.now()
+            });
+            input.value = '';
         }
 
         function handleMovieChatKeyPress(e) { if(e.key === 'Enter') sendMovieChatMessage(); }
-        function sendMovieChatMessage() {
-            const input = document.getElementById('movie-chat-input');
-            const txt = input.value.trim();
-            if(txt && activeMainRoomCode) {
-                db.ref(`chat_rooms/${activeMainRoomCode}/messages`).push({
-                    senderId: globalUserId, senderName: globalUserName, text: "🎬 " + txt, timestamp: Date.now()
-                });
-                input.value = '';
+        function handleFloatingChatKeyPress(e) { if(e.key === 'Enter') sendFloatingChatMessage(); }
+
+        function toggleVideoFullscreen() {
+            const box = document.getElementById('video-container-box');
+            if(!document.fullscreenElement) {
+                box.requestFullscreen().then(() => toggleFloatingChat(true)).catch(e => console.error(e));
+            } else {
+                document.exitFullscreen().then(() => toggleFloatingChat(false));
             }
         }
 
-        /* --- 11. ثبت لحظات (عکاسی) --- */
-        let cameraStream = null;
-        function enterMomentRoom(code) {
-            document.getElementById('moment-room-title').innerText = `لحظات: ${code}`;
-            goToScreen('moment-screen');
-            setupPresence('moment', code);
-            startCameraStream();
-            initMomentsGallery(code);
+        function toggleFloatingChat(show) {
+            const floatChat = document.getElementById('floating-movie-chat');
+            if(floatChat) floatChat.classList.toggle('active', show);
         }
 
-        async function startCameraStream() {
+        /* --- 11. لحظات --- */
+        let cameraStream = null;
+
+        function enterMomentRoom(code) {
+            document.getElementById('moment-room-title').innerText = `لحظات: ${code}`;
+            setupPresence('moment', code);
+            goToScreen('moment-screen');
+            startCamera();
+            listenMomentsGallery(code);
+        }
+
+        async function startCamera() {
             try {
-                cameraStream = await navigator.mediaDevices.getUserMedia({ video: true });
-                document.getElementById('camera-video').srcObject = cameraStream;
-            } catch(e) { console.log(e); }
+                cameraStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
+                const video = document.getElementById('camera-video');
+                if(video) video.srcObject = cameraStream;
+            } catch(e) {
+                console.error(e);
+                alert('امکان دسترسی به دوربین وجود ندارد!');
+            }
         }
 
         function stopCameraStream() {
-            if(cameraStream) { cameraStream.getTracks().forEach(t => t.stop()); cameraStream = null; }
+            if(cameraStream) {
+                cameraStream.getTracks().forEach(t => t.stop());
+                cameraStream = null;
+            }
         }
 
         function captureAndSendPhoto() {
-            const vid = document.getElementById('camera-video');
-            const can = document.getElementById('camera-canvas');
-            can.width = vid.videoWidth || 320;
-            can.height = vid.videoHeight || 240;
-            can.getContext('2d').drawImage(vid, 0, 0);
-            
-            const imgData = can.toDataURL('image/jpeg', 0.5);
-            if(activeMainRoomCode) {
-                db.ref(`moment_rooms/${activeMainRoomCode}/photos`).push({
-                    senderName: globalUserName, img: imgData, timestamp: Date.now()
-                });
-                alert("عکس برای آلبوم مشترک ارسال شد! 📸");
-            }
+            const video = document.getElementById('camera-video');
+            const canvas = document.getElementById('camera-canvas');
+            if(!video || !canvas || !activeMainRoomCode) return;
+
+            canvas.width = video.videoWidth || 320;
+            canvas.height = video.videoHeight || 240;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.6);
+
+            db.ref(`moment_rooms/${activeMainRoomCode}/photos`).push({
+                senderName: globalUserName,
+                photoUrl: dataUrl,
+                timestamp: Date.now()
+            });
+
+            alert('عکس خاطره‌انگیز شما ثبت و ارسال شد! 📸');
         }
 
-        function initMomentsGallery(code) {
+        function listenMomentsGallery(code) {
             const box = document.getElementById('moments-gallery-box');
-            box.innerHTML = '';
-            db.ref(`moment_rooms/${code}/photos`).on('child_added', (s) => {
-                const item = s.val();
-                const img = document.createElement('img');
-                img.className = 'moment-thumb';
-                img.src = item.img;
-                img.onclick = () => window.open(item.img, '_blank');
-                box.prepend(img);
+            db.ref(`moment_rooms/${code}/photos`).on('value', (snapshot) => {
+                box.innerHTML = '';
+                if(!snapshot.exists()) {
+                    box.innerHTML = '<span style="font-size: 11px; color: rgba(255,255,255,0.4); align-self: center;">هنوز عکسی ثبت نشده...</span>';
+                    return;
+                }
+
+                snapshot.forEach(child => {
+                    const item = child.val();
+                    const img = document.createElement('img');
+                    img.src = item.photoUrl;
+                    img.className = 'moment-thumb';
+                    img.title = `عکس توسط ${item.senderName}`;
+                    img.onclick = () => window.open(item.photoUrl, '_blank');
+                    box.appendChild(img);
+                });
             });
         }
 
-        /* --- 12. اتاق غر و قور --- */
+        /* --- 12. غر و قور --- */
         function enterGhorRoomDirect(code) {
             document.getElementById('ghor-room-title').innerText = `اتاق غر و قور: ${code}`;
-            goToScreen('ghor-screen');
             setupPresence('ghor', code);
-            initGhorRoom(code);
-        }
-
-        function initGhorRoom(code) {
-            const hist = document.getElementById('ghor-history-box');
-            hist.innerHTML = '';
-            db.ref(`ghor_rooms/${code}/logs`).on('child_added', (s) => {
-                const l = s.val();
-                const div = document.createElement('div');
-                div.style.marginBottom = '6px';
-                div.innerText = `${l.name} [${l.status==='angry'?'🤬 عصبانی':'😊 خوشحال'}]: ${l.reason}`;
-                hist.prepend(div);
-            });
+            goToScreen('ghor-screen');
+            listenGhorHistory(code);
         }
 
         function submitGhorStatus() {
-            const st = document.getElementById('ghor-status-select').value;
-            const re = document.getElementById('ghor-reason-input').value.trim();
-            if(!re) return;
-
-            if(activeMainRoomCode) {
-                db.ref(`ghor_rooms/${activeMainRoomCode}/logs`).push({
-                    name: globalUserName, status: st, reason: re, timestamp: Date.now()
-                });
-                alert("وضعیت و غر شما ثبت شد 🚀");
-                document.getElementById('ghor-reason-input').value = '';
+            const status = document.getElementById('ghor-status-select').value;
+            const reason = document.getElementById('ghor-reason-input').value.trim();
+            if(!reason || !activeMainRoomCode) {
+                alert('لطفاً دلیل وضعیت خود را بنویسید!');
+                return;
             }
+
+            db.ref(`ghor_rooms/${activeMainRoomCode}/history`).push({
+                senderName: globalUserName,
+                status: status,
+                reason: reason,
+                timestamp: Date.now()
+            });
+
+            document.getElementById('ghor-reason-input').value = '';
+            alert('وضعیت و غرهای شما با موفقیت ثبت شد!');
+        }
+
+        function listenGhorHistory(code) {
+            const box = document.getElementById('ghor-history-box');
+            const alertBox = document.getElementById('ghor-alert-box');
+
+            db.ref(`ghor_rooms/${code}/history`).on('value', (snapshot) => {
+                box.innerHTML = '';
+                if(!snapshot.exists()) {
+                    box.innerHTML = 'هنوز پیامی ثبت نشده...';
+                    return;
+                }
+
+                let latest = null;
+                snapshot.forEach(child => {
+                    const item = child.val();
+                    latest = item;
+
+                    const div = document.createElement('div');
+                    div.style.marginBottom = '8px';
+                    div.style.borderBottom = '1px solid rgba(255,255,255,0.1)';
+                    div.style.paddingBottom = '4px';
+
+                    const icon = item.status === 'happy' ? '😊' : '🤬';
+                    const timeStr = new Date(item.timestamp).toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' });
+
+                    div.innerHTML = `<strong>${item.senderName} (${icon}):</strong> ${item.reason} <span style="font-size:9px; color:rgba(255,255,255,0.4);">[${timeStr}]</span>`;
+                    box.appendChild(div);
+                });
+
+                if(latest && alertBox) {
+                    alertBox.style.display = 'block';
+                    alertBox.className = `alert-banner ${latest.status === 'happy' ? 'happy' : ''}`;
+                    document.getElementById('ghor-alert-title').innerText = latest.status === 'happy' ? '😊 پیام خوشحالی' : '🤬 اعلام غر جدید!';
+                    document.getElementById('ghor-alert-text').innerText = `${latest.senderName}: ${latest.reason}`;
+                }
+            });
         }
     </script>
 </body>
