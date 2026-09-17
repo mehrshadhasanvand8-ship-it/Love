@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>اتاق نقاشی دو نفره شیشه‌ای</title>
+    <title>فضای دو نفره شیشه‌ای (نقاشی و صدا)</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <style>
@@ -25,11 +25,21 @@
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
             border-radius: 20px;
         }
-        #auth-screen {
-            width: 380px; padding: 30px; text-align: center;
-            display: flex; flex-direction: column; gap: 15px;
+        
+        /* صفحات */
+        .screen {
+            display: none;
+            width: 380px;
+            padding: 30px;
+            text-align: center;
+            flex-direction: column;
+            gap: 15px;
         }
-        #auth-screen h2 { margin-bottom: 10px; color: #fff; }
+        .screen.active { display: flex; }
+
+        h2 { margin-bottom: 5px; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+        p { font-size: 13px; color: rgba(255,255,255,0.7); }
+
         input {
             width: 100%; padding: 12px 15px;
             background: rgba(255, 255, 255, 0.15);
@@ -37,15 +47,21 @@
             border-radius: 10px; color: #fff; font-size: 14px; outline: none;
         }
         input::placeholder { color: rgba(255, 255, 255, 0.6); }
+
         .btn {
             background: linear-gradient(135deg, #ff416c, #ff4b2b);
             border: none; color: white; padding: 12px;
             border-radius: 10px; font-size: 15px; font-weight: bold; cursor: pointer;
+            transition: 0.3s;
         }
+        .btn:hover { opacity: 0.9; transform: translateY(-2px); }
         .btn-secondary { background: linear-gradient(135deg, #11998e, #38ef7d); }
-        #app-screen {
-            display: none; width: 95vw; height: 92vh;
-            flex-direction: column; padding: 15px; gap: 15px;
+        .btn-audio { background: linear-gradient(135deg, #f7b733, #fc4a1a); }
+
+        /* صفحه نقاشی */
+        #paint-screen {
+            width: 95vw; height: 92vh;
+            padding: 15px; gap: 15px;
         }
         header { display: flex; justify-content: space-between; align-items: center; padding: 5px 15px; flex-wrap: wrap; gap: 10px; }
         .toolbar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
@@ -62,48 +78,97 @@
             overflow: hidden; position: relative;
         }
         canvas { display: block; cursor: crosshair; width: 100%; height: 100%; }
+
+        /* استایل صفحه میکروفون صوتی */
+        .mic-box {
+            width: 120px; height: 120px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            margin: 20px auto;
+            display: flex; justify-content: center; align-items: center;
+            font-size: 50px; cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 0 20px rgba(0,0,0,0.3);
+        }
+        .mic-box.active {
+            background: rgba(56, 239, 125, 0.3);
+            border-color: #38ef7d;
+            box-shadow: 0 0 30px #38ef7d;
+            transform: scale(1.05);
+        }
+
         .error-msg { color: #ffb3b3; font-size: 13px; min-height: 18px; }
     </style>
 </head>
 <body>
 
-    <div id="auth-screen" class="glass-panel">
-        <h2>🎨 اتاق نقاشی دونفره</h2>
-        <p style="font-size: 13px; color: rgba(255,255,255,0.7);">با پارتنرت آنلاین نقاشی کن!</p>
-        
-        <input type="text" id="room-code" placeholder="کد اتاق (مثلاً: 1234)">
-        <input type="password" id="room-pass" placeholder="رمز عبور اتاق">
-        <div id="error-box" class="error-msg"></div>
-
-        <button class="btn" onclick="joinRoom()">ورود به اتاق</button>
-        <button class="btn btn-secondary" onclick="createRoom()">ساخت اتاق جدید</button>
+    <!-- ۱. منوی اصلی انتخاب بخش -->
+    <div id="hub-screen" class="screen glass-panel active">
+        <h2>✨ فضای دونفره شیشه‌ای</h2>
+        <p>لطفاً یکی از قابلیت‌ها را انتخاب کنید:</p>
+        <button class="btn" onclick="goToScreen('paint-auth-screen')">🎨 اتاق نقاشی آنلاین</button>
+        <button class="btn btn-audio" onclick="goToScreen('audio-auth-screen')">🎙️ مکالمه صوتی زنده</button>
     </div>
 
-    <div id="app-screen" class="glass-panel">
+    <!-- ۲. صفحه ورود/ساخت اتاق نقاشی -->
+    <div id="paint-auth-screen" class="screen glass-panel">
+        <h2>🎨 اتاق نقاشی</h2>
+        <input type="text" id="paint-room-code" placeholder="کد اتاق (مثلاً: 1234)">
+        <input type="password" id="paint-room-pass" placeholder="رمز عبور اتاق">
+        <div id="paint-error" class="error-msg"></div>
+        <button class="btn" onclick="joinPaintRoom()">ورود به اتاق</button>
+        <button class="btn btn-secondary" onclick="createPaintRoom()">ساخت اتاق جدید</button>
+        <button class="tool-btn" onclick="goToScreen('hub-screen')" style="margin-top: 10px;">⬅️ بازگشت به منو</button>
+    </div>
+
+    <!-- ۳. صفحه نقاشی اصلی -->
+    <div id="paint-screen" class="screen glass-panel">
         <header>
-            <div style="font-weight: bold; font-size: 15px;" id="room-title">اتاق: -</div>
+            <div style="font-weight: bold; font-size: 15px;" id="paint-room-title">اتاق: -</div>
             <div class="toolbar">
                 <button class="tool-btn active" id="btn-pencil" onclick="setTool('pencil')">✏️ مداد</button>
                 <button class="tool-btn" id="btn-brush" onclick="setTool('brush')">🖌️ قلم‌مو</button>
                 <button class="tool-btn" id="btn-eraser" onclick="setTool('eraser')">🧹 پاک‌کن</button>
-                
                 <select id="brush-size" onchange="updateSize(this.value)">
                     <option value="2">باریک</option>
                     <option value="5" selected>متوسط</option>
                     <option value="12">ضخیم</option>
                     <option value="25">خیلی ضخیم</option>
                 </select>
-
                 <input type="color" id="color-picker" value="#ffffff" onchange="updateColor(this.value)">
-                
                 <button class="tool-btn" style="background: rgba(255, 65, 108, 0.4);" onclick="clearCanvas()">🗑️ شروع مجدد</button>
-                <button class="tool-btn" onclick="leaveRoom()">خروج</button>
+                <button class="tool-btn" onclick="location.reload()">خروج</button>
             </div>
         </header>
-
         <div class="canvas-container" id="canvas-box">
             <canvas id="paintCanvas"></canvas>
         </div>
+    </div>
+
+    <!-- ۴. صفحه ورود/ساخت اتاق صوتی -->
+    <div id="audio-auth-screen" class="screen glass-panel">
+        <h2>🎙️ مکالمه صوتی</h2>
+        <p>با پارتنرت زنده حرف بزن!</p>
+        <input type="text" id="audio-room-code" placeholder="کد اتاق صوتی (مثلاً: 9988)">
+        <input type="password" id="audio-room-pass" placeholder="رمز عبور اتاق">
+        <div id="audio-error" class="error-msg"></div>
+        <button class="btn btn-audio" onclick="joinAudioRoom()">ورود به اتاق صدا</button>
+        <button class="btn btn-secondary" onclick="createAudioRoom()">ساخت اتاق صدا</button>
+        <button class="tool-btn" onclick="goToScreen('hub-screen')" style="margin-top: 10px;">⬅️ بازگشت به منو</button>
+    </div>
+
+    <!-- ۵. صفحه مکالمه صوتی زنده -->
+    <div id="audio-call-screen" class="screen glass-panel" style="width: 380px;">
+        <h2>🎙️ اتاق صوتی فعال</h2>
+        <p id="audio-status-text">برای شروع صحبت روی میکروفون بزنید</p>
+        
+        <div class="mic-box" id="mic-btn" onclick="toggleMicrophone()">
+            🎤
+        </div>
+        
+        <audio id="remoteAudio" autoplay></audio>
+        <button class="tool-btn" onclick="location.reload()" style="margin-top: 15px; width: 100%; justify-content: center;">قطع تماس و خروج</button>
     </div>
 
     <script>
@@ -113,16 +178,17 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
+        function goToScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        /* --- بخش نقاشی --- */
         let currentRoom = null;
         let dbRef = null;
         let isDrawing = false;
-        let lastX = 0;
-        let lastY = 0;
-        
-        let currentTool = 'pencil';
-        let currentColor = '#ffffff';
-        let currentSize = 5;
-
+        let lastX = 0, lastY = 0;
+        let currentTool = 'pencil', currentColor = '#ffffff', currentSize = 5;
         const canvas = document.getElementById('paintCanvas');
         const ctx = canvas.getContext('2d');
 
@@ -134,170 +200,193 @@
             ctx.lineJoin = 'round';
         }
 
-        function createRoom() {
-            const code = document.getElementById('room-code').value.trim();
-            const pass = document.getElementById('room-pass').value.trim();
-            const errBox = document.getElementById('error-box');
+        function createPaintRoom() {
+            const code = document.getElementById('paint-room-code').value.trim();
+            const pass = document.getElementById('paint-room-pass').value.trim();
+            const errBox = document.getElementById('paint-error');
+            if (!code || !pass) { errBox.innerText = "لطفاً کد و رمز را وارد کنید!"; return; }
 
-            if (!code || !pass) { errBox.innerText = "لطفاً کد و رمز اتاق را وارد کنید!"; return; }
-
-            const roomRef = db.ref('rooms/' + code);
+            const roomRef = db.ref('paint_rooms/' + code);
             roomRef.once('value', (snapshot) => {
-                if (snapshot.exists()) {
-                    errBox.innerText = "این اتاق قبلاً ساخته شده است! از گزینه ورود استفاده کنید.";
-                } else {
+                if (snapshot.exists()) { errBox.innerText = "این اتاق قبلاً ساخته شده است!"; }
+                else {
                     roomRef.set({ password: pass }, (error) => {
-                        if (!error) enterRoom(code);
-                        else errBox.innerText = "خطا در اتصال به فایربیس!";
+                        if (!error) enterPaintRoom(code);
                     });
                 }
             });
         }
 
-        function joinRoom() {
-            const code = document.getElementById('room-code').value.trim();
-            const pass = document.getElementById('room-pass').value.trim();
-            const errBox = document.getElementById('error-box');
+        function joinPaintRoom() {
+            const code = document.getElementById('paint-room-code').value.trim();
+            const pass = document.getElementById('paint-room-pass').value.trim();
+            const errBox = document.getElementById('paint-error');
+            if (!code || !pass) { errBox.innerText = "لطفاً کد و رمز را وارد کنید!"; return; }
 
-            if (!code || !pass) { errBox.innerText = "لطفاً کد و رمز اتاق را وارد کنید!"; return; }
-
-            const roomRef = db.ref('rooms/' + code);
-            roomRef.once('value', (snapshot) => {
-                if (!snapshot.exists()) { errBox.innerText = "اتاقی با این مشخصات یافت نشد!"; return; }
+            db.ref('paint_rooms/' + code).once('value', (snapshot) => {
+                if (!snapshot.exists()) { errBox.innerText = "اتاق یافت نشد!"; return; }
                 if (snapshot.val().password !== pass) { errBox.innerText = "رمز عبور اشتباه است!"; return; }
-                enterRoom(code);
+                enterPaintRoom(code);
             });
         }
 
-        function enterRoom(code) {
+        function enterPaintRoom(code) {
             currentRoom = code;
-            document.getElementById('auth-screen').style.display = 'none';
-            document.getElementById('app-screen').style.display = 'flex';
-            document.getElementById('room-title').innerText = `کد اتاق: ${code}`;
-            
+            goToScreen('paint-screen');
+            document.getElementById('paint-room-title').innerText = `کد اتاق: ${code}`;
             setTimeout(() => {
                 initCanvasSize();
-                initDrawingListeners();
-                listenToDatabase();
+                dbRef = db.ref('paint_rooms/' + currentRoom + '/lines');
+                
+                canvas.onmousedown = (e) => { isDrawing = true; const r = canvas.getBoundingClientRect(); lastX = e.clientX - r.left; lastY = e.clientY - r.top; };
+                canvas.onmousemove = (e) => { if (!isDrawing) return; const r = canvas.getBoundingClientRect(); const x = e.clientX - r.left, y = e.clientY - r.top; sendStroke(lastX, lastY, x, y); lastX = x; lastY = y; };
+                window.onmouseup = () => { isDrawing = false; };
+
+                canvas.ontouchstart = (e) => { isDrawing = true; const r = canvas.getBoundingClientRect(); const t = e.touches[0]; lastX = t.clientX - r.left; lastY = t.clientY - r.top; e.preventDefault(); };
+                canvas.ontouchmove = (e) => { if (!isDrawing) return; const r = canvas.getBoundingClientRect(); const t = e.touches[0]; const x = t.clientX - r.left, y = t.clientY - r.top; sendStroke(lastX, lastY, x, y); lastX = x; lastY = y; e.preventDefault(); };
+                window.ontouchend = () => { isDrawing = false; };
+
+                dbRef.on('child_added', (snapshot) => { const d = snapshot.val(); if (d) drawLineLocally(d); });
+                db.ref('paint_rooms/' + currentRoom + '/clear').on('value', (snapshot) => { if (snapshot.exists()) ctx.clearRect(0, 0, canvas.width, canvas.height); });
             }, 150);
         }
 
-        function leaveRoom() { location.reload(); }
-
-        function setTool(tool) {
-            currentTool = tool;
-            document.querySelectorAll('.toolbar .tool-btn').forEach(b => b.classList.remove('active'));
-            if(tool === 'pencil') document.getElementById('btn-pencil').classList.add('active');
-            if(tool === 'brush') document.getElementById('btn-brush').classList.add('active');
-            if(tool === 'eraser') document.getElementById('btn-eraser').classList.add('active');
-        }
-
-        function updateColor(color) { currentColor = color; }
-        function updateSize(size) { currentSize = parseInt(size); }
-
-        function getMousePos(e) {
-            const rect = canvas.getBoundingClientRect();
-            return {
-                x: e.clientX - rect.left,
-                y: e.clientY - rect.top
-            };
-        }
-
-        function getTouchPos(e) {
-            const rect = canvas.getBoundingClientRect();
-            const touch = e.touches[0];
-            return {
-                x: touch.clientX - rect.left,
-                y: touch.clientY - rect.top
-            };
-        }
-
-        function initDrawingListeners() {
-            dbRef = db.ref('rooms/' + currentRoom + '/lines');
-
-            canvas.onmousedown = (e) => {
-                isDrawing = true;
-                const pos = getMousePos(e);
-                lastX = pos.x;
-                lastY = pos.y;
-            };
-
-            canvas.onmousemove = (e) => {
-                if (!isDrawing) return;
-                const pos = getMousePos(e);
-                sendStroke(lastX, lastY, pos.x, pos.y);
-                lastX = pos.x;
-                lastY = pos.y;
-            };
-
-            window.onmouseup = () => { isDrawing = false; };
-
-            // رویدادهای لمسی موبایل
-            canvas.ontouchstart = (e) => {
-                isDrawing = true;
-                const pos = getTouchPos(e);
-                lastX = pos.x;
-                lastY = pos.y;
-                e.preventDefault();
-            };
-
-            canvas.ontouchmove = (e) => {
-                if (!isDrawing) return;
-                const pos = getTouchPos(e);
-                sendStroke(lastX, lastY, pos.x, pos.y);
-                lastX = pos.x;
-                lastY = pos.y;
-                e.preventDefault();
-            };
-
-            window.ontouchend = () => { isDrawing = false; };
-        }
-
+        function setTool(t) { currentTool = t; document.querySelectorAll('.toolbar .tool-btn').forEach(b => b.classList.remove('active')); document.getElementById('btn-' + t).classList.add('active'); }
+        function updateColor(c) { currentColor = c; }
+        function updateSize(s) { currentSize = parseInt(s); }
         function sendStroke(x0, y0, x1, y1) {
-            const strokeData = {
-                x0: Math.round(x0),
-                y0: Math.round(y0),
-                x1: Math.round(x1),
-                y1: Math.round(y1),
-                color: currentTool === 'eraser' ? '#14141e' : currentColor,
-                size: currentTool === 'eraser' ? currentSize * 2.5 : currentSize
-            };
-            dbRef.push(strokeData);
+            dbRef.push({ x0: Math.round(x0), y0: Math.round(y0), x1: Math.round(x1), y1: Math.round(y1), color: currentTool === 'eraser' ? '#14141e' : currentColor, size: currentTool === 'eraser' ? currentSize * 2.5 : currentSize });
         }
-
-        function drawLineLocally(data) {
-            ctx.beginPath();
-            ctx.moveTo(data.x0, data.y0);
-            ctx.lineTo(data.x1, data.y1);
-            ctx.strokeStyle = data.color;
-            ctx.lineWidth = data.size;
-            ctx.lineCap = 'round';
-            ctx.lineJoin = 'round';
-            ctx.stroke();
-            ctx.closePath();
+        function drawLineLocally(d) {
+            ctx.beginPath(); ctx.moveTo(d.x0, d.y0); ctx.lineTo(d.x1, d.y1);
+            ctx.strokeStyle = d.color; ctx.lineWidth = d.size; ctx.stroke(); ctx.closePath();
         }
-
-        function listenToDatabase() {
-            // بارگذاری خطوط جدید به صورت زنده
-            dbRef.on('child_added', (snapshot) => {
-                const data = snapshot.val();
-                if (data) {
-                    drawLineLocally(data);
-                }
-            });
-
-            // پاک کردن صفحه به صورت زنده برای هر دو نفر
-            db.ref('rooms/' + currentRoom + '/clear').on('value', (snapshot) => {
-                if (snapshot.exists()) {
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                }
-            });
-        }
-
         function clearCanvas() {
-            if (confirm("آیا مطمئنی می‌خواهی کل صفحه پاک شود؟")) {
-                db.ref('rooms/' + currentRoom + '/lines').remove();
-                db.ref('rooms/' + currentRoom + '/clear').set(Date.now());
+            if (confirm("صفحه پاک شود؟")) {
+                db.ref('paint_rooms/' + currentRoom + '/lines').remove();
+                db.ref('paint_rooms/' + currentRoom + '/clear').set(Date.now());
+            }
+        }
+
+
+        /* --- بخش مکالمه صوتی زنده (WebRTC) --- */
+        let audioRoomCode = null;
+        let localStream = null;
+        let peerConnection = null;
+        let isMicActive = false;
+
+        const servers = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
+
+        function createAudioRoom() {
+            const code = document.getElementById('audio-room-code').value.trim();
+            const pass = document.getElementById('audio-room-pass').value.trim();
+            const errBox = document.getElementById('audio-error');
+            if (!code || !pass) { errBox.innerText = "کد و رمز را وارد کنید!"; return; }
+
+            const roomRef = db.ref('audio_rooms/' + code);
+            roomRef.once('value', (snapshot) => {
+                if (snapshot.exists()) { errBox.innerText = "اتاق صوتی وجود دارد!"; }
+                else {
+                    roomRef.set({ password: pass }, (error) => {
+                        if (!error) enterAudioRoom(code, true);
+                    });
+                }
+            });
+        }
+
+        function joinAudioRoom() {
+            const code = document.getElementById('audio-room-code').value.trim();
+            const pass = document.getElementById('audio-room-pass').value.trim();
+            const errBox = document.getElementById('audio-error');
+            if (!code || !pass) { errBox.innerText = "کد و رمز را وارد کنید!"; return; }
+
+            db.ref('audio_rooms/' + code).once('value', (snapshot) => {
+                if (!snapshot.exists()) { errBox.innerText = "اتاق یافت نشد!"; return; }
+                if (snapshot.val().password !== pass) { errBox.innerText = "رمز اشتباه است!"; return; }
+                enterAudioRoom(code, false);
+            });
+        }
+
+        async function enterAudioRoom(code, isCreator) {
+            audioRoomCode = code;
+            goToScreen('audio-call-screen');
+
+            try {
+                localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+                // صدا در ابتدا میوت است تا کاربر دستی میکروفون را روشن کند
+                localStream.getAudioTracks()[0].enabled = false;
+            } catch (err) {
+                alert("دسترسی به میکروفون داده نشد یا پشتیبانی نمی‌شود.");
+            }
+
+            setupWebRTC(isCreator);
+        }
+
+        function toggleMicrophone() {
+            if (!localStream) return;
+            isMicActive = !isMicActive;
+            localStream.getAudioTracks()[0].enabled = isMicActive;
+            
+            const micBtn = document.getElementById('mic-btn');
+            const statusText = document.getElementById('audio-status-text');
+            if (isMicActive) {
+                micBtn.classList.add('active');
+                statusText.innerText = "میکروفون روشن است (در حال انتقال صدا...)";
+            } else {
+                micBtn.classList.remove('active');
+                statusText.innerText = "میکروفون خاموش است (روی میکروفون بزنید)";
+            }
+        }
+
+        function setupWebRTC(isCreator) {
+            peerConnection = new RTCPeerConnection(servers);
+
+            localStream.getTracks().forEach(track => {
+                peerConnection.addTrack(track, localStream);
+            });
+
+            peerConnection.ontrack = (event) => {
+                document.getElementById('remoteAudio').srcObject = event.streams[0];
+            };
+
+            const roomRef = db.ref('audio_rooms/' + audioRoomCode);
+
+            peerConnection.onicecandidate = (event) => {
+                if (event.candidate) {
+                    roomRef.child(isCreator ? 'offerCandidates' : 'answerCandidates').push(event.candidate.toJSON());
+                }
+            };
+
+            if (isCreator) {
+                peerConnection.createOffer().then(offer => {
+                    peerConnection.setLocalDescription(offer);
+                    roomRef.child('offer').set({ type: offer.type, sdp: offer.sdp });
+                });
+
+                roomRef.child('answer').on('value', snapshot => {
+                    const answer = snapshot.val();
+                    if (answer && !peerConnection.currentRemoteDescription) {
+                        peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
+                    }
+                });
+
+                roomRef.child('answerCandidates').on('child_added', snapshot => {
+                    peerConnection.addIceCandidate(new RTCIceCandidate(snapshot.val()));
+                });
+            } else {
+                roomRef.child('offer').once('value', async snapshot => {
+                    const offer = snapshot.val();
+                    if (offer) {
+                        await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
+                        const answer = await peerConnection.createAnswer();
+                        await peerConnection.setLocalDescription(answer);
+                        roomRef.child('answer').set({ type: answer.type, sdp: answer.sdp });
+                    }
+                });
+
+                roomRef.child('offerCandidates').on('child_added', snapshot => {
+                    peerConnection.addIceCandidate(new RTCIceCandidate(snapshot.val()));
+                });
             }
         }
     </script>
