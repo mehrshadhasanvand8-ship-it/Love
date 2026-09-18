@@ -218,6 +218,38 @@
             text-align: center;
             color: #fff;
         }
+
+        /* استایل مودال انتخاب کاربر */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        }
+        .modal-content {
+            background: #130f26;
+            border: 1px solid var(--accent);
+            padding: 20px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 350px;
+            text-align: center;
+        }
+        .user-select-btn {
+            background: #1a1336;
+            margin: 6px 0;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #3b2d6b;
+            color: #fff;
+            cursor: pointer;
+            width: 100%;
+            text-align: right;
+        }
+        .user-select-btn:hover { background: var(--accent); }
     </style>
 </head>
 <body>
@@ -251,7 +283,7 @@
         </div>
 
         <div id="globalChatTab" class="hidden">
-            <h3>💬 چت عمومی سراسری (برای افزودن دوست روی نام افراد کلیک کنید)</h3>
+            <h3>💬 چت عمومی سراسری</h3>
             <div class="chat-box" style="height: 230px;">
                 <div class="chat-messages" id="globalChatMessages"></div>
                 <div class="chat-input-group">
@@ -280,7 +312,7 @@
         <div id="playerTab" class="hidden">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
                 <h3 id="playingTitle" style="margin:0; font-size: 14px;">در حال پخش...</h3>
-                <span style="font-size: 11px; color: #10b981;">👥 بینندگان: <strong id="movieViewerCount">0</strong> نفر</span>
+                <span style="font-size: 11px; color: #10b981;">👥 بینندگان این صفحه: <strong id="movieViewerCount">0</strong> نفر</span>
             </div>
             
             <div class="player-wrapper">
@@ -288,7 +320,7 @@
             </div>
 
             <div style="display: flex; gap: 6px; margin-bottom: 6px;">
-                <button id="camToggleBtn" onclick="promptTargetAndToggleCamera()" style="background: #10b981; margin: 0; font-size: 11px;">📹 روشن کردن دوربین و انتخاب شخص</button>
+                <button id="camToggleBtn" onclick="toggleCameraAndShowUsers()" style="background: #10b981; margin: 0; font-size: 11px;">📹 روشن کردن دوربین</button>
                 <button onclick="openInviteModal()" style="background: #8b5cf6; margin: 0; font-size: 11px;">📩 دعوت از دوست</button>
                 <button onclick="closePlayer()" style="background: #ef4444; margin: 0; font-size: 11px;">خروج</button>
             </div>
@@ -303,6 +335,16 @@
         </div>
     </div>
 
+</div>
+
+<!-- منوی پاپ‌آپ انتخاب کاربر برای اشتراک‌گذاری دوربین -->
+<div id="userSelectModal" class="modal-overlay hidden">
+    <div class="modal-content">
+        <h3>انتخاب شخص مورد نظر</h3>
+        <p style="font-size: 11px; opacity: 0.8; margin-bottom: 10px;">برای اشتراک‌گذاری دوربین، روی نام فرد کلیک کنید:</p>
+        <div id="modalUserList" style="max-height: 200px; overflow-y: auto;"></div>
+        <button onclick="closeUserModal()" style="background: #ef4444; margin-top: 10px;">انصراف</button>
+    </div>
 </div>
 
 <div id="bottomCams" class="bottom-cams-container hidden">
@@ -332,6 +374,7 @@
     let partnerId = null;
     let syncInterval = null;
     let activeCall = null;
+    let presenceInterval = null;
 
     async function fbGet(path) {
         try { const res = await fetch(`${DB_URL}/${path}.json`); return await res.json(); } catch(e) { return null; }
@@ -378,11 +421,13 @@
     }
 
     function startPresence() {
-        setInterval(async () => {
+        if(presenceInterval) clearInterval(presenceInterval);
+        presenceInterval = setInterval(async () => {
             if(currentUser) {
                 const now = Date.now();
                 await fbSet(`online/${currentUser}`, now);
                 if(currentMovieId) {
+                    // ثبت دقیق حضور در صفحه این فیلم خاص
                     await fbSet(`movie_viewers/${currentMovieId}/${currentUser}`, now);
                 }
                 updateOnlineCounts();
@@ -427,16 +472,14 @@
             currentRoomId = [currentUser, partnerId].sort().join('_');
             document.getElementById('partnerLabel').innerText = `پارتنر: ${partnerId}`;
             
-            // اگر استریم محلی وجود نداشت، آن را دریافت می‌کنیم تا پاسخ تماس کامل شود
             if (!localStream) {
                 try {
                     localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
                     document.getElementById('myCam').srcObject = localStream;
                     document.getElementById('camToggleBtn').innerText = '🎥 خاموش کردن دوربین';
                     document.getElementById('camToggleBtn').style.background = '#f59e0b';
-                } catch(e) {
-                    // حتی بدون دوربین محلی پاسخ می‌دهیم تا استریم طرف مقابل قطع نشود
-                }
+                    document.getElementById('bottomCams').classList.remove('hidden');
+                } catch(e) {}
             }
 
             call.answer(localStream);
@@ -445,20 +488,22 @@
                 const partnerVid = document.getElementById('partnerCam');
                 partnerVid.srcObject = remoteStream;
                 partnerVid.play().catch(e => console.log(e));
+                document.getElementById('bottomCams').classList.remove('hidden');
             });
             activeCall = call;
         });
     }
 
-    async function promptTargetAndToggleCamera() {
+    async function toggleCameraAndShowUsers() {
         const btn = document.getElementById('camToggleBtn');
 
         if(localStream) {
             localStream.getTracks().forEach(track => track.stop());
             localStream = null;
             document.getElementById('myCam').srcObject = null;
-            btn.innerText = '📹 روشن کردن دوربین و انتخاب شخص';
+            btn.innerText = '📹 روشن کردن دوربین';
             btn.style.background = '#10b981';
+            document.getElementById('bottomCams').classList.add('hidden');
             return;
         }
 
@@ -467,41 +512,48 @@
             document.getElementById('myCam').srcObject = localStream;
             btn.innerText = '🎥 خاموش کردن دوربین';
             btn.style.background = '#f59e0b';
+            document.getElementById('bottomCams').classList.remove('hidden');
 
-            const onlineUsers = await fbGet('online') || {};
+            // دریافت لیست کاربران آنلاین در همان صفحه فیلم یا لابی
+            const viewers = currentMovieId ? (await fbGet(`movie_viewers/${currentMovieId}`) || {}) : (await fbGet('online') || {});
             const now = Date.now();
-            const availableUsers = Object.keys(onlineUsers).filter(u => u !== currentUser && (now - onlineUsers[u] < 10000));
+            const availableUsers = Object.keys(viewers).filter(u => u !== currentUser && (now - viewers[u] < 10000));
 
             if(availableUsers.length === 0) {
-                alert('دوربین روشن شد. در حال حاضر کاربر آنلاین دیگری در اتاق حضور ندارد تا به او متصل شوید.');
+                alert('دوربین روشن شد. در حال حاضر کاربر دیگری در این صفحه حضور ندارد.');
                 return;
             }
 
-            let listStr = availableUsers.map((u, index) => `${index + 1}. ${u}`).join('\n');
-            let choice = prompt(`کاربران آنلاین در این صفحه:\n${listStr}\n\nشماره یا نام کاربری فردی که می‌خواهید تصویر خود را به او نشان دهید وارد کنید:`);
-            
-            if(!choice) return;
-
-            let targetId = choice.trim();
-            if(!isNaN(targetId) && availableUsers[parseInt(targetId) - 1]) {
-                targetId = availableUsers[parseInt(targetId) - 1];
-            }
-
-            if(!availableUsers.includes(targetId)) {
-                return alert('کاربر مورد نظر معتبر نیست یا آنلاین نیست.');
-            }
-
-            partnerId = targetId;
-            currentRoomId = [currentUser, partnerId].sort().join('_');
-            document.getElementById('partnerLabel').innerText = `پارتنر: ${partnerId}`;
-
-            connectToPartner(partnerId);
-            await fbSet(`requests/${partnerId}`, { from: currentUser, roomId: currentRoomId, movie: currentMovieId });
-            alert(`تصویر و درخواست اتصال به ${partnerId} ارسال شد!`);
+            // نمایش مودال انتخاب کاربر
+            const modalList = document.getElementById('modalUserList');
+            modalList.innerHTML = '';
+            availableUsers.forEach(u => {
+                const item = document.createElement('button');
+                item.className = 'user-select-btn';
+                item.innerText = `👤 ${u}`;
+                item.onclick = () => selectUserAndConnect(u);
+                modalList.appendChild(item);
+            });
+            document.getElementById('userSelectModal').classList.remove('hidden');
 
         } catch(e) {
             alert('دسترسی به دوربین و میکروفون رد شد.');
         }
+    }
+
+    function closeUserModal() {
+        document.getElementById('userSelectModal').classList.add('hidden');
+    }
+
+    async function selectUserAndConnect(targetId) {
+        closeUserModal();
+        partnerId = targetId;
+        currentRoomId = [currentUser, partnerId].sort().join('_');
+        document.getElementById('partnerLabel').innerText = `پارتنر: ${partnerId}`;
+
+        connectToPartner(partnerId);
+        await fbSet(`requests/${partnerId}`, { from: currentUser, roomId: currentRoomId, movie: currentMovieId });
+        alert(`تصویر و درخواست اتصال به ${partnerId} ارسال شد!`);
     }
 
     function connectToPartner(targetId) {
@@ -513,6 +565,7 @@
                     const partnerVid = document.getElementById('partnerCam');
                     partnerVid.srcObject = remoteStream;
                     partnerVid.play().catch(e => console.log(e));
+                    document.getElementById('bottomCams').classList.remove('hidden');
                 });
                 activeCall = call;
             }
@@ -529,10 +582,22 @@
 
         document.querySelectorAll('.nav-tabs button').forEach(btn => btn.classList.remove('active'));
 
-        if(tab === 'movies') { document.getElementById('moviesTab').classList.remove('hidden'); document.getElementById('tabMovies').classList.add('active'); loadMovies(); }
-        if(tab === 'globalChat') { document.getElementById('globalChatTab').classList.remove('hidden'); document.getElementById('tabGlobalChat').classList.add('active'); }
-        if(tab === 'friends') { document.getElementById('friendsTab').classList.remove('hidden'); document.getElementById('tabFriends').classList.add('active'); loadFriends(); }
-        if(tab === 'addMovie') { document.getElementById('addMovieTab').classList.remove('hidden'); document.getElementById('tabAdd').classList.add('active'); }
+        if(tab === 'movies') {
+            document.getElementById('moviesTab').classList.remove('hidden');
+            document.getElementById('tabMovies').classList.add('active');
+            leaveMovieRoom();
+            loadMovies();
+        }
+        if(tab === 'globalChat') { document.getElementById('globalChatTab').classList.remove('hidden'); document.getElementById('tabGlobalChat').classList.add('active'); leaveMovieRoom(); }
+        if(tab === 'friends') { document.getElementById('friendsTab').classList.remove('hidden'); document.getElementById('tabFriends').classList.add('active'); leaveMovieRoom(); loadFriends(); }
+        if(tab === 'addMovie') { document.getElementById('addMovieTab').classList.remove('hidden'); document.getElementById('tabAdd').classList.add('active'); leaveMovieRoom(); }
+    }
+
+    async function leaveMovieRoom() {
+        if(currentMovieId && currentUser) {
+            await fbSet(`movie_viewers/${currentMovieId}/${currentUser}`, null);
+        }
+        currentMovieId = null;
     }
 
     async function saveMovie() {
@@ -672,10 +737,10 @@
         const user = await fbGet(`users/${currentUser}`);
         const friends = user?.friends || {};
         const friendIds = Object.keys(friends);
-        if(friendIds.length === 0) return alert('دوستی در لیست خود ندارید. ابتدا از چت عمومی دوست اضافه کنید.');
+        if(friendIds.length === 0) return alert('دوستی در لیست خود ندارید.');
         
         let fListText = friendIds.join(', ');
-        let target = prompt(`کدام دوست را به این فیلم دعوت می‌کنید؟\nدوستان شما: ${fListText}`);
+        let target = prompt(`کدام دوست را دعوت می‌کنید؟\nدوستان شما: ${fListText}`);
         if(target && friends[target]) {
             requestWatch(target);
         } else if(target) {
@@ -691,17 +756,6 @@
         if(forcedPartner) {
             partnerId = forcedPartner;
             currentRoomId = [currentUser, partnerId].sort().join('_');
-        } else {
-            const viewers = await fbGet(`movie_viewers/${currentMovieId}`) || {};
-            const viewerIds = Object.keys(viewers).filter(id => id !== currentUser && (now - viewers[id] < 10000));
-
-            if(viewerIds.length > 0) {
-                partnerId = viewerIds[Math.floor(Math.random() * viewerIds.length)];
-                currentRoomId = [currentUser, partnerId].sort().join('_');
-            } else {
-                partnerId = null;
-                currentRoomId = `room_${currentMovieId}_${currentUser}`;
-            }
         }
 
         openPlayerUI(partnerId || 'در انتظار پارتنر...');
@@ -712,7 +766,6 @@
     function openPlayerUI(pLabel) {
         switchTab('player');
         document.getElementById('playerTab').classList.remove('hidden');
-        document.getElementById('bottomCams').classList.remove('hidden');
         document.getElementById('partnerLabel').innerText = pLabel;
         setupVideoSync();
     }
@@ -800,11 +853,8 @@
             localStream = null;
             document.getElementById('myCam').srcObject = null;
         }
-        if(currentMovieId && currentUser) {
-            await fbSet(`movie_viewers/${currentMovieId}/${currentUser}`, null);
-        }
+        await leaveMovieRoom();
         currentRoomId = null;
-        currentMovieId = null;
         partnerId = null;
         lastMsgCount = 0;
         switchTab('movies');
