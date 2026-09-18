@@ -218,26 +218,6 @@
             text-align: center;
             color: #fff;
         }
-
-        /* Modal styling for choosing users */
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.8);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 10000;
-        }
-        .modal-content {
-            background: var(--card-bg);
-            border: 1px solid var(--accent);
-            padding: 20px;
-            border-radius: 15px;
-            width: 90%;
-            max-width: 350px;
-            text-align: center;
-        }
     </style>
 </head>
 <body>
@@ -424,7 +404,7 @@
         const now = Date.now();
         let totalOnline = 0;
         Object.keys(onlineUsers).forEach(user => {
-            if(now - onlineUsers[user] < 7000) totalOnline++;
+            if(now - onlineUsers[user] < 10000) totalOnline++;
         });
         document.getElementById('totalOnlineCount').innerText = totalOnline;
 
@@ -432,7 +412,7 @@
             const viewers = await fbGet(`movie_viewers/${currentMovieId}`) || {};
             let activeViewers = 0;
             Object.keys(viewers).forEach(user => {
-                if(now - viewers[user] < 7000) activeViewers++;
+                if(now - viewers[user] < 10000) activeViewers++;
             });
             document.getElementById('movieViewerCount').innerText = activeViewers;
         }
@@ -442,24 +422,24 @@
         if(peer) peer.destroy();
         peer = new Peer(currentUser);
 
-        peer.on('call', (call) => {
+        peer.on('call', async (call) => {
             partnerId = call.peer;
             currentRoomId = [currentUser, partnerId].sort().join('_');
             document.getElementById('partnerLabel').innerText = `پارتنر: ${partnerId}`;
             
-            if (localStream) {
-                call.answer(localStream);
-            } else {
-                navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(stream => {
-                    localStream = stream;
-                    document.getElementById('myCam').srcObject = stream;
+            // اگر استریم محلی وجود نداشت، آن را دریافت می‌کنیم تا پاسخ تماس کامل شود
+            if (!localStream) {
+                try {
+                    localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                    document.getElementById('myCam').srcObject = localStream;
                     document.getElementById('camToggleBtn').innerText = '🎥 خاموش کردن دوربین';
                     document.getElementById('camToggleBtn').style.background = '#f59e0b';
-                    call.answer(localStream);
-                }).catch(() => {
-                    call.answer();
-                });
+                } catch(e) {
+                    // حتی بدون دوربین محلی پاسخ می‌دهیم تا استریم طرف مقابل قطع نشود
+                }
             }
+
+            call.answer(localStream);
 
             call.on('stream', (remoteStream) => {
                 const partnerVid = document.getElementById('partnerCam');
@@ -470,7 +450,6 @@
         });
     }
 
-    /* تابع جدید: دریافت لیست کاربران آنلاین و نمایش به کاربر جهت انتخاب شخص مورد نظر برای نمایش تصویر */
     async function promptTargetAndToggleCamera() {
         const btn = document.getElementById('camToggleBtn');
 
@@ -483,46 +462,43 @@
             return;
         }
 
-        // دریافت کاربران آنلاین از سرور
-        const onlineUsers = await fbGet('online') || {};
-        const now = Date.now();
-        const availableUsers = Object.keys(onlineUsers).filter(u => u !== currentUser && (now - onlineUsers[u] < 7000));
-
-        if(availableUsers.length === 0) {
-            alert('در حال حاضر کاربر آنلاین دیگری در اتاق حضور ندارد.');
-            return;
-        }
-
-        // ساخت پنجره انتخاب کاربر
-        let listStr = availableUsers.map((u, index) => `${index + 1}. ${u}`).join('\n');
-        let choice = prompt(`کاربران آنلاین در این صفحه:\n${listStr}\n\nشماره یا نام کاربری فردی که می‌خواهید تصویر خود را به او نشان دهید وارد کنید:`);
-        
-        if(!choice) return;
-
-        let targetId = choice.trim();
-        // اگر کاربر شماره وارد کرده بود
-        if(!isNaN(targetId) && availableUsers[parseInt(targetId) - 1]) {
-            targetId = availableUsers[parseInt(targetId) - 1];
-        }
-
-        if(!availableUsers.includes(targetId)) {
-            return alert('کاربر مورد نظر معتبر نیست یا آنلاین نیست.');
-        }
-
-        partnerId = targetId;
-        currentRoomId = [currentUser, partnerId].sort().join('_');
-        document.getElementById('partnerLabel').innerText = `پارتنر: ${partnerId}`;
-
         try {
             localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
             document.getElementById('myCam').srcObject = localStream;
             btn.innerText = '🎥 خاموش کردن دوربین';
             btn.style.background = '#f59e0b';
 
+            const onlineUsers = await fbGet('online') || {};
+            const now = Date.now();
+            const availableUsers = Object.keys(onlineUsers).filter(u => u !== currentUser && (now - onlineUsers[u] < 10000));
+
+            if(availableUsers.length === 0) {
+                alert('دوربین روشن شد. در حال حاضر کاربر آنلاین دیگری در اتاق حضور ندارد تا به او متصل شوید.');
+                return;
+            }
+
+            let listStr = availableUsers.map((u, index) => `${index + 1}. ${u}`).join('\n');
+            let choice = prompt(`کاربران آنلاین در این صفحه:\n${listStr}\n\nشماره یا نام کاربری فردی که می‌خواهید تصویر خود را به او نشان دهید وارد کنید:`);
+            
+            if(!choice) return;
+
+            let targetId = choice.trim();
+            if(!isNaN(targetId) && availableUsers[parseInt(targetId) - 1]) {
+                targetId = availableUsers[parseInt(targetId) - 1];
+            }
+
+            if(!availableUsers.includes(targetId)) {
+                return alert('کاربر مورد نظر معتبر نیست یا آنلاین نیست.');
+            }
+
+            partnerId = targetId;
+            currentRoomId = [currentUser, partnerId].sort().join('_');
+            document.getElementById('partnerLabel').innerText = `پارتنر: ${partnerId}`;
+
             connectToPartner(partnerId);
-            // ارسال درخواست ویدیو به کاربر مورد نظر
             await fbSet(`requests/${partnerId}`, { from: currentUser, roomId: currentRoomId, movie: currentMovieId });
             alert(`تصویر و درخواست اتصال به ${partnerId} ارسال شد!`);
+
         } catch(e) {
             alert('دسترسی به دوربین و میکروفون رد شد.');
         }
@@ -582,7 +558,7 @@
             let activeCount = 0;
             if(movieViewers[m.id]) {
                 Object.values(movieViewers[m.id]).forEach(time => {
-                    if(now - time < 7000) activeCount++;
+                    if(now - time < 10000) activeCount++;
                 });
             }
 
@@ -656,7 +632,7 @@
         const now = Date.now();
 
         Object.keys(friends).forEach(f => {
-            const isOnline = onlineUsers[f] && (now - onlineUsers[f] < 7000);
+            const isOnline = onlineUsers[f] && (now - onlineUsers[f] < 10000);
             const li = document.createElement('li');
             li.style.cssText = 'padding:8px 0; border-bottom:1px solid #221a42; display:flex; justify-content:space-between; align-items:center; font-size: 13px;';
             li.innerHTML = `<span>👤 ${f} ${isOnline ? '🟢' : '⚪'}</span> <button onclick="requestWatch('${f}')" style="width:auto; padding:4px 8px; margin:0; font-size:11px;">دعوت به تماشا</button>`;
@@ -717,7 +693,7 @@
             currentRoomId = [currentUser, partnerId].sort().join('_');
         } else {
             const viewers = await fbGet(`movie_viewers/${currentMovieId}`) || {};
-            const viewerIds = Object.keys(viewers).filter(id => id !== currentUser && (now - viewers[id] < 7000));
+            const viewerIds = Object.keys(viewers).filter(id => id !== currentUser && (now - viewers[id] < 10000));
 
             if(viewerIds.length > 0) {
                 partnerId = viewerIds[Math.floor(Math.random() * viewerIds.length)];
