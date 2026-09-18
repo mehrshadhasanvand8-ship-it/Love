@@ -58,7 +58,7 @@
             font-size: 16px;
         }
 
-        input, button {
+        input, select, button {
             width: 100%;
             padding: 10px;
             margin-top: 6px;
@@ -218,6 +218,26 @@
             text-align: center;
             color: #fff;
         }
+
+        /* Modal styling for choosing users */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        }
+        .modal-content {
+            background: var(--card-bg);
+            border: 1px solid var(--accent);
+            padding: 20px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 350px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -288,7 +308,7 @@
             </div>
 
             <div style="display: flex; gap: 6px; margin-bottom: 6px;">
-                <button id="camToggleBtn" onclick="toggleCamera()" style="background: #10b981; margin: 0; font-size: 11px;">📹 روشن کردن دوربین</button>
+                <button id="camToggleBtn" onclick="promptTargetAndToggleCamera()" style="background: #10b981; margin: 0; font-size: 11px;">📹 روشن کردن دوربین و انتخاب شخص</button>
                 <button onclick="openInviteModal()" style="background: #8b5cf6; margin: 0; font-size: 11px;">📩 دعوت از دوست</button>
                 <button onclick="closePlayer()" style="background: #ef4444; margin: 0; font-size: 11px;">خروج</button>
             </div>
@@ -418,13 +438,13 @@
         }
     }
 
-    /* سیستم اتصال دوطرفه PeerJS به‌روزرسانی شده */
     function initPeer() {
         if(peer) peer.destroy();
         peer = new Peer(currentUser);
 
         peer.on('call', (call) => {
             partnerId = call.peer;
+            currentRoomId = [currentUser, partnerId].sort().join('_');
             document.getElementById('partnerLabel').innerText = `پارتنر: ${partnerId}`;
             
             if (localStream) {
@@ -450,17 +470,48 @@
         });
     }
 
-    async function toggleCamera() {
+    /* تابع جدید: دریافت لیست کاربران آنلاین و نمایش به کاربر جهت انتخاب شخص مورد نظر برای نمایش تصویر */
+    async function promptTargetAndToggleCamera() {
         const btn = document.getElementById('camToggleBtn');
 
         if(localStream) {
             localStream.getTracks().forEach(track => track.stop());
             localStream = null;
             document.getElementById('myCam').srcObject = null;
-            btn.innerText = '📹 روشن کردن دوربین';
+            btn.innerText = '📹 روشن کردن دوربین و انتخاب شخص';
             btn.style.background = '#10b981';
             return;
         }
+
+        // دریافت کاربران آنلاین از سرور
+        const onlineUsers = await fbGet('online') || {};
+        const now = Date.now();
+        const availableUsers = Object.keys(onlineUsers).filter(u => u !== currentUser && (now - onlineUsers[u] < 7000));
+
+        if(availableUsers.length === 0) {
+            alert('در حال حاضر کاربر آنلاین دیگری در اتاق حضور ندارد.');
+            return;
+        }
+
+        // ساخت پنجره انتخاب کاربر
+        let listStr = availableUsers.map((u, index) => `${index + 1}. ${u}`).join('\n');
+        let choice = prompt(`کاربران آنلاین در این صفحه:\n${listStr}\n\nشماره یا نام کاربری فردی که می‌خواهید تصویر خود را به او نشان دهید وارد کنید:`);
+        
+        if(!choice) return;
+
+        let targetId = choice.trim();
+        // اگر کاربر شماره وارد کرده بود
+        if(!isNaN(targetId) && availableUsers[parseInt(targetId) - 1]) {
+            targetId = availableUsers[parseInt(targetId) - 1];
+        }
+
+        if(!availableUsers.includes(targetId)) {
+            return alert('کاربر مورد نظر معتبر نیست یا آنلاین نیست.');
+        }
+
+        partnerId = targetId;
+        currentRoomId = [currentUser, partnerId].sort().join('_');
+        document.getElementById('partnerLabel').innerText = `پارتنر: ${partnerId}`;
 
         try {
             localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
@@ -468,10 +519,10 @@
             btn.innerText = '🎥 خاموش کردن دوربین';
             btn.style.background = '#f59e0b';
 
-            // اگر پارتنری مشخص شده باشد، فوراً تماس دوطرفه را برقرار می‌کنیم
-            if(partnerId && peer) {
-                connectToPartner(partnerId);
-            }
+            connectToPartner(partnerId);
+            // ارسال درخواست ویدیو به کاربر مورد نظر
+            await fbSet(`requests/${partnerId}`, { from: currentUser, roomId: currentRoomId, movie: currentMovieId });
+            alert(`تصویر و درخواست اتصال به ${partnerId} ارسال شد!`);
         } catch(e) {
             alert('دسترسی به دوربین و میکروفون رد شد.');
         }
@@ -479,11 +530,8 @@
 
     function connectToPartner(targetId) {
         if(!peer || !localStream || !targetId) return;
-        partnerId = targetId;
-        document.getElementById('partnerLabel').innerText = `پارتنر: ${partnerId}`;
-
         try {
-            const call = peer.call(partnerId, localStream);
+            const call = peer.call(targetId, localStream);
             if(call) {
                 call.on('stream', (remoteStream) => {
                     const partnerVid = document.getElementById('partnerCam');
@@ -683,11 +731,6 @@
         openPlayerUI(partnerId || 'در انتظار پارتنر...');
         document.getElementById('mainVideo').src = movie.url;
         document.getElementById('playingTitle').innerText = movie.title;
-
-        // اگر پارتنر مشخص بود و استریم آماده بود، اتصال ویدئویی را برقرار کن
-        if(partnerId && localStream) {
-            connectToPartner(partnerId);
-        }
     }
 
     function openPlayerUI(pLabel) {
