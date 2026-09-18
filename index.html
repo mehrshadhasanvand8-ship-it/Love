@@ -2,2085 +2,459 @@
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>فضای دو نفره شیشه‌ای پیشرفته</title>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Watch Party - بنفش و دارک آنلاین</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: Tahoma, sans-serif; -webkit-tap-highlight-color: transparent; }
-        
+        :root {
+            --bg-main: #09070f;
+            --card-bg: #130f26;
+            --accent: #8b5cf6;
+            --accent-hover: #7c3aed;
+            --text-light: #f3f4f6;
+            --text-muted: #9ca3af;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+
         body {
-            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            background-color: var(--bg-main);
+            color: var(--text-light);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow-x: hidden;
-            overflow-y: auto;
-            color: #fff;
-            padding: 10px;
+            padding: 15px;
         }
 
-        /* استایل اسکرول‌بار اختصاصی */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.2); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.3); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.5); }
-
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.07);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
-            border-radius: 24px;
-        }
-        
-        .screen {
-            display: none;
+        .container {
             width: 100%;
-            max-width: 420px;
-            padding: 22px;
+            max-width: 900px;
+            background: var(--card-bg);
+            border: 1px solid #2e2352;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.15);
+        }
+
+        h2, h3 {
+            color: var(--accent);
             text-align: center;
-            flex-direction: column;
-            gap: 12px;
-            max-height: 92vh;
-            overflow-y: auto;
-            overflow-x: hidden;
-            -webkit-overflow-scrolling: touch;
-            overscroll-behavior-y: contain;
-            margin: auto;
+            margin-bottom: 20px;
         }
-        .screen.active { display: flex; }
 
-        h2 { margin-bottom: 5px; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.3); font-size: 18px; }
-        p { font-size: 13px; color: rgba(255,255,255,0.7); }
+        input, button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 8px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            border: 1px solid #3b2d6b;
+            background: #0f0a21;
+            color: #fff;
+            outline: none;
+        }
 
-        /* تب‌های ورود / ثبت نام */
-        .auth-tabs { display: flex; gap: 8px; margin-bottom: 6px; background: rgba(0,0,0,0.2); padding: 4px; border-radius: 14px; }
-        .auth-tab { flex: 1; padding: 8px; border: none; background: transparent; color: rgba(255,255,255,0.6); font-weight: bold; border-radius: 10px; cursor: pointer; transition: 0.3s; font-size: 13px; }
-        .auth-tab.active-tab { background: rgba(255,255,255,0.2); color: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+        input:focus {
+            border-color: var(--accent);
+        }
 
-        input, textarea, select {
-            width: 100%; padding: 11px 14px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 12px; color: #fff; font-size: 13px; outline: none;
+        button {
+            background: var(--accent);
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
             transition: 0.3s;
         }
-        input:focus, textarea:focus, select:focus { border-color: #2481cc; background: rgba(255, 255, 255, 0.15); }
-        input::placeholder, textarea::placeholder { color: rgba(255, 255, 255, 0.5); }
-        option { background: #24243e; color: #fff; }
 
-        .btn {
-            background: linear-gradient(135deg, #2481cc, #1e72b5);
-            border: none; color: white; padding: 11px;
-            border-radius: 12px; font-size: 14px; font-weight: bold; cursor: pointer;
-            box-shadow: 0 4px 15px rgba(36, 129, 204, 0.4);
-            transition: 0.3s;
-        }
-        .btn:hover { opacity: 0.9; transform: translateY(-2px); }
-        .btn-secondary { background: linear-gradient(135deg, #11998e, #38ef7d); box-shadow: 0 4px 15px rgba(17, 153, 142, 0.4); }
-        .btn-chat { background: linear-gradient(135deg, #2b98f0, #0077db); }
-        .btn-game { background: linear-gradient(135deg, #f7b733, #fc4a1a); box-shadow: 0 4px 15px rgba(247, 183, 51, 0.4); }
-        .btn-emoji { background: linear-gradient(135deg, #ff416c, #ff4b2b); box-shadow: 0 4px 15px rgba(255, 65, 108, 0.4); }
-        .btn-movie { background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045); box-shadow: 0 4px 15px rgba(131, 58, 180, 0.4); }
-        .btn-ghor { background: linear-gradient(135deg, #eb3349, #f45c43); box-shadow: 0 4px 15px rgba(235, 51, 73, 0.4); }
-        .btn-moment { background: linear-gradient(135deg, #ff9966, #ff5e62); box-shadow: 0 4px 15px rgba(255, 94, 98, 0.4); }
-        .btn-voice { background: linear-gradient(135deg, #00c6ff, #0072ff); box-shadow: 0 4px 15px rgba(0, 198, 255, 0.4); }
-        .btn-video { background: linear-gradient(135deg, #a80077, #667db6); box-shadow: 0 4px 15px rgba(168, 0, 119, 0.4); }
-        .btn-pasor { background: linear-gradient(135deg, #8e2de2, #4a00e0); box-shadow: 0 4px 15px rgba(142, 45, 226, 0.4); }
-
-        .online-badge {
-            background: rgba(76, 209, 55, 0.2);
-            border: 1px solid rgba(76, 209, 55, 0.4);
-            color: #4cd137; padding: 3px 8px; border-radius: 8px;
-            font-size: 11px; display: inline-flex; align-items: center; gap: 4px;
+        button:hover {
+            background: var(--accent-hover);
         }
 
-        #global-room-alert, #invite-modal-alert, #incoming-call-modal {
-            position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-180px);
-            background: rgba(20, 20, 35, 0.95); border: 1px solid rgba(56, 239, 125, 0.6);
-            backdrop-filter: blur(15px); padding: 15px 22px; border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.6); z-index: 99999;
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); text-align: center; width: 90%; max-width: 360px;
-        }
-        #global-room-alert.show, #invite-modal-alert.show, #incoming-call-modal.show { transform: translateX(-50%) translateY(0); }
+        .hidden { display: none !important; }
 
-        #exit-confirm-modal, #delete-room-modal {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(0,0,0,0.7); backdrop-filter: blur(8px);
-            display: none; justify-content: center; align-items: center; z-index: 999999;
-        }
-        #exit-confirm-modal.active, #delete-room-modal.active { display: flex; }
-
-        /* نقاشی */
-        #paint-screen { width: 95vw; max-width: 800px; height: 92vh; padding: 15px; gap: 12px; }
-        header { display: flex; justify-content: space-between; align-items: center; padding: 5px 10px; flex-wrap: wrap; gap: 8px; }
-        .toolbar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-        .tool-btn, input[type="color"] {
-            background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 7px 10px; border-radius: 10px; color: white; cursor: pointer; font-size: 12px;
-        }
-        .tool-btn.active { background: rgba(255, 255, 255, 0.3); border-color: #fff; }
-        input[type="color"] { padding: 2px; width: 36px; height: 32px; }
-        .canvas-container {
-            flex-grow: 1; background: #13131a; border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.1);
-            overflow: hidden; position: relative; touch-action: none; min-height: 250px;
-        }
-        canvas { display: block; cursor: crosshair; width: 100%; height: 100%; }
-
-        /* چت روم */
-        #chat-screen {
-            width: 95vw; max-width: 440px; height: 90vh; padding: 0; display: none; flex-direction: column; justify-content: space-between; overflow: hidden; border-radius: 20px;
-        }
-        #chat-screen.active { display: flex; }
-        .tg-header {
-            background: rgba(20, 20, 35, 0.7); backdrop-filter: blur(10px); padding: 12px 18px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .tg-profile { display: flex; align-items: center; gap: 12px; }
-        .tg-avatar {
-            width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #ff416c, #ff4b2b);
-            display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-        }
-        .tg-info h3 { font-size: 15px; color: #fff; }
-        .chat-messages {
-            flex-grow: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;
-            background: radial-gradient(circle at center, rgba(25,25,45,0.4) 0%, rgba(10,10,20,0.7) 100%);
-            -webkit-overflow-scrolling: touch;
-        }
-        .message {
-            max-width: 80%; padding: 10px 14px; border-radius: 16px; font-size: 13.5px; line-height: 1.5; word-break: break-word; position: relative; box-shadow: 0 3px 10px rgba(0,0,0,0.2);
-        }
-        .message.mine { background: rgba(43, 152, 240, 0.25); border: 1px solid rgba(43, 152, 240, 0.4); align-self: flex-start; border-bottom-right-radius: 4px; text-align: right; }
-        .message.theirs { background: rgba(255, 255, 255, 0.12); border: 1px solid rgba(255, 255, 255, 0.15); align-self: flex-end; border-bottom-left-radius: 4px; text-align: right; }
-        .msg-sender { font-size: 11px; font-weight: bold; color: #4cd137; margin-bottom: 3px; display: block; }
-        .msg-time { font-size: 9px; color: rgba(255, 255, 255, 0.5); float: left; margin-top: 4px; margin-right: 8px; }
-        .emoji-bar {
-            background: rgba(15, 15, 25, 0.5); padding: 6px 12px; display: flex; gap: 8px; overflow-x: auto; border-top: 1px solid rgba(255, 255, 255, 0.05); white-space: nowrap;
-        }
-        .emoji-bar span { cursor: pointer; font-size: 18px; transition: 0.2s; }
-        .emoji-bar span:hover { transform: scale(1.3); }
-        .tg-input-area {
-            background: rgba(20, 20, 35, 0.8); backdrop-filter: blur(10px); padding: 10px 15px; display: flex; align-items: center; gap: 10px; border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .tg-input-area input { background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 20px; padding: 10px 16px; font-size: 14px; }
-        .send-btn {
-            background: #2481cc; border: none; width: 42px; height: 42px; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 3px 10px rgba(36,129,204,0.5); transition: 0.2s; flex-shrink: 0;
+        .movie-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
         }
 
-        /* دوز */
-        #game-screen { width: 90vw; max-width: 380px; padding: 22px; display: none; flex-direction: column; align-items: center; gap: 14px; }
-        #game-screen.active { display: flex; }
-        .game-status { font-size: 14px; font-weight: bold; color: #f7b733; text-align: center; }
-        .tic-tac-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 100%; aspect-ratio: 1; }
-        .tic-cell {
-            background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 16px; font-size: 40px; font-weight: bold; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; user-select: none;
-        }
-        .tic-cell.x { color: #ff416c; text-shadow: 0 0 10px rgba(255,65,108,0.5); }
-        .tic-cell.o { color: #38ef7d; text-shadow: 0 0 10px rgba(56,239,125,0.5); }
-
-        /* پاسور / حکم شیشه‌ای */
-        #pasor-screen { width: 95vw; max-width: 480px; height: 92vh; padding: 15px; display: none; flex-direction: column; gap: 10px; overflow-y: auto; }
-        #pasor-screen.active { display: flex; }
-        .pasor-board { background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 20px; padding: 12px; display: flex; flex-direction: column; gap: 10px; align-items: center; }
-        .cards-row { display: flex; justify-content: center; gap: 4px; width: 100%; flex-wrap: wrap; }
-        .glass-card {
-            width: 44px; height: 65px; background: rgba(255, 255, 255, 0.12);
-            border: 1px solid rgba(255, 255, 255, 0.3); backdrop-filter: blur(10px);
-            border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center;
-            font-size: 13px; font-weight: bold; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            user-select: none;
-        }
-        .glass-card.red { color: #ff4d4d; text-shadow: 0 0 8px rgba(255,77,77,0.6); }
-        .glass-card.black { color: #00d2ff; text-shadow: 0 0 8px rgba(0,210,255,0.6); }
-        .glass-card:hover, .glass-card:active { transform: translateY(-6px) scale(1.08); background: rgba(255, 255, 255, 0.25); border-color: #fff; }
-        .glass-card.played { opacity: 0.3; pointer-events: none; transform: scale(0.9); }
-        .played-table { display: flex; gap: 15px; justify-content: center; align-items: center; min-height: 75px; width: 100%; background: rgba(255,255,255,0.05); border-radius: 12px; border: 1px dashed rgba(255,255,255,0.2); }
-
-        /* ایموجی‌ساز */
-        #emoji-maker-screen { width: 95vw; max-width: 650px; height: 92vh; padding: 15px; display: none; flex-direction: column; gap: 12px; }
-        #emoji-maker-screen.active { display: flex; }
-        .emoji-canvas-box {
-            flex-grow: 1; background: rgba(15, 15, 25, 0.6); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 16px; position: relative; overflow: hidden; touch-action: none; min-height: 250px;
-        }
-        .placed-emoji { position: absolute; font-size: 48px; cursor: grab; user-select: none; padding: 10px; touch-action: none; transform-origin: center; }
-        .placed-emoji:active { cursor: grabbing; }
-        .emoji-tray-container { display: flex; flex-direction: column; gap: 6px; }
-        .emoji-tray {
-            background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 14px; padding: 8px; display: flex; gap: 8px; overflow-x: auto; white-space: nowrap; align-items: center;
-        }
-        .tray-item { font-size: 26px; cursor: pointer; padding: 4px; background: rgba(255,255,255,0.08); border-radius: 8px; display: inline-block; transition: 0.2s; }
-        .tray-item:hover { transform: scale(1.2); background: rgba(255,255,255,0.2); }
-
-        /* سینما */
-        #movie-screen { width: 98vw; max-width: 1000px; height: 95vh; padding: 15px; display: none; flex-direction: column; gap: 12px; overflow-y: auto; }
-        #movie-screen.active { display: flex; }
-        .movie-layout { display: flex; gap: 15px; flex-grow: 1; overflow: hidden; position: relative; min-height: 400px; }
-        @media (max-width: 768px) { .movie-layout { flex-direction: column; overflow-y: auto; } }
-        .movie-player-section { flex: 3; display: flex; flex-direction: column; gap: 10px; position: relative; }
-        .video-box {
-            flex-grow: 1; background: #000; border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.15); overflow: hidden; display: flex; align-items: center; justify-content: center; position: relative; min-height: 260px;
-        }
-        .video-box video { width: 100%; height: 100%; object-fit: contain; outline: none; }
-        .movie-url-bar { display: flex; gap: 8px; align-items: center; background: rgba(255,255,255,0.05); padding: 8px; border-radius: 12px; }
-        .movie-chat-section {
-            flex: 1.2; background: rgba(15, 15, 25, 0.4); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 16px; display: flex; flex-direction: column; overflow: hidden; max-height: 100%; min-height: 220px;
-        }
-        #floating-movie-chat {
-            display: none; position: fixed; bottom: 20px; left: 20px; width: 320px; max-width: 90vw; height: 260px;
-            background: rgba(20, 20, 35, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 16px; z-index: 2147483647; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.7); overflow: hidden;
-        }
-        #floating-movie-chat.active { display: flex; }
-
-        /* لحظات */
-        #moment-screen { width: 92vw; max-width: 420px; height: 90vh; padding: 15px; display: none; flex-direction: column; gap: 12px; }
-        #moment-screen.active { display: flex; }
-        .camera-view-box {
-            flex-grow: 1; background: #000; border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.2);
-            overflow: hidden; position: relative; display: flex; justify-content: center; align-items: center; min-height: 220px;
-        }
-        .camera-view-box video, .camera-view-box canvas { width: 100%; height: 100%; object-fit: cover; }
-        .moments-gallery {
-            max-height: 140px; overflow-y: auto; background: rgba(0,0,0,0.3); border-radius: 12px; padding: 8px; display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; -webkit-overflow-scrolling: touch;
-        }
-        .moment-thumb { width: 60px; height: 60px; border-radius: 8px; object-fit: cover; border: 1px solid rgba(255,255,255,0.3); cursor: pointer; }
-
-        /* غر و قور */
-        #ghor-screen { width: 90vw; max-width: 440px; padding: 22px; display: none; flex-direction: column; gap: 14px; }
-        #ghor-screen.active { display: flex; }
-        .alert-banner {
-            background: rgba(235, 51, 73, 0.2); border: 1px solid rgba(235, 51, 73, 0.5); border-radius: 14px; padding: 12px; text-align: center;
-        }
-        .alert-banner.happy { background: rgba(56, 239, 125, 0.2); border-color: rgba(56, 239, 125, 0.5); }
-        .error-msg { color: #ff8080; font-size: 12px; min-height: 18px; }
-
-        .search-box-container {
-            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); border-radius: 16px; padding: 12px; margin-top: 5px; text-align: right;
-        }
-        .user-search-result-item {
-            display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.08); padding: 8px 12px; border-radius: 10px; margin-top: 6px; font-size: 13px;
+        .movie-card {
+            background: #0b0718;
+            border: 1px solid #2a1f4d;
+            border-radius: 12px;
+            overflow: hidden;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.2s;
         }
 
-        /* تماس صوتی و تصویری زنده */
-        .call-video-grid {
-            display: flex; flex-direction: column; gap: 12px; width: 100%; flex-grow: 1; min-height: 280px; position: relative;
+        .movie-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent);
         }
-        .video-wrapper {
-            position: relative; width: 100%; flex: 1; background: #000; border-radius: 16px; border: 1px solid rgba(255,255,255,0.2); overflow: hidden; display: flex; align-items: center; justify-content: center;
-        }
-        .video-wrapper video { width: 100%; height: 100%; object-fit: cover; }
-        .video-label { position: absolute; bottom: 8px; right: 12px; background: rgba(0,0,0,0.6); padding: 3px 8px; border-radius: 6px; font-size: 11px; }
-        .call-controls { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 10px; }
-        .pulse-avatar {
-            width: 90px; height: 90px; border-radius: 50%; background: linear-gradient(135deg, #00c6ff, #0072ff);
-            display: flex; align-items: center; justify-content: center; font-size: 36px; margin: 20px auto;
-            box-shadow: 0 0 25px rgba(0, 198, 255, 0.6); animation: pulse 2s infinite;
-        }
-        @keyframes pulse { 0% { transform: scale(0.95); } 50% { transform: scale(1.05); } 100% { transform: scale(0.95); } }
 
-        /* اتاق‌های اخیر */
-        .recent-rooms-box { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; justify-content: center; }
-        .recent-chip { background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); padding: 5px 10px; border-radius: 10px; font-size: 12px; cursor: pointer; transition: 0.2s; }
-        .recent-chip:hover { background: rgba(255,255,255,0.25); transform: translateY(-2px); }
+        .movie-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+
+        .movie-card p {
+            padding: 8px;
+            font-size: 13px;
+        }
+
+        .player-container {
+            position: relative;
+            width: 100%;
+            background: #000;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        video#mainVideo {
+            width: 100%;
+            max-height: 450px;
+            display: block;
+        }
+
+        .cam-overlay {
+            position: absolute;
+            bottom: 15px;
+            left: 15px;
+            display: flex;
+            gap: 10px;
+            z-index: 10;
+        }
+
+        .cam-overlay video {
+            width: 90px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 2px solid var(--accent);
+            background: #222;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .nav-tabs button {
+            margin: 0;
+            background: #1a1336;
+        }
+
+        .nav-tabs button.active {
+            background: var(--accent);
+        }
     </style>
 </head>
 <body>
 
-    <!-- اعلان‌های عمومی و پاپ‌آپ‌ها -->
-    <div id="global-room-alert">
-        <h4 style="font-size: 14px; color: #38ef7d; margin-bottom: 4px;" id="alert-room-title">🔔 اعلان جدید</h4>
-        <p style="font-size: 12.5px; color: rgba(255,255,255,0.9);" id="alert-room-desc">پیام جدید...</p>
+<div class="container">
+
+    <!-- ورود و ثبت‌نام -->
+    <div id="authSection">
+        <h2>💜 ورود به Watch Party (Firebase)</h2>
+        <input type="text" id="authId" placeholder="آیدی کاربری...">
+        <input type="password" id="authPass" placeholder="رمز عبور...">
+        <button onclick="login()">ورود</button>
+        <button onclick="register()" style="background: transparent; border: 1px solid var(--accent);">ثبت‌نام حساب جدید</button>
     </div>
 
-    <!-- اعلان دعوت نامه -->
-    <div id="invite-modal-alert">
-        <h4 style="font-size: 14px; color: #f7b733; margin-bottom: 6px;" id="invite-title">📩 دعوت‌نامه جدید</h4>
-        <p style="font-size: 12.5px; color: rgba(255,255,255,0.9); margin-bottom: 12px;" id="invite-desc">کاربری شما را دعوت کرد...</p>
-        <div style="display: flex; gap: 10px; justify-content: center;">
-            <button class="btn" style="padding: 8px 16px; font-size: 12px; background: #38ef7d;" onclick="respondInvite(true)">قبول 🟢</button>
-            <button class="btn" style="padding: 8px 16px; font-size: 12px; background: #eb3349;" onclick="respondInvite(false)">رد 🔴</button>
-        </div>
-    </div>
-
-    <!-- پاپ‌آپ سراسری دریافت تماس ورودی -->
-    <div id="incoming-call-modal">
-        <h4 style="font-size: 15px; color: #00c6ff; margin-bottom: 6px;" id="call-modal-title">📞 تماس ورودی</h4>
-        <p style="font-size: 13px; color: rgba(255,255,255,0.9); margin-bottom: 14px;" id="call-modal-desc">پارتنر شما در حال زنگ زدن است...</p>
-        <div style="display: flex; gap: 12px; justify-content: center;">
-            <button class="btn btn-secondary" style="padding: 9px 20px; font-size: 13px;" onclick="acceptIncomingCall()">پاسخ 🟢</button>
-            <button class="btn btn-ghor" style="padding: 9px 20px; font-size: 13px;" onclick="rejectIncomingCall()">رد 🔴</button>
-        </div>
-    </div>
-
-    <!-- مودال‌های تایید خروج و حذف -->
-    <div id="exit-confirm-modal">
-        <div class="glass-panel" style="width: 320px; padding: 25px; text-align: center;">
-            <h3 style="margin-bottom: 10px; font-size: 16px;">🚪 خروج از بخش</h3>
-            <p style="margin-bottom: 20px;">آیا می‌خواهید خارج شوید؟</p>
-            <div style="display: flex; gap: 10px; justify-content: center;">
-                <button class="btn" style="background: #eb3349; flex: 1;" onclick="confirmExit(true)">بله</button>
-                <button class="btn" style="background: rgba(255,255,255,0.2); flex: 1;" onclick="confirmExit(false)">خیر</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="delete-room-modal">
-        <div class="glass-panel" style="width: 320px; padding: 25px; text-align: center;">
-            <h3 style="margin-bottom: 10px; font-size: 16px; color: #eb3349;">⚠️ حذف کامل داده‌ها</h3>
-            <p style="margin-bottom: 20px; font-size: 13px;">آیا مطمئن هستید؟ همه داده‌ها پاک می‌شوند!</p>
-            <div style="display: flex; gap: 10px; justify-content: center;">
-                <button class="btn" style="background: #eb3349; flex: 1;" onclick="confirmDeleteRoom(true)">بله، حذف کن</button>
-                <button class="btn" style="background: rgba(255,255,255,0.2); flex: 1;" onclick="confirmDeleteRoom(false)">لغو</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- مرحله 1: منوی شروع -->
-    <div id="welcome-screen" class="screen glass-panel active">
-        <h2>✨ فضای اختصاصی دو نفره</h2>
-        <p>لطفاً وارد حساب خود شوید یا حساب جدید بسازید:</p>
-        
-        <div class="auth-tabs">
-            <button class="auth-tab active-tab" id="tab-login" onclick="setAuthMode('login')">🔑 ورود</button>
-            <button class="auth-tab" id="tab-register" onclick="setAuthMode('register')">🚀 ثبت نام</button>
+    <!-- پنل اصلی -->
+    <div id="appSection" class="hidden">
+        <div class="nav-tabs">
+            <button onclick="switchTab('movies')" class="active" id="tabMovies">🎬 بانک فیلم‌ها</button>
+            <button onclick="switchTab('friends')" id="tabFriends">👥 دوستان و سرچ</button>
+            <button onclick="switchTab('addMovie')" id="tabAdd">➕ افزودن فیلم</button>
         </div>
 
-        <div id="name-input-group" style="display: none;">
-            <input type="text" id="global-user-name" placeholder="نام و نام خانوادگی شما...">
-        </div>
-        <input type="text" id="global-user-id" placeholder="آیدی اختصاصی (مثال: my_id یا 1234)">
-        <input type="password" id="global-user-pass" placeholder="رمز عبور حساب کاربری">
-        
-        <div id="welcome-error" class="error-msg"></div>
-        <button class="btn" id="welcome-submit-btn" onclick="submitAuth()">ورود به حساب کاربری 🔑</button>
-    </div>
-
-    <!-- مرحله 2: ورود یا ساخت اتاق جدید مشترک -->
-    <div id="room-entry-screen" class="screen glass-panel">
-        <h2>🔑 انتخاب یا ساخت اتاق مشترک</h2>
-        <p id="room-welcome-user-txt">کد و رمز اتاق مشترک خود را وارد کنید:</p>
-        <input type="text" id="main-room-code" placeholder="کد اتاق (مثلاً: love2026 یا 8899)">
-        <input type="password" id="main-room-pass" placeholder="رمز عبور اتاق">
-        <div id="room-entry-error" class="error-msg"></div>
-        <div style="display: flex; gap: 10px;">
-            <button class="btn" style="flex: 1;" onclick="joinMainRoom()">ورود به اتاق 🚪</button>
-            <button class="btn btn-secondary" style="flex: 1;" onclick="createMainRoom()">ساخت اتاق جدید ➕</button>
+        <!-- لیست فیلم‌ها -->
+        <div id="moviesTab">
+            <h3>فیلم‌های آنلاین دیتابیس</h3>
+            <div class="movie-grid" id="movieList"></div>
         </div>
 
-        <!-- بخش اتاق‌های اخیر -->
-        <div style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px;">
-            <p style="font-size: 12px; color: #f7b733;">🕒 اتاق‌های اخیر شما:</p>
-            <div id="recent-rooms-container" class="recent-rooms-box"></div>
-        </div>
-
-        <button class="tool-btn" onclick="goToScreen('welcome-screen')" style="margin-top: 8px;">⬅️ خروج از حساب</button>
-    </div>
-
-    <!-- ویرایش پروفایل -->
-    <div id="profile-edit-screen" class="screen glass-panel">
-        <h2>⚙️ ویرایش پروفایل</h2>
-        <p>می‌توانید نام، آیدی یا رمز خود را تغییر دهید:</p>
-        <input type="text" id="edit-user-name" placeholder="نام جدید...">
-        <input type="text" id="edit-user-id" placeholder="آیدی جدید...">
-        <input type="password" id="edit-user-pass" placeholder="رمز عبور جدید...">
-        <div id="profile-error" class="error-msg"></div>
-        <button class="btn" onclick="saveProfileChanges()">ذخیره تغییرات ✅</button>
-        <button class="tool-btn" onclick="goToScreen('hub-screen')" style="margin-top: 5px;">⬅️ بازگشت</button>
-    </div>
-
-    <!-- منوی اصلی (Hub) -->
-    <div id="hub-screen" class="screen glass-panel">
-        <h2>✨ فضای دونفره شیشه‌ای</h2>
-        <p id="welcome-msg-hub">سلام عزیزم!</p>
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 2px;">
-            <div style="font-size: 11px; color: #38ef7d;" id="my-profile-badge">آیدی: - | اتاق: -</div>
-            <button class="tool-btn" style="font-size: 10px; padding: 4px 8px; background: rgba(255,255,255,0.15);" onclick="openProfileEdit()">✏️ ویرایش</button>
-        </div>
-        
-        <div class="search-box-container">
-            <h4 style="font-size: 12px; margin-bottom: 6px; color: #f7b733;">🔍 جستجوی کاربر و ارسال دعوت‌نامه:</h4>
-            <div style="display: flex; gap: 6px; margin-bottom: 6px;">
-                <input type="text" id="search-user-input" placeholder="جستجوی آیدی..." style="padding: 8px 10px; font-size: 12px;">
-                <button class="btn" style="padding: 8px 12px; font-size: 12px;" onclick="searchUser()">پیدا کن</button>
-            </div>
-            <div id="search-result-box"></div>
-        </div>
-
-        <button class="btn btn-voice" onclick="openSubFeature('voice')">🎙️ تماس صوتی زنده (وویس آنلاین)</button>
-        <button class="btn btn-video" onclick="openSubFeature('video')">📹 تماس تصویری زنده (دوربین آنلاین)</button>
-        <button class="btn" onclick="openSubFeature('paint')">🎨 اتاق نقاشی آنلاین</button>
-        <button class="btn btn-chat" onclick="openSubFeature('chat')">💬 چت روم تلگرامی</button>
-        <button class="btn btn-game" onclick="openSubFeature('game')">🎮 بازی دوز دو نفره</button>
-        <button class="btn btn-pasor" onclick="openSubFeature('pasor')">🃏 بازی پاسور / حکم شیشه‌ای</button>
-        <button class="btn btn-emoji" onclick="openSubFeature('emoji')">🧩 کارگاه ساخت ایموجی</button>
-        <button class="btn btn-movie" onclick="openSubFeature('movie')">🎬 فیلم دیدن ♥️🥹</button>
-        <button class="btn btn-moment" onclick="openSubFeature('moment')">📸 ثبت لحظات (عکاسی دونفره)</button>
-        <button class="btn btn-ghor" onclick="openSubFeature('ghor')">🤬 اتاق غر و قور 🤬</button>
-        
-        <div style="display: flex; gap: 8px; margin-top: 10px;">
-            <button class="tool-btn" style="background: rgba(235, 51, 73, 0.5); flex: 1;" onclick="leaveCurrentRoom()">🚪 خروج از اتاق</button>
-            <button class="tool-btn" style="background: rgba(235, 51, 73, 0.9); flex: 1;" onclick="deleteActiveMainRoom()">🗑️ حذف کلی اتاق</button>
-        </div>
-    </div>
-
-    <!-- تماس صوتی زنده -->
-    <div id="voice-screen" class="screen glass-panel">
-        <header style="padding:0; width:100%;">
-            <div style="font-weight:bold; font-size:14px;" id="voice-room-title">تماس صوتی زنده</div>
-            <button class="tool-btn" style="background: rgba(56, 239, 125, 0.3); padding: 4px 8px; font-size: 11px;" onclick="goToScreen('hub-screen')">🏠 منو</button>
-        </header>
-
-        <div class="pulse-avatar">🎙️</div>
-        <div id="voice-status-text" style="font-size: 13px; color: #f7b733; margin-bottom: 10px;">آماده برقراری تماس صوتی...</div>
-
-        <div class="call-controls">
-            <button class="btn btn-secondary" id="btn-start-voice" onclick="startCall('audio')">📞 شروع تماس صوتی</button>
-            <button class="btn btn-chat" id="btn-answer-voice" style="display:none;" onclick="answerCall('audio')">🟢 پاسخ به تماس</button>
-            <button class="btn tool-btn" id="btn-mute-voice" onclick="toggleMuteAudio()">🎙️ قطع/وصل میکروفون</button>
-            <button class="btn btn-ghor" onclick="endCall('audio')">🔴 قطع تماس</button>
-        </div>
-        <audio id="remoteAudio" autoplay playsinline></audio>
-    </div>
-
-    <!-- تماس تصویری زنده -->
-    <div id="video-screen" class="screen glass-panel" style="width: 95vw; max-width: 500px; height: 90vh;">
-        <header style="padding:0; width:100%;">
-            <div style="font-weight:bold; font-size:14px;" id="video-room-title">تماس تصویری زنده</div>
-            <button class="tool-btn" style="background: rgba(56, 239, 125, 0.3); padding: 4px 8px; font-size: 11px;" onclick="goToScreen('hub-screen')">🏠 منو</button>
-        </header>
-
-        <div class="call-video-grid">
-            <div class="video-wrapper">
-                <video id="remoteVideo" autoplay playsinline></video>
-                <span class="video-label">تصویر پارتنر</span>
-            </div>
-            <div class="video-wrapper" style="max-height: 140px;">
-                <video id="localVideo" autoplay playsinline muted></video>
-                <span class="video-label">تصویر شما</span>
-            </div>
-        </div>
-
-        <div id="video-status-text" style="font-size: 12px; color: #f7b733;">آماده برای تماس تصویری...</div>
-
-        <div class="call-controls">
-            <button class="btn btn-video" id="btn-start-video" onclick="startCall('video')">📹 شروع تماس تصویری</button>
-            <button class="btn btn-secondary" id="btn-answer-video" style="display:none;" onclick="answerCall('video')">🟢 پاسخ به تماس</button>
-            <button class="btn tool-btn" onclick="toggleMuteAudio()">🎙️ میکروفون</button>
-            <button class="btn tool-btn" onclick="toggleMuteVideo()">📷 دوربین</button>
-            <button class="btn btn-ghor" onclick="endCall('video')">🔴 قطع تماس</button>
-        </div>
-    </div>
-
-    <!-- نقاشی -->
-    <div id="paint-screen" class="screen glass-panel">
-        <header>
-            <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 4px;">
-                <div style="font-weight: bold; font-size: 14px;" id="paint-room-title">اتاق: -</div>
-                <div class="online-badge" id="paint-online-count">🟢 آنلاین: 1</div>
-            </div>
-            <div class="toolbar">
-                <button class="tool-btn active" id="btn-pencil" onclick="setTool('pencil')">✏️ مداد</button>
-                <button class="tool-btn" id="btn-brush" onclick="setTool('brush')">🖌️ قلم‌مو</button>
-                <button class="tool-btn" id="btn-eraser" onclick="setTool('eraser')">🧹 پاک‌کن</button>
-                <select id="brush-size" onchange="updateSize(this.value)">
-                    <option value="2">باریک</option>
-                    <option value="5" selected>متوسط</option>
-                    <option value="12">ضخیم</option>
-                </select>
-                <input type="color" id="color-picker" value="#ffffff" onchange="updateColor(this.value)">
-                <button class="tool-btn" style="background: rgba(255, 65, 108, 0.4);" onclick="clearCanvas()">🗑️ پاکسازی</button>
-                <button class="tool-btn" style="background: rgba(56, 239, 125, 0.3);" onclick="goToScreen('hub-screen')">🏠 منو</button>
-                <button class="tool-btn" style="background: rgba(235, 51, 73, 0.4);" onclick="promptExit('paint')">🚪 خروج</button>
-            </div>
-        </header>
-        <div class="canvas-container" id="canvas-box">
-            <canvas id="paintCanvas"></canvas>
-        </div>
-    </div>
-
-    <!-- چت -->
-    <div id="chat-screen" class="screen glass-panel">
-        <div class="tg-header">
-            <div class="tg-profile">
-                <div class="tg-avatar" id="partner-avatar">💬</div>
-                <div class="tg-info">
-                    <h3 id="chat-room-title">چت روم</h3>
-                    <span id="chat-online-count" style="font-size: 11px; color: #4cd137;">● افراد آنلاین: 1</span>
-                </div>
-            </div>
-            <div style="display: flex; gap: 4px;">
-                <button class="tool-btn" style="background: rgba(56, 239, 125, 0.3); padding: 5px 6px; font-size: 10px;" onclick="goToScreen('hub-screen')">🏠 منو</button>
-                <button class="tool-btn" style="background: rgba(235, 51, 73, 0.4); padding: 5px 6px; font-size: 10px;" onclick="promptExit('chat')">🚪 خروج</button>
-            </div>
-        </div>
-        <div class="chat-messages" id="chat-messages-box"></div>
-        <div class="emoji-bar">
-            <span onclick="addEmoji('❤️')">❤️</span>
-            <span onclick="addEmoji('😍')">😍</span>
-            <span onclick="addEmoji('🔥')">🔥</span>
-            <span onclick="addEmoji('✨')">✨</span>
-            <span onclick="addEmoji('😂')">😂</span>
-            <span onclick="addEmoji('👍')">👍</span>
-            <span onclick="addEmoji('😘')">😘</span>
-            <span onclick="addEmoji('🌹')">🌹</span>
-        </div>
-        <div class="tg-input-area">
-            <input type="text" id="chat-input-msg" placeholder="پیام..." onkeypress="handleChatKeyPress(event)">
-            <button class="send-btn" onclick="sendChatMessage()">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-            </button>
-        </div>
-    </div>
-
-    <!-- دوز -->
-    <div id="game-screen" class="screen glass-panel">
-        <header style="padding: 0; width: 100%; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center;">
-            <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 3px;">
-                <div style="font-weight: bold; font-size: 13px;" id="game-room-title">دوز: -</div>
-                <div class="online-badge" id="game-online-count" style="font-size: 10px; padding: 2px 6px;">🟢 آنلاین: 1</div>
-            </div>
-            <div style="display: flex; gap: 4px;">
-                <button class="tool-btn" style="background: rgba(56, 239, 125, 0.3); padding: 4px 6px; font-size: 10px;" onclick="goToScreen('hub-screen')">🏠 منو</button>
-                <button class="tool-btn" style="background: rgba(235, 51, 73, 0.4); padding: 4px 6px; font-size: 10px;" onclick="promptExit('game')">🚪 خروج</button>
-            </div>
-        </header>
-
-        <div style="display: flex; gap: 10px; margin-bottom: 8px; width: 100%;">
-            <button class="btn" style="flex: 1; padding: 8px; font-size: 12px; background: #ff416c;" onclick="chooseSymbol('X')">انتخاب ❌</button>
-            <button class="btn" style="flex: 1; padding: 8px; font-size: 12px; background: #38ef7d;" onclick="chooseSymbol('O')">انتخاب ⭕</button>
-        </div>
-
-        <div class="game-status" id="game-status-text">نماد خود را انتخاب کنید...</div>
-        <div class="tic-tac-grid" id="tic-grid">
-            <div class="tic-cell" data-index="0" onclick="makeMove(0)"></div>
-            <div class="tic-cell" data-index="1" onclick="makeMove(1)"></div>
-            <div class="tic-cell" data-index="2" onclick="makeMove(2)"></div>
-            <div class="tic-cell" data-index="3" onclick="makeMove(3)"></div>
-            <div class="tic-cell" data-index="4" onclick="makeMove(4)"></div>
-            <div class="tic-cell" data-index="5" onclick="makeMove(5)"></div>
-            <div class="tic-cell" data-index="6" onclick="makeMove(6)"></div>
-            <div class="tic-cell" data-index="7" onclick="makeMove(7)"></div>
-            <div class="tic-cell" data-index="8" onclick="makeMove(8)"></div>
-        </div>
-        <button class="btn btn-game" style="padding: 8px; font-size: 13px; display: none; margin-top: 10px;" id="reset-game-btn" onclick="resetGame()">شروع مجدد</button>
-    </div>
-
-    <!-- پاسور / حکم شیشه‌ای -->
-    <div id="pasor-screen" class="screen glass-panel">
-        <header style="padding: 0; width: 100%; display: flex; justify-content: space-between; align-items: center;">
-            <div style="font-weight: bold; font-size: 14px;">🃏 پاسور حکم شیشه‌ای</div>
-            <button class="tool-btn" style="background: rgba(56, 239, 125, 0.3); padding: 4px 8px; font-size: 11px;" onclick="goToScreen('hub-screen')">🏠 منو</button>
-        </header>
-
-        <div style="display: flex; justify-content: space-around; width: 100%; background: rgba(0,0,0,0.3); padding: 8px; border-radius: 12px;">
-            <span style="color: #38ef7d; font-size: 13px;">امتیاز شما: <b id="pasor-my-score">0</b></span>
-            <span style="color: #ff416c; font-size: 13px;">امتیاز حریف: <b id="pasor-partner-score">0</b></span>
-        </div>
-
-        <div class="pasor-board">
-            <p style="font-size: 12px; color: #f7b733;" id="pasor-turn-txt">نوبت بازی: ...</p>
+        <!-- سرچ و دوستان -->
+        <div id="friendsTab" class="hidden">
+            <h3>جستجوی آیدی دوست</h3>
+            <input type="text" id="searchFriendId" placeholder="آیدی دوست را وارد کنید...">
+            <button onclick="addFriend()">افزودن به لیست دوستان</button>
             
-            <div class="played-table" id="pasor-played-table">
-                <span style="font-size: 11px; color: rgba(255,255,255,0.4);">کارت‌های زمین...</span>
-            </div>
-
-            <p style="font-size: 12px; color: rgba(255,255,255,0.8); width: 100%; text-align: right;">🎴 دست شما (۱۳ کارت):</p>
-            
-            <div class="cards-row" id="pasor-top-row"></div>
-            <div class="cards-row" id="pasor-bottom-row" style="margin-top: 4px;"></div>
+            <h3 style="margin-top: 20px;">لیست دوستان</h3>
+            <ul id="friendsList" style="list-style: none; padding: 0;"></ul>
         </div>
 
-        <button class="btn btn-pasor" style="padding: 9px; font-size: 13px;" onclick="initPasorGame()">🔄 شروع دست جدید</button>
-    </div>
-
-    <!-- ایموجی‌ساز -->
-    <div id="emoji-maker-screen" class="screen glass-panel">
-        <header style="padding: 0; display: flex; justify-content: space-between; align-items: center; width: 100%;">
-            <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 3px;">
-                <div style="font-weight: bold; font-size: 14px;" id="emoji-room-title">کارگاه: -</div>
-                <div class="online-badge" id="emoji-online-count" style="font-size: 10px; padding: 2px 6px;">🟢 آنلاین: 1</div>
-            </div>
-            <div style="display: flex; gap: 6px;">
-                <button class="tool-btn" style="background: rgba(255, 65, 108, 0.4); padding: 4px 8px; font-size: 11px;" onclick="clearEmojiCanvas()">🗑️ پاکسازی</button>
-                <button class="tool-btn" style="background: rgba(56, 239, 125, 0.3); padding: 4px 8px; font-size: 11px;" onclick="goToScreen('hub-screen')">🏠 منو</button>
-            </div>
-        </header>
-
-        <div class="emoji-canvas-box" id="emoji-canvas-box">
-            <span style="position: absolute; top: 10px; left: 50%; transform: translateX(-50%); color: rgba(255,255,255,0.4); font-size: 11px; pointer-events: none;">کشیدن با انگشت=جابجایی | دو بار کلیک=حذف</span>
+        <!-- افزودن فیلم -->
+        <div id="addMovieTab" class="hidden">
+            <h3>ثبت فیلم جدید در سرور آنلاین</h3>
+            <input type="text" id="movieTitle" placeholder="نام فیلم...">
+            <input type="text" id="movieCover" placeholder="لینک عکس پوستر (URL)...">
+            <input type="text" id="movieUrl" placeholder="لینک مستقیم فایل ویدیو (MP4)...">
+            <button onclick="saveMovie()">ثبت عمومی فیلم</button>
         </div>
 
-        <div class="emoji-tray-container" id="emoji-tray-container"></div>
-    </div>
-
-    <!-- فیلم -->
-    <div id="movie-screen" class="screen glass-panel">
-        <header style="padding: 0; display: flex; justify-content: space-between; align-items: center; width: 100%;">
-            <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 3px;">
-                <div style="font-weight: bold; font-size: 14px;" id="movie-room-title">سینما: -</div>
-                <div class="online-badge" id="movie-online-count" style="font-size: 10px; padding: 2px 6px;">🟢 آنلاین: 1</div>
-            </div>
-            <div style="display: flex; gap: 6px;">
-                <button class="tool-btn" style="background: rgba(56, 239, 125, 0.3); padding: 5px 8px; font-size: 11px;" onclick="goToScreen('hub-screen')">🏠 منو</button>
-            </div>
-        </header>
-
-        <div class="movie-layout">
-            <div class="movie-player-section">
-                <div class="video-box" id="video-container-box">
-                    <video id="sync-video" controls playsinline></video>
-                </div>
-                <div class="movie-url-bar">
-                    <input type="text" id="movie-url-input" placeholder="لینک مستقیم فیلم (مثل mp4.)">
-                    <button class="btn btn-movie" style="padding: 10px 16px; font-size: 13px;" onclick="changeMovieUrl()">بارگذاری</button>
-                    <button class="btn tool-btn" style="background: rgba(255,255,255,0.15); padding: 10px;" onclick="toggleVideoFullscreen()">🖨️ تمام‌صفحه</button>
+        <!-- پخش‌کننده فیلم و دوربین -->
+        <div id="playerTab" class="hidden">
+            <h3 id="playingTitle">در حال پخش...</h3>
+            <div class="player-container">
+                <video id="mainVideo" controls></video>
+                
+                <div class="cam-overlay">
+                    <video id="myCam" autoplay muted></video>
+                    <video id="partnerCam" autoplay></video>
                 </div>
             </div>
-            <div class="movie-chat-section">
-                <div class="tg-header" style="padding: 8px 12px;"><span style="font-size: 13px; font-weight: bold;">💬 چت سینما</span></div>
-                <div class="chat-messages" id="movie-chat-messages-box" style="flex-grow: 1; padding: 10px;"></div>
-                <div class="tg-input-area" style="padding: 8px;">
-                    <input type="text" id="movie-chat-input" placeholder="پیام..." onkeypress="handleMovieChatKeyPress(event)">
-                    <button class="send-btn" style="width: 36px; height: 36px;" onclick="sendMovieChatMessage()">
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-                    </button>
-                </div>
-            </div>
+            <button onclick="closePlayer()" style="margin-top: 15px; background: #ef4444;">خروج از پخش</button>
         </div>
     </div>
 
-    <div id="floating-movie-chat">
-        <div class="tg-header" style="padding: 8px 12px;">
-            <span style="font-size: 13px; font-weight: bold; color: #38ef7d;">💬 چت همزمان (فول‌اسکرین)</span>
-            <button class="tool-btn" style="padding: 2px 6px; font-size: 10px; background: rgba(235,51,73,0.4);" onclick="toggleFloatingChat(false)">بستن</button>
-        </div>
-        <div class="chat-messages" id="floating-chat-messages-box" style="flex-grow: 1; padding: 8px;"></div>
-        <div class="tg-input-area" style="padding: 6px;">
-            <input type="text" id="floating-chat-input" placeholder="پیام..." onkeypress="handleFloatingChatKeyPress(event)">
-            <button class="send-btn" style="width: 32px; height: 32px;" onclick="sendFloatingChatMessage()">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-            </button>
-        </div>
-    </div>
+</div>
 
-    <!-- لحظات -->
-    <div id="moment-screen" class="screen glass-panel">
-        <header style="padding: 0; display: flex; justify-content: space-between; align-items: center; width: 100%;">
-            <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 3px;">
-                <div style="font-weight: bold; font-size: 14px;" id="moment-room-title">لحظات: -</div>
-                <div class="online-badge" id="moment-online-count" style="font-size: 10px; padding: 2px 6px;">🟢 آنلاین: 1</div>
-            </div>
-            <div style="display: flex; gap: 6px;">
-                <button class="tool-btn" style="background: rgba(56, 239, 125, 0.3); padding: 5px 8px; font-size: 11px;" onclick="goToScreen('hub-screen')">🏠 منو</button>
-            </div>
-        </header>
+<script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+<script>
+    const DB_URL = "https://crazyapp-9663a-default-rtdb.firebaseio.com";
+    let currentUser = null;
+    let peer = null;
+    let isRemoteAction = false;
+    let currentRoomId = null;
 
-        <div class="camera-view-box" id="camera-box">
-            <video id="camera-video" autoplay playsinline muted></video>
-            <canvas id="camera-canvas" style="display:none;"></canvas>
-        </div>
+    // توابع REST API برای Firebase
+    async function fbGet(path) {
+        const res = await fetch(`${DB_URL}/${path}.json`);
+        return await res.json();
+    }
 
-        <button class="btn btn-moment" style="padding: 12px; font-size: 15px;" onclick="captureAndSendPhoto()">📸 گرفتن عکس و ارسال برای پارتنر</button>
+    async function fbSet(path, data) {
+        await fetch(`${DB_URL}/${path}.json`, {
+            method: 'PUT',
+            body: JSON.stringify(data)
+        });
+    }
 
-        <h4 style="font-size: 12px; text-align: right; color: rgba(255,255,255,0.7); margin-top: 4px;">📷 آلبوم خاطرات ذخیره‌شده:</h4>
-        <div class="moments-gallery" id="moments-gallery-box">
-            <span style="font-size: 11px; color: rgba(255,255,255,0.4); align-self: center;">هنوز عکسی ثبت نشده...</span>
-        </div>
-    </div>
+    // ثبت‌نام آنلاین
+    async function register() {
+        const id = document.getElementById('authId').value.trim();
+        const pass = document.getElementById('authPass').value.trim();
+        if(!id || !pass) return alert('آیدی و رمز را وارد کنید.');
 
-    <!-- غر و قور -->
-    <div id="ghor-screen" class="screen glass-panel">
-        <header style="padding: 0; display: flex; justify-content: space-between; align-items: center; width: 100%;">
-            <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 3px;">
-                <div style="font-weight: bold; font-size: 14px;" id="ghor-room-title">اتاق غر و قور: -</div>
-                <div class="online-badge" id="ghor-online-count" style="font-size: 10px; padding: 2px 6px;">🟢 آنلاین: 1</div>
-            </div>
-            <div style="display: flex; gap: 6px;">
-                <button class="tool-btn" style="background: rgba(56, 239, 125, 0.3); padding: 5px 8px; font-size: 11px;" onclick="goToScreen('hub-screen')">🏠 منو</button>
-            </div>
-        </header>
+        const user = await fbGet(`users/${id}`);
+        if(user) return alert('این آیدی قبلاً ثبت شده است.');
 
-        <div id="ghor-alert-box" class="alert-banner" style="display: none;">
-            <h3 id="ghor-alert-title" style="font-size: 15px; margin-bottom: 4px;">⚠️ اعلان جدید</h3>
-            <p id="ghor-alert-text" style="font-size: 13px;"></p>
-        </div>
+        await fbSet(`users/${id}`, { pass: pass, friends: {} });
+        alert('ثبت‌نام آنلاین با موفقیت انجام شد!');
+    }
 
-        <div style="display: flex; flex-direction: column; gap: 10px; text-align: right;">
-            <label style="font-size: 13px; color: rgba(255,255,255,0.8);">وضعیت امروزت:</label>
-            <select id="ghor-status-select" style="padding: 10px;">
-                <option value="happy">😊 امروز خوشحالم از دستش</option>
-                <option value="angry">🤬 امروز عصبیم و غر دارم!</option>
-            </select>
-            <label style="font-size: 13px; color: rgba(255,255,255,0.8);">دلیلش چیه؟:</label>
-            <textarea id="ghor-reason-input" rows="3" placeholder="بنویس..." style="resize: none;"></textarea>
-            <button class="btn btn-ghor" onclick="submitGhorStatus()">ثبت و ارسال اعلان فوری 🚀</button>
-        </div>
+    // ورود آنلاین
+    async function login() {
+        const id = document.getElementById('authId').value.trim();
+        const pass = document.getElementById('authPass').value.trim();
+        const user = await fbGet(`users/${id}`);
 
-        <div style="background: rgba(0,0,0,0.2); border-radius: 12px; padding: 12px; text-align: right; max-height: 140px; overflow-y: auto;">
-            <h4 style="font-size: 13px; margin-bottom: 6px; color: #f45c43;">📜 تاریخچه:</h4>
-            <div id="ghor-history-box" style="font-size: 12px; color: rgba(255,255,255,0.8);">هنوز پیامی ثبت نشده...</div>
-        </div>
-    </div>
+        if(user && user.pass === pass) {
+            currentUser = id;
+            document.getElementById('authSection').classList.add('hidden');
+            document.getElementById('appSection').classList.remove('hidden');
+            initPeer();
+            loadMovies();
+            loadFriends();
+            listenToWatchRequests();
+        } else {
+            alert('آیدی یا رمز عبور اشتباه است.');
+        }
+    }
 
-    <!-- جاوااسکریپت کامل برنامه -->
-    <script>
-        const firebaseConfig = {
-            databaseURL: "https://crazyapp-9663a-default-rtdb.firebaseio.com"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
+    function initPeer() {
+        peer = new Peer(currentUser);
+        peer.on('call', (call) => {
+            navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
+                document.getElementById('myCam').srcObject = stream;
+                call.answer(stream);
+                call.on('stream', (remoteStream) => {
+                    document.getElementById('partnerCam').srcObject = remoteStream;
+                });
+            });
+        });
+    }
 
-        let globalUserName = localStorage.getItem('global_user_name') || "";
-        let globalUserId = localStorage.getItem('global_user_id') || "";
-        let globalUserPass = localStorage.getItem('global_user_pass') || "";
-        let activeMainRoomCode = localStorage.getItem('active_main_room_code') || "";
-        let authMode = 'login';
+    function switchTab(tab) {
+        document.getElementById('moviesTab').classList.add('hidden');
+        document.getElementById('friendsTab').classList.add('hidden');
+        document.getElementById('addMovieTab').classList.add('hidden');
+        document.getElementById('playerTab').classList.add('hidden');
 
-        window.onload = function() {
-            renderRecentRooms();
-            if (globalUserName && globalUserId && globalUserPass) {
-                if (activeMainRoomCode) {
-                    enterMainHub(activeMainRoomCode);
-                } else {
-                    document.getElementById('room-welcome-user-txt').innerText = `سلام ${globalUserName} عزیز! کد و رمز اتاق مشترک را وارد کنید:`;
-                    goToScreen('room-entry-screen');
+        if(tab === 'movies') document.getElementById('moviesTab').classList.remove('hidden');
+        if(tab === 'friends') document.getElementById('friendsTab').classList.remove('hidden');
+        if(tab === 'addMovie') document.getElementById('addMovieTab').classList.remove('hidden');
+    }
+
+    // ثبت فیلم آنلاین در دیتابیس
+    async function saveMovie() {
+        const title = document.getElementById('movieTitle').value;
+        const cover = document.getElementById('movieCover').value;
+        const url = document.getElementById('movieUrl').value;
+
+        if(!title || !url) return alert('نام و لینک ویدیو الزامی است.');
+
+        const movieId = Date.now();
+        await fbSet(`movies/${movieId}`, { title, cover, url });
+        
+        alert('فیلم در دیتابیس آنلاین ثبت شد!');
+        loadMovies();
+        switchTab('movies');
+    }
+
+    // دریافت آنلاین لیست فیلم‌ها
+    async function loadMovies() {
+        const list = document.getElementById('movieList');
+        list.innerHTML = 'در حال دریافت فیلم‌ها...';
+        const movies = await fbGet('movies') || {};
+        list.innerHTML = '';
+
+        Object.values(movies).forEach((m) => {
+            const card = document.createElement('div');
+            card.className = 'movie-card';
+            card.innerHTML = `
+                <img src="${m.cover || 'https://via.placeholder.com/150'}" alt="${m.title}">
+                <p>${m.title}</p>
+            `;
+            card.onclick = () => startWatchingMovie(m.title, m.url);
+            list.appendChild(card);
+        });
+    }
+
+    // افزودن دوست
+    async function addFriend() {
+        const friendId = document.getElementById('searchFriendId').value.trim();
+        if(friendId === currentUser) return alert('نمی‌توانید خودتان را اضافه کنید.');
+
+        const user = await fbGet(`users/${friendId}`);
+        if(!user) return alert('کاربری با این آیدی یافت نشد.');
+
+        await fbSet(`users/${currentUser}/friends/${friendId}`, true);
+        alert('دوست با موفقیت اضافه شد!');
+        loadFriends();
+    }
+
+    // بارگذاری لیست دوستان
+    async function loadFriends() {
+        const list = document.getElementById('friendsList');
+        list.innerHTML = '';
+        const user = await fbGet(`users/${currentUser}`);
+        const friends = user.friends || {};
+
+        Object.keys(friends).forEach(f => {
+            const li = document.createElement('li');
+            li.style.padding = '10px';
+            li.style.borderBottom = '1px solid #221a42';
+            li.style.display = 'flex';
+            li.style.justifyContent = 'space-between';
+            li.innerHTML = `<span>👤 ${f}</span> <button onclick="requestWatch('${f}')" style="width:auto; padding:5px 10px; margin:0;">درخواست تماشا</button>`;
+            list.appendChild(li);
+        });
+    }
+
+    // ارسال درخواست تماشای فیلم آنلاین
+    async function requestWatch(friendId) {
+        currentRoomId = `${currentUser}_${friendId}`;
+        await fbSet(`requests/${friendId}`, { from: currentUser, roomId: currentRoomId });
+        alert(`درخواست تماشا برای ${friendId} ارسال شد. منتظر تایید باشید...`);
+    }
+
+    // دریافت درخواست‌های تماشای آنلاین
+    function listenToWatchRequests() {
+        setInterval(async () => {
+            const req = await fbGet(`requests/${currentUser}`);
+            if(req) {
+                if(confirm(`کاربر ${req.from} درخواست تماشای هم‌زمان فیلم داده است. می‌پذیرید؟`)) {
+                    currentRoomId = req.roomId;
+                    await fbSet(`requests/${currentUser}`, null);
+                    startVideoChat(req.from);
+                    syncPlayerEvents();
                 }
-                initGlobalAppPresence(globalUserId, globalUserName);
-            } else {
-                goToScreen('welcome-screen');
             }
+        }, 3000);
+    }
 
-            populateEmojiTray();
+    // شروع هم‌زمانی و ویدیوچت
+    function startWatchingMovie(title, url) {
+        switchTab('player');
+        document.getElementById('playerTab').classList.remove('hidden');
+        document.getElementById('playingTitle').innerText = title;
+
+        const video = document.getElementById('mainVideo');
+        video.src = url;
+
+        if(!currentRoomId) currentRoomId = `room_${Date.now()}`;
+        syncPlayerEvents();
+    }
+
+    function startVideoChat(partnerId) {
+        navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
+            document.getElementById('myCam').srcObject = stream;
+            const call = peer.call(partnerId, stream);
+            call.on('stream', (remoteStream) => {
+                document.getElementById('partnerCam').srcObject = remoteStream;
+            });
+        });
+    }
+
+    // هم‌زمان‌سازی اکشن‌های پخش (Play / Pause / Seek) در دیتابیس
+    function syncPlayerEvents() {
+        const video = document.getElementById('mainVideo');
+
+        video.onplay = () => {
+            if(isRemoteAction) return;
+            fbSet(`rooms/${currentRoomId}`, { action: 'play', time: video.currentTime });
         };
 
-        function sanitizeKey(str) {
-            return str.replace(/[.#$\[\]]/g, "_");
-        }
-
-        /* --- سیستم مدیریت اتاق‌های اخیر --- */
-        function saveRecentRoom(code) {
-            let recents = JSON.parse(localStorage.getItem('recent_rooms_list') || '[]');
-            if(!recents.includes(code)) {
-                recents.unshift(code);
-                if(recents.length > 5) recents.pop();
-                localStorage.setItem('recent_rooms_list', JSON.stringify(recents));
-            }
-            renderRecentRooms();
-        }
-
-        function renderRecentRooms() {
-            const container = document.getElementById('recent-rooms-container');
-            if(!container) return;
-            let recents = JSON.parse(localStorage.getItem('recent_rooms_list') || '[]');
-            container.innerHTML = '';
-            if(recents.length === 0) {
-                container.innerHTML = '<span style="font-size:11px; color:rgba(255,255,255,0.4);">اتاق اخیری یافت نشد</span>';
-                return;
-            }
-            recents.forEach(code => {
-                const chip = document.createElement('div');
-                chip.className = 'recent-chip';
-                chip.innerText = `🚪 ${code}`;
-                chip.onclick = () => quickEnterRecentRoom(code);
-                container.appendChild(chip);
-            });
-        }
-
-        function quickEnterRecentRoom(code) {
-            db.ref('main_rooms/' + code).once('value', (s) => {
-                if(!s.exists()) {
-                    alert("این اتاق حذف شده است!");
-                    let recents = JSON.parse(localStorage.getItem('recent_rooms_list') || '[]');
-                    recents = recents.filter(c => c !== code);
-                    localStorage.setItem('recent_rooms_list', JSON.stringify(recents));
-                    renderRecentRooms();
-                } else {
-                    document.getElementById('main-room-code').value = code;
-                    document.getElementById('main-room-pass').value = s.val().pass || '';
-                    joinMainRoom();
-                }
-            });
-        }
-
-        /* --- 1. احراز هویت و حساب کاربری --- */
-        function setAuthMode(mode) {
-            authMode = mode;
-            document.getElementById('tab-login').classList.toggle('active-tab', mode === 'login');
-            document.getElementById('tab-register').classList.toggle('active-tab', mode === 'register');
-            document.getElementById('name-input-group').style.display = mode === 'register' ? 'block' : 'none';
-            document.getElementById('welcome-submit-btn').innerText = mode === 'register' ? 'ثبت نام و ایجاد حساب 🚀' : 'ورود به حساب کاربری 🔑';
-            document.getElementById('welcome-error').innerText = '';
-        }
-
-        function submitAuth() {
-            const uid = sanitizeKey(document.getElementById('global-user-id').value.trim().toLowerCase());
-            const pass = document.getElementById('global-user-pass').value.trim();
-            const err = document.getElementById('welcome-error');
-
-            if(!uid || !pass) { err.innerText = "لطفاً آیدی و رمز عبور را وارد کنید!"; return; }
-
-            if(authMode === 'register') {
-                const name = document.getElementById('global-user-name').value.trim();
-                if(!name) { err.innerText = "لطفاً نام خود را وارد کنید!"; return; }
-
-                db.ref('users/' + uid).once('value', (snapshot) => {
-                    if(snapshot.exists()) {
-                        err.innerText = "این آیدی قبلاً ثبت شده است!";
-                    } else {
-                        db.ref('users/' + uid).set({ name: name, pass: pass, online: true, lastSeen: Date.now() }, (error) => {
-                            if(!error) {
-                                saveUserDataLocal(name, uid, pass);
-                                goToRoomSelectScreen();
-                            }
-                        });
-                    }
-                });
-            } else {
-                db.ref('users/' + uid).once('value', (snapshot) => {
-                    if(!snapshot.exists()) {
-                        err.innerText = "کاربری با این آیدی یافت نشد!";
-                        return;
-                    }
-                    const uData = snapshot.val();
-                    if(uData.pass !== pass) {
-                        err.innerText = "رمز عبور اشتباه است!";
-                        return;
-                    }
-                    saveUserDataLocal(uData.name || uid, uid, pass);
-                    goToRoomSelectScreen();
-                });
-            }
-        }
-
-        function saveUserDataLocal(name, uid, pass) {
-            globalUserName = name;
-            globalUserId = uid;
-            globalUserPass = pass;
-            localStorage.setItem('global_user_name', name);
-            localStorage.setItem('global_user_id', uid);
-            localStorage.setItem('global_user_pass', pass);
-            initGlobalAppPresence(uid, name);
-        }
-
-        function goToRoomSelectScreen() {
-            document.getElementById('room-welcome-user-txt').innerText = `سلام ${globalUserName} عزیز! کد و رمز اتاق مشترک را وارد کنید:`;
-            renderRecentRooms();
-            goToScreen('room-entry-screen');
-        }
-
-        /* --- 2. مدیریت اتاق مشترک اصلی --- */
-        function createMainRoom() {
-            const rawCode = document.getElementById('main-room-code').value.trim();
-            const pass = document.getElementById('main-room-pass').value.trim();
-            const err = document.getElementById('room-entry-error');
-            if(!rawCode || !pass) { err.innerText = "کد اتاق و رمز عبور را کامل وارد کنید!"; return; }
-
-            const code = sanitizeKey(rawCode);
-            db.ref('main_rooms/' + code).once('value', (s) => {
-                if(s.exists()) { err.innerText = "این اتاق قبلاً ساخته شده!"; return; }
-                db.ref('main_rooms/' + code).set({ pass: pass, createdBy: globalUserId, createdAt: Date.now() }, (e) => {
-                    if(!e) {
-                        saveRecentRoom(code);
-                        enterMainHub(code);
-                    }
-                });
-            });
-        }
-
-        function joinMainRoom() {
-            const rawCode = document.getElementById('main-room-code').value.trim();
-            const pass = document.getElementById('main-room-pass').value.trim();
-            const err = document.getElementById('room-entry-error');
-            if(!rawCode || !pass) { err.innerText = "کد اتاق و رمز عبور را کامل وارد کنید!"; return; }
-
-            const code = sanitizeKey(rawCode);
-            db.ref('main_rooms/' + code).once('value', (s) => {
-                if(!s.exists()) { err.innerText = "اتاقی با این کد وجود ندارد!"; return; }
-                if(s.val().pass !== pass) { err.innerText = "رمز عبور اتاق اشتباه است!"; return; }
-                saveRecentRoom(code);
-                enterMainHub(code);
-            });
-        }
-
-        function enterMainHub(code) {
-            activeMainRoomCode = code;
-            localStorage.setItem('active_main_room_code', code);
-            document.getElementById('welcome-msg-hub').innerText = `سلام ${globalUserName} عزیز! خوش آمدید.`;
-            document.getElementById('my-profile-badge').innerText = `آیدی: @${globalUserId} | اتاق: ${code}`;
-            goToScreen('hub-screen');
-            listenToCallsInRoom(code);
-        }
-
-        function leaveCurrentRoom() {
-            localStorage.removeItem('active_main_room_code');
-            activeMainRoomCode = "";
-            goToRoomSelectScreen();
-        }
-
-        function deleteActiveMainRoom() {
-            if(!activeMainRoomCode) return;
-            if(confirm("آیا مطمئن هستید که می‌خواهید کل این اتاق و داده‌های آن را حذف کنید؟")) {
-                db.ref(`main_rooms/${activeMainRoomCode}`).remove();
-                db.ref(`calls/${activeMainRoomCode}`).remove();
-                db.ref(`chat_rooms/${activeMainRoomCode}`).remove();
-                db.ref(`tic_rooms/${activeMainRoomCode}`).remove();
-                db.ref(`pasor_rooms/${activeMainRoomCode}`).remove();
-                alert("اتاق به کلی حذف شد.");
-                leaveCurrentRoom();
-            }
-        }
-
-        function openProfileEdit() {
-            document.getElementById('edit-user-name').value = globalUserName;
-            document.getElementById('edit-user-id').value = globalUserId;
-            document.getElementById('edit-user-pass').value = globalUserPass;
-            document.getElementById('profile-error').innerText = '';
-            goToScreen('profile-edit-screen');
-        }
-
-        function saveProfileChanges() {
-            const newName = document.getElementById('edit-user-name').value.trim();
-            const newUid = sanitizeKey(document.getElementById('edit-user-id').value.trim().toLowerCase());
-            const newPass = document.getElementById('edit-user-pass').value.trim();
-            const err = document.getElementById('profile-error');
-
-            if(!newName || !newUid || !newPass) { err.innerText = "فیلدها نمی‌توانند خالی باشند!"; return; }
-
-            if(newUid !== globalUserId) {
-                db.ref('users/' + newUid).once('value', (s) => {
-                    if(s.exists()) { err.innerText = "این آیدی قبلاً گرفته شده است!"; return; }
-                    db.ref('users/' + globalUserId).remove();
-                    updateProfileDataInDb(newName, newUid, newPass);
-                });
-            } else {
-                updateProfileDataInDb(newName, newUid, newPass);
-            }
-        }
-
-        function updateProfileDataInDb(name, uid, pass) {
-            db.ref('users/' + uid).set({ name: name, pass: pass, online: true, lastSeen: Date.now() }, (e) => {
-                if(!e) {
-                    saveUserDataLocal(name, uid, pass);
-                    document.getElementById('welcome-msg-hub').innerText = `سلام ${name} عزیز!`;
-                    document.getElementById('my-profile-badge').innerText = `آیدی: @${uid} | اتاق: ${activeMainRoomCode}`;
-                    goToScreen('hub-screen');
-                }
-            });
-        }
-
-        function goToScreen(screenId) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            const targetScreen = document.getElementById(screenId);
-            if(targetScreen) targetScreen.classList.add('active');
-            if(screenId !== 'moment-screen') stopCameraStream();
-            if(screenId === 'paint-screen') setTimeout(initCanvasSize, 100);
-        }
-
-        /* --- ورود به بخش‌ها --- */
-        function openSubFeature(type) {
-            if(!activeMainRoomCode) {
-                alert("لطفاً ابتدا وارد یک اتاق شوید!");
-                goToRoomSelectScreen();
-                return;
-            }
-
-            if(type === 'voice') goToScreen('voice-screen');
-            else if(type === 'video') goToScreen('video-screen');
-            else if(type === 'paint') enterPaintRoom(activeMainRoomCode);
-            else if(type === 'chat') enterChatRoom(activeMainRoomCode);
-            else if(type === 'game') enterGameRoom(activeMainRoomCode);
-            else if(type === 'pasor') enterPasorRoom(activeMainRoomCode);
-            else if(type === 'emoji') enterEmojiRoom(activeMainRoomCode);
-            else if(type === 'movie') enterMovieRoom(activeMainRoomCode);
-            else if(type === 'moment') enterMomentRoom(activeMainRoomCode);
-            else if(type === 'ghor') enterGhorRoomDirect(activeMainRoomCode);
-        }
-
-        let pendingExitType = null;
-        function promptExit(roomType) {
-            pendingExitType = roomType;
-            document.getElementById('exit-confirm-modal').classList.add('active');
-        }
-
-        function confirmExit(yes) {
-            document.getElementById('exit-confirm-modal').classList.remove('active');
-            if(yes) goToScreen('hub-screen');
-            pendingExitType = null;
-        }
-
-        let pendingDeleteType = null;
-        function promptDeleteRoom(roomType) {
-            pendingDeleteType = roomType;
-            document.getElementById('delete-room-modal').classList.add('active');
-        }
-
-        function confirmDeleteRoom(yes) {
-            document.getElementById('delete-room-modal').classList.remove('active');
-            if(yes && pendingDeleteType && activeMainRoomCode) {
-                let prefixMap = { paint: 'paint_rooms', chat: 'chat_rooms', game: 'tic_rooms', pasor: 'pasor_rooms', emoji: 'emoji_rooms', movie: 'movie_rooms', moment: 'moment_rooms', ghor: 'ghor_rooms' };
-                let dbPath = prefixMap[pendingDeleteType];
-                if(dbPath) {
-                    db.ref(dbPath + '/' + activeMainRoomCode).remove().then(() => {
-                        alert("داده‌های این بخش پاکسازی شدند.");
-                        goToScreen('hub-screen');
-                    });
-                }
-            }
-            pendingDeleteType = null;
-        }
-
-        /* --- 3. سیستم آنلاین بودن و دعوت کاربران --- */
-        let currentInviteData = null;
-        function initGlobalAppPresence(uid, name) {
-            const userRef = db.ref(`users/${uid}`);
-            userRef.update({ online: true, lastSeen: Date.now() });
-            userRef.onDisconnect().update({ online: false, lastSeen: Date.now() });
-
-            db.ref(`invites/${uid}`).on('child_added', (snapshot) => {
-                const inv = snapshot.val();
-                if(inv && !inv.responded) {
-                    currentInviteData = { inviteKey: snapshot.key, ...inv };
-                    showInviteModal(inv.senderName, inv.roomType, inv.roomCode);
-                }
-            });
-
-            db.ref(`invite_responses/${uid}`).on('child_added', (snapshot) => {
-                const res = snapshot.val();
-                if(res) {
-                    showGlobalRoomAlert("وضعیت دعوت", `${res.targetName} دعوت شما را ${res.accepted ? 'قبول کرد! 🟢' : 'رد کرد 🔴'}`);
-                    db.ref(`invite_responses/${uid}/${snapshot.key}`).remove();
-                }
-            });
-        }
-
-        function searchUser() {
-            const queryId = sanitizeKey(document.getElementById('search-user-input').value.trim().toLowerCase());
-            const resBox = document.getElementById('search-result-box');
-            if(!queryId) return;
-
-            db.ref('users/' + queryId).once('value', (snapshot) => {
-                if(!snapshot.exists()) {
-                    resBox.innerHTML = `<div style="font-size:12px; color:#ff8080; margin-top:5px;">کاربری با این آیدی پیدا نشد!</div>`;
-                    return;
-                }
-                const userData = snapshot.val();
-                resBox.innerHTML = `
-                    <div class="user-search-result-item">
-                        <span>👤 ${userData.name} (@${queryId}) ${userData.online ? '🟢' : '⚪'}</span>
-                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 11px;" onclick="sendInviteToUser('${queryId}', '${userData.name}')">دعوت 📨</button>
-                    </div>
-                `;
-            });
-        }
-
-        function sendInviteToUser(targetUid, targetName) {
-            if(!activeMainRoomCode) { alert("ابتدا یک اتاق انتخاب کنید!"); return; }
-
-            db.ref(`invites/${targetUid}`).push({
-                senderUid: globalUserId,
-                senderName: globalUserName,
-                roomType: 'chat',
-                roomCode: activeMainRoomCode,
-                responded: false,
-                timestamp: Date.now()
-            });
-            alert(`دعوت‌نامه برای ${targetName} ارسال شد!`);
-        }
-
-        function showInviteModal(senderName, roomType, roomCode) {
-            document.getElementById('invite-title').innerText = `📩 دعوت از ${senderName}`;
-            document.getElementById('invite-desc').innerText = `${senderName} شما را به اتاق مشترک (${roomCode}) دعوت کرد.`;
-            document.getElementById('invite-modal-alert').classList.add('show');
-            if('vibrate' in navigator) navigator.vibrate([200, 100, 200]);
-        }
-
-        function respondInvite(accepted) {
-            document.getElementById('invite-modal-alert').classList.remove('show');
-            if(!currentInviteData) return;
-
-            db.ref(`invite_responses/${currentInviteData.senderUid}`).push({
-                targetName: globalUserName,
-                accepted: accepted,
-                timestamp: Date.now()
-            });
-
-            db.ref(`invites/${globalUserId}/${currentInviteData.inviteKey}`).remove();
-
-            if(accepted) {
-                enterMainHub(currentInviteData.roomCode);
-            }
-            currentInviteData = null;
-        }
-
-        function showGlobalRoomAlert(title, desc) {
-            document.getElementById('alert-room-title').innerText = `🔔 ${title}`;
-            document.getElementById('alert-room-desc').innerText = desc;
-            const alertBox = document.getElementById('global-room-alert');
-            alertBox.classList.add('show');
-            if('vibrate' in navigator) navigator.vibrate(200);
-            setTimeout(() => { alertBox.classList.remove('show'); }, 6000);
-        }
-
-        function setupPresence(roomType, roomCode) {
-            const userPresenceRef = db.ref(`${roomType}_rooms/${roomCode}/presence`).push();
-            userPresenceRef.set(true);
-            userPresenceRef.onDisconnect().remove();
-
-            db.ref(`${roomType}_rooms/${roomCode}/presence`).on('value', (snapshot) => {
-                const count = snapshot.exists() ? Object.keys(snapshot.val()).length : 0;
-                const badgeId = roomType === 'tic' ? 'game' : roomType;
-                const el = document.getElementById(`${badgeId}-online-count`);
-                if (el) el.innerText = `🟢 آنلاین: ${count}`;
-            });
-        }
-
-        /* --- 4. تماس صوتی و تصویری WebRTC --- */
-        let localStream = null;
-        let peerConnection = null;
-        let activeCallType = null;
-        let incomingCallData = null;
-        const rtcConfig = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
-
-        function listenToCallsInRoom(roomCode) {
-            db.ref(`calls/${roomCode}`).on('value', (snapshot) => {
-                const callData = snapshot.val();
-                if(!callData) {
-                    hideIncomingCallModal();
-                    return;
-                }
-
-                ['audio', 'video'].forEach(type => {
-                    const cData = callData[type];
-                    if(cData && cData.offer && cData.callerId !== globalUserId && cData.status === 'ringing') {
-                        incomingCallData = { type, ...cData };
-                        showIncomingCallModal(type, cData.callerName);
-                    }
-                });
-            });
-        }
-
-        function showIncomingCallModal(type, callerName) {
-            document.getElementById('call-modal-title').innerText = type === 'video' ? '📹 تماس تصویری ورودی' : '📞 تماس صوتی ورودی';
-            document.getElementById('call-modal-desc').innerText = `${callerName} در حال زنگ زدن است...`;
-            document.getElementById('incoming-call-modal').classList.add('show');
-            if('vibrate' in navigator) navigator.vibrate([300, 200, 300, 200]);
-        }
-
-        function hideIncomingCallModal() {
-            document.getElementById('incoming-call-modal').classList.remove('show');
-        }
-
-        function acceptIncomingCall() {
-            hideIncomingCallModal();
-            if(!incomingCallData) return;
-            const type = incomingCallData.type;
-            goToScreen(type === 'video' ? 'video-screen' : 'voice-screen');
-            answerCall(type);
-        }
-
-        function rejectIncomingCall() {
-            hideIncomingCallModal();
-            if(incomingCallData && activeMainRoomCode) {
-                db.ref(`calls/${activeMainRoomCode}/${incomingCallData.type}`).remove();
-            }
-            incomingCallData = null;
-        }
-
-        async function startCall(type) {
-            activeCallType = type;
-            const statusEl = document.getElementById(`${type}-status-text`);
-            statusEl.innerText = "در حال برقراری تماس...";
-
-            try {
-                localStream = await navigator.mediaDevices.getUserMedia({
-                    audio: true,
-                    video: type === 'video' ? { width: { ideal: 640 }, height: { ideal: 480 } } : false
-                });
-
-                if(type === 'video') document.getElementById('localVideo').srcObject = localStream;
-
-                peerConnection = new RTCPeerConnection(rtcConfig);
-                localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
-
-                peerConnection.ontrack = (event) => {
-                    const remoteMedia = type === 'video' ? document.getElementById('remoteVideo') : document.getElementById('remoteAudio');
-                    if(remoteMedia) remoteMedia.srcObject = event.streams[0];
-                };
-
-                const callRef = db.ref(`calls/${activeMainRoomCode}/${type}`);
-
-                peerConnection.onicecandidate = (event) => {
-                    if(event.candidate) {
-                        callRef.child('callerCandidates').push(event.candidate.toJSON());
-                    }
-                };
-
-                const offer = await peerConnection.createOffer();
-                await peerConnection.setLocalDescription(offer);
-
-                await callRef.set({
-                    callerId: globalUserId,
-                    callerName: globalUserName,
-                    status: 'ringing',
-                    offer: { type: offer.type, sdp: offer.sdp }
-                });
-
-                statusEl.innerText = "در حال زنگ زدن به پارتنر...";
-
-                callRef.child('answer').on('value', async (snapshot) => {
-                    const answer = snapshot.val();
-                    if(answer && peerConnection && !peerConnection.currentRemoteDescription) {
-                        await peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
-                        statusEl.innerText = "تماس برقرار شد 🟢";
-                    }
-                });
-
-                callRef.child('calleeCandidates').on('child_added', (snapshot) => {
-                    const candidate = snapshot.val();
-                    if(candidate && peerConnection) {
-                        peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
-                    }
-                });
-
-            } catch(e) {
-                console.error(e);
-                statusEl.innerText = "خطا در دسترسی به دوربین یا میکروفون!";
-            }
-        }
-
-        async function answerCall(type) {
-            activeCallType = type;
-            const statusEl = document.getElementById(`${type}-status-text`);
-            statusEl.innerText = "در حال پاسخگویی...";
-
-            try {
-                localStream = await navigator.mediaDevices.getUserMedia({
-                    audio: true,
-                    video: type === 'video' ? { width: { ideal: 640 }, height: { ideal: 480 } } : false
-                });
-
-                if(type === 'video') document.getElementById('localVideo').srcObject = localStream;
-
-                peerConnection = new RTCPeerConnection(rtcConfig);
-                localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
-
-                peerConnection.ontrack = (event) => {
-                    const remoteMedia = type === 'video' ? document.getElementById('remoteVideo') : document.getElementById('remoteAudio');
-                    if(remoteMedia) remoteMedia.srcObject = event.streams[0];
-                };
-
-                const callRef = db.ref(`calls/${activeMainRoomCode}/${type}`);
-
-                peerConnection.onicecandidate = (event) => {
-                    if(event.candidate) {
-                        callRef.child('calleeCandidates').push(event.candidate.toJSON());
-                    }
-                };
-
-                const callSnapshot = await callRef.once('value');
-                const callData = callSnapshot.val();
-
-                if(callData && callData.offer) {
-                    await peerConnection.setRemoteDescription(new RTCSessionDescription(callData.offer));
-                    const answer = await peerConnection.createAnswer();
-                    await peerConnection.setLocalDescription(answer);
-
-                    await callRef.update({
-                        status: 'connected',
-                        answer: { type: answer.type, sdp: answer.sdp }
-                    });
-
-                    statusEl.innerText = "تماس برقرار شد 🟢";
-
-                    callRef.child('callerCandidates').on('child_added', (snapshot) => {
-                        const candidate = snapshot.val();
-                        if(candidate && peerConnection) {
-                            peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
-                        }
-                    });
-                }
-            } catch(e) {
-                console.error(e);
-                statusEl.innerText = "خطا در اتصال تماس!";
-            }
-        }
-
-        function toggleMuteAudio() {
-            if(localStream) {
-                const audioTrack = localStream.getAudioTracks()[0];
-                if(audioTrack) {
-                    audioTrack.enabled = !audioTrack.enabled;
-                    alert(audioTrack.enabled ? "میکروفون وصل شد 🎙️" : "میکروفون قطع شد 🔇");
-                }
-            }
-        }
-
-        function toggleMuteVideo() {
-            if(localStream) {
-                const videoTrack = localStream.getVideoTracks()[0];
-                if(videoTrack) {
-                    videoTrack.enabled = !videoTrack.enabled;
-                    alert(videoTrack.enabled ? "دوربین روشن شد 📷" : "دوربین خاموش شد 🚫");
-                }
-            }
-        }
-
-        function endCall(type) {
-            if(peerConnection) {
-                peerConnection.close();
-                peerConnection = null;
-            }
-            if(localStream) {
-                localStream.getTracks().forEach(track => track.stop());
-                localStream = null;
-            }
-            if(activeMainRoomCode && type) {
-                db.ref(`calls/${activeMainRoomCode}/${type}`).remove();
-            }
-            const statusEl = document.getElementById(`${type}-status-text`);
-            if(statusEl) statusEl.innerText = "تماس پایان یافت.";
-            goToScreen('hub-screen');
-        }
-
-        /* --- 5. نقاشی --- */
-        let canvas, ctx;
-        let isDrawing = false;
-        let currentTool = 'pencil';
-        let currentColor = '#ffffff';
-        let currentSize = 5;
-
-        function enterPaintRoom(code) {
-            document.getElementById('paint-room-title').innerText = `اتاق نقاشی: ${code}`;
-            setupPresence('paint', code);
-            goToScreen('paint-screen');
-            initPaintEvents(code);
-        }
-
-        function initCanvasSize() {
-            canvas = document.getElementById('paintCanvas');
-            if(!canvas) return;
-            const box = document.getElementById('canvas-box');
-            canvas.width = box.clientWidth;
-            canvas.height = box.clientHeight;
-            ctx = canvas.getContext('2d');
-            ctx.lineCap = 'round';
-            ctx.lineJoin = 'round';
-        }
-
-        function setTool(tool) {
-            currentTool = tool;
-            document.querySelectorAll('.toolbar .tool-btn').forEach(b => b.classList.remove('active'));
-            if(tool === 'pencil') document.getElementById('btn-pencil').classList.add('active');
-            if(tool === 'brush') document.getElementById('btn-brush').classList.add('active');
-            if(tool === 'eraser') document.getElementById('btn-eraser').classList.add('active');
-        }
-
-        function updateSize(size) { currentSize = parseInt(size); }
-        function updateColor(color) { currentColor = color; }
-
-        function clearCanvas() {
-            if(!canvas || !ctx) return;
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            if(activeMainRoomCode) db.ref(`paint_rooms/${activeMainRoomCode}/lines`).remove();
-        }
-
-        function initPaintEvents(code) {
-            initCanvasSize();
-            if(!canvas) return;
-
-            let prevPos = null;
-
-            function getPos(e) {
-                const rect = canvas.getBoundingClientRect();
-                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-                return {
-                    x: (clientX - rect.left) / canvas.width,
-                    y: (clientY - rect.top) / canvas.height
-                };
-            }
-
-            function startDraw(e) {
-                isDrawing = true;
-                prevPos = getPos(e);
-            }
-
-            function draw(e) {
-                if(!isDrawing || !prevPos) return;
-                const currentPos = getPos(e);
-                const lineData = {
-                    p1: prevPos,
-                    p2: currentPos,
-                    color: currentTool === 'eraser' ? '#13131a' : currentColor,
-                    size: currentTool === 'brush' ? currentSize * 2 : currentSize
-                };
-                db.ref(`paint_rooms/${code}/lines`).push(lineData);
-                prevPos = currentPos;
-            }
-
-            function stopDraw() { isDrawing = false; prevPos = null; }
-
-            canvas.onmousedown = startDraw;
-            canvas.onmousemove = draw;
-            canvas.onmouseup = stopDraw;
-            canvas.ontouchstart = (e) => { e.preventDefault(); startDraw(e); };
-            canvas.ontouchmove = (e) => { e.preventDefault(); draw(e); };
-            canvas.ontouchend = stopDraw;
-
-            db.ref(`paint_rooms/${code}/lines`).on('child_added', (snapshot) => {
-                const line = snapshot.val();
-                if(line && ctx) drawLineLocal(line);
-            });
-
-            db.ref(`paint_rooms/${code}/lines`).on('value', (snapshot) => {
-                if(!snapshot.exists() && ctx && canvas) {
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                }
-            });
-        }
-
-        function drawLineLocal(line) {
-            if(!ctx || !canvas) return;
-            ctx.beginPath();
-            ctx.strokeStyle = line.color;
-            ctx.lineWidth = line.size;
-            ctx.moveTo(line.p1.x * canvas.width, line.p1.y * canvas.height);
-            ctx.lineTo(line.p2.x * canvas.width, line.p2.y * canvas.height);
-            ctx.stroke();
-            ctx.closePath();
-        }
-
-        /* --- 6. چت تلگرامی --- */
-        function enterChatRoom(code) {
-            document.getElementById('chat-room-title').innerText = `چت: ${code}`;
-            setupPresence('chat', code);
-            goToScreen('chat-screen');
-            listenChatMessages(code);
-        }
-
-        function listenChatMessages(code) {
-            const box = document.getElementById('chat-messages-box');
-            db.ref(`chat_rooms/${code}/messages`).on('value', (snapshot) => {
-                box.innerHTML = '';
-                if(!snapshot.exists()) return;
-                snapshot.forEach(child => {
-                    const msg = child.val();
-                    const isMine = msg.senderUid === globalUserId;
-                    const msgDiv = document.createElement('div');
-                    msgDiv.className = `message ${isMine ? 'mine' : 'theirs'}`;
-                    const timeStr = new Date(msg.timestamp).toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' });
-                    msgDiv.innerHTML = `
-                        ${!isMine ? `<span class="msg-sender">${msg.senderName}</span>` : ''}
-                        <div>${msg.text}</div>
-                        <span class="msg-time">${timeStr}</span>
-                    `;
-                    box.appendChild(msgDiv);
-                });
-                box.scrollTop = box.scrollHeight;
-            });
-        }
-
-        function sendChatMessage() {
-            const input = document.getElementById('chat-input-msg');
-            const text = input.value.trim();
-            if(!text || !activeMainRoomCode) return;
-
-            db.ref(`chat_rooms/${activeMainRoomCode}/messages`).push({
-                senderUid: globalUserId,
-                senderName: globalUserName,
-                text: text,
-                timestamp: Date.now()
-            });
-            input.value = '';
-        }
-
-        function handleChatKeyPress(e) { if(e.key === 'Enter') sendChatMessage(); }
-        function addEmoji(emoji) { document.getElementById('chat-input-msg').value += emoji; }
-
-        /* --- 7. دوز --- */
-        let mySymbol = null;
-        let boardState = Array(9).fill(null);
-
-        function enterGameRoom(code) {
-            document.getElementById('game-room-title').innerText = `دوز: ${code}`;
-            setupPresence('tic', code);
-            goToScreen('game-screen');
-            listenGameRoom(code);
-        }
-
-        function chooseSymbol(sym) {
-            mySymbol = sym;
-            document.getElementById('game-status-text').innerText = `شما نماد ${sym} را انتخاب کردید.`;
-        }
-
-        function listenGameRoom(code) {
-            db.ref(`tic_rooms/${code}`).on('value', (snapshot) => {
-                const game = snapshot.val() || {};
-                boardState = game.board || Array(9).fill(null);
-                renderBoard();
-
-                const statusEl = document.getElementById('game-status-text');
-                const resetBtn = document.getElementById('reset-game-btn');
-
-                if(game.winner) {
-                    statusEl.innerText = game.winner === 'draw' ? 'بازی مساوی شد! 🤝' : `برنده: ${game.winner} 🎉`;
-                    resetBtn.style.display = 'block';
-                } else if(game.turn) {
-                    statusEl.innerText = `نوبت بازیکن: ${game.turn}`;
-                    resetBtn.style.display = 'none';
-                } else {
-                    statusEl.innerText = 'نماد خود را انتخاب کرده و اولین حرکت را بزنید!';
-                    resetBtn.style.display = 'none';
-                }
-            });
-        }
-
-        function renderBoard() {
-            const cells = document.querySelectorAll('.tic-cell');
-            cells.forEach((cell, idx) => {
-                const val = boardState[idx];
-                cell.innerText = val || '';
-                cell.className = 'tic-cell' + (val ? ` ${val.toLowerCase()}` : '');
-            });
-        }
-
-        function makeMove(idx) {
-            if(!mySymbol) { alert('لطفاً ابتدا نماد X یا O را انتخاب کنید!'); return; }
-            if(boardState[idx]) return;
-
-            db.ref(`tic_rooms/${activeMainRoomCode}`).once('value', (snapshot) => {
-                const game = snapshot.val() || {};
-                const currentTurn = game.turn || 'X';
-
-                if(mySymbol !== currentTurn && game.turn) {
-                    alert('نوبت شما نیست!');
-                    return;
-                }
-
-                boardState[idx] = mySymbol;
-                const winner = checkTicWinner(boardState);
-                const nextTurn = mySymbol === 'X' ? 'O' : 'X';
-
-                db.ref(`tic_rooms/${activeMainRoomCode}`).set({
-                    board: boardState,
-                    turn: winner ? null : nextTurn,
-                    winner: winner || null
-                });
-            });
-        }
-
-        function checkTicWinner(b) {
-            const lines = [
-                [0,1,2], [3,4,5], [6,7,8],
-                [0,3,6], [1,4,7], [2,5,8],
-                [0,4,8], [2,4,6]
-            ];
-            for(let l of lines) {
-                if(b[l[0]] && b[l[0]] === b[l[1]] && b[l[0]] === b[l[2]]) return b[l[0]];
-            }
-            return b.includes(null) ? null : 'draw';
-        }
-
-        function resetGame() {
-            if(activeMainRoomCode) {
-                db.ref(`tic_rooms/${activeMainRoomCode}`).remove();
-            }
-        }
-
-        /* --- 8. پاسور حکم --- */
-        let myHandCards = [];
-
-        function enterPasorRoom(code) {
-            setupPresence('pasor', code);
-            goToScreen('pasor-screen');
-            listenPasorRoom(code);
-        }
-
-        function initPasorGame() {
-            if(!activeMainRoomCode) return;
-            const suits = ['♠', '♥', '♦', '♣'];
-            const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
-            let deck = [];
-            suits.forEach(s => ranks.forEach(r => deck.push({ rank: r, suit: s })));
-            deck.sort(() => Math.random() - 0.5);
-
-            const player1Hand = deck.slice(0, 13);
-            const player2Hand = deck.slice(13, 26);
-
-            db.ref(`pasor_rooms/${activeMainRoomCode}`).set({
-                player1: globalUserId,
-                player1Hand: player1Hand,
-                player2Hand: player2Hand,
-                playedCards: [],
-                turn: globalUserId,
-                score1: 0,
-                score2: 0
-            });
-        }
-
-        function listenPasorRoom(code) {
-            db.ref(`pasor_rooms/${code}`).on('value', (snapshot) => {
-                const data = snapshot.val();
-                if(!data) {
-                    document.getElementById('pasor-top-row').innerHTML = '';
-                    document.getElementById('pasor-bottom-row').innerHTML = '';
-                    document.getElementById('pasor-played-table').innerHTML = '<span style="font-size: 11px; color: rgba(255,255,255,0.4);">کارت‌های زمین...</span>';
-                    document.getElementById('pasor-turn-txt').innerText = 'دکمه شروع دست جدید را بزنید!';
-                    return;
-                }
-
-                const isP1 = data.player1 === globalUserId;
-                myHandCards = isP1 ? (data.player1Hand || []) : (data.player2Hand || []);
-
-                renderPasorHand(myHandCards);
-                renderPlayedCards(data.playedCards || []);
-
-                document.getElementById('pasor-my-score').innerText = isP1 ? data.score1 || 0 : data.score2 || 0;
-                document.getElementById('pasor-partner-score').innerText = isP1 ? data.score2 || 0 : data.score1 || 0;
-                document.getElementById('pasor-turn-txt').innerText = data.turn === globalUserId ? 'نوبت شماست! 🎴' : 'نوبت پارتنر شماست...';
-            });
-        }
-
-        function renderPasorHand(cards) {
-            const topRow = document.getElementById('pasor-top-row');
-            const btmRow = document.getElementById('pasor-bottom-row');
-            topRow.innerHTML = '';
-            btmRow.innerHTML = '';
-
-            cards.forEach((card, i) => {
-                const cDiv = document.createElement('div');
-                const isRed = card.suit === '♥' || card.suit === '♦';
-                cDiv.className = `glass-card ${isRed ? 'red' : 'black'}`;
-                cDiv.innerHTML = `<span>${card.rank}</span><span>${card.suit}</span>`;
-                cDiv.onclick = () => playPasorCard(i, card);
-
-                if(i < 7) topRow.appendChild(cDiv);
-                else btmRow.appendChild(cDiv);
-            });
-        }
-
-        function renderPlayedCards(cards) {
-            const table = document.getElementById('pasor-played-table');
-            table.innerHTML = '';
-            if(cards.length === 0) {
-                table.innerHTML = '<span style="font-size: 11px; color: rgba(255,255,255,0.4);">کارت‌های زمین...</span>';
-                return;
-            }
-            cards.forEach(card => {
-                const cDiv = document.createElement('div');
-                const isRed = card.suit === '♥' || card.suit === '♦';
-                cDiv.className = `glass-card ${isRed ? 'red' : 'black'}`;
-                cDiv.innerHTML = `<span>${card.rank}</span><span>${card.suit}</span>`;
-                table.appendChild(cDiv);
-            });
-        }
-
-        function playPasorCard(cardIdx, card) {
-            if(!activeMainRoomCode) return;
-
-            db.ref(`pasor_rooms/${activeMainRoomCode}`).once('value', (snapshot) => {
-                const data = snapshot.val();
-                if(!data) return;
-                if(data.turn !== globalUserId) { alert('نوبت شما نیست!'); return; }
-
-                const isP1 = data.player1 === globalUserId;
-                let currentHand = isP1 ? (data.player1Hand || []) : (data.player2Hand || []);
-                currentHand.splice(cardIdx, 1);
-
-                let played = data.playedCards || [];
-                played.push({ ...card, player: globalUserId });
-
-                let updates = {};
-                if(isP1) updates.player1Hand = currentHand;
-                else updates.player2Hand = currentHand;
-
-                if(played.length >= 2) {
-                    updates.playedCards = [];
-                    updates.score1 = (data.score1 || 0) + (isP1 ? 1 : 0);
-                    updates.score2 = (data.score2 || 0) + (!isP1 ? 1 : 0);
-                } else {
-                    updates.playedCards = played;
-                }
-
-                db.ref(`pasor_rooms/${activeMainRoomCode}`).update(updates);
-            });
-        }
-
-        /* --- 9. کارگاه ایموجی --- */
-        const emojiList = ['😀','😍','😎','🥳','😡','😭','👑','🎩','🕶️','❤️','🔥','⭐','🎉','🎈','🐱','🐶','🍕','💎'];
-
-        function enterEmojiRoom(code) {
-            document.getElementById('emoji-room-title').innerText = `کارگاه: ${code}`;
-            setupPresence('emoji', code);
-            goToScreen('emoji-maker-screen');
-            listenEmojiCanvas(code);
-        }
-
-        function populateEmojiTray() {
-            const container = document.getElementById('emoji-tray-container');
-            if(!container) return;
-            container.innerHTML = '';
-            const tray = document.createElement('div');
-            tray.className = 'emoji-tray';
-            emojiList.forEach(emoji => {
-                const item = document.createElement('span');
-                item.className = 'tray-item';
-                item.innerText = emoji;
-                item.onclick = () => addEmojiToCanvas(emoji);
-                tray.appendChild(item);
-            });
-            container.appendChild(tray);
-        }
-
-        function addEmojiToCanvas(emoji) {
-            if(!activeMainRoomCode) return;
-            const emojiData = {
-                symbol: emoji,
-                x: 50,
-                y: 50,
-                id: 'emoji_' + Date.now()
-            };
-            db.ref(`emoji_rooms/${activeMainRoomCode}/elements`).push(emojiData);
-        }
-
-        function listenEmojiCanvas(code) {
-            const box = document.getElementById('emoji-canvas-box');
-            db.ref(`emoji_rooms/${code}/elements`).on('value', (snapshot) => {
-                box.innerHTML = '<span style="position: absolute; top: 10px; left: 50%; transform: translateX(-50%); color: rgba(255,255,255,0.4); font-size: 11px; pointer-events: none;">کشیدن با انگشت=جابجایی | دو بار کلیک=حذف</span>';
-                if(!snapshot.exists()) return;
-
-                snapshot.forEach(child => {
-                    const elData = child.val();
-                    const key = child.key;
-
-                    const span = document.createElement('span');
-                    span.className = 'placed-emoji';
-                    span.innerText = elData.symbol;
-                    span.style.left = `${elData.x}%`;
-                    span.style.top = `${elData.y}%`;
-
-                    makeDraggableEmoji(span, key, code);
-                    box.appendChild(span);
-                });
-            });
-        }
-
-        function makeDraggableEmoji(el, key, roomCode) {
-            let isDragging = false;
-
-            function startDrag(e) {
-                isDragging = true;
-            }
-
-            function doDrag(e) {
-                if(!isDragging) return;
-                const box = document.getElementById('emoji-canvas-box');
-                const rect = box.getBoundingClientRect();
-                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-
-                let newX = ((clientX - rect.left) / rect.width) * 100;
-                let newY = ((clientY - rect.top) / rect.height) * 100;
-
-                el.style.left = `${newX}%`;
-                el.style.top = `${newY}%`;
-            }
-
-            function stopDrag() {
-                if(isDragging) {
-                    isDragging = false;
-                    const newX = parseFloat(el.style.left);
-                    const newY = parseFloat(el.style.top);
-                    db.ref(`emoji_rooms/${roomCode}/elements/${key}`).update({ x: newX, y: newY });
-                }
-            }
-
-            el.onmousedown = startDrag;
-            window.onmousemove = doDrag;
-            window.onmouseup = stopDrag;
-
-            el.ontouchstart = (e) => { startDrag(e); };
-            window.ontouchmove = (e) => { doDrag(e); };
-            window.ontouchend = stopDrag;
-
-            el.ondblclick = () => {
-                db.ref(`emoji_rooms/${roomCode}/elements/${key}`).remove();
-            };
-        }
-
-        function clearEmojiCanvas() {
-            if(activeMainRoomCode) {
-                db.ref(`emoji_rooms/${activeMainRoomCode}/elements`).remove();
-            }
-        }
-
-        /* --- 10. سینما --- */
-        function enterMovieRoom(code) {
-            document.getElementById('movie-room-title').innerText = `سینما: ${code}`;
-            setupPresence('movie', code);
-            goToScreen('movie-screen');
-            listenMovieSync(code);
-            listenMovieChat(code);
-        }
-
-        function changeMovieUrl() {
-            const url = document.getElementById('movie-url-input').value.trim();
-            if(!url || !activeMainRoomCode) return;
-            db.ref(`movie_rooms/${activeMainRoomCode}/video`).set({
-                url: url,
-                currentTime: 0,
-                isPlaying: false,
-                updatedBy: globalUserName
-            });
-        }
-
-        function listenMovieSync(code) {
-            const video = document.getElementById('sync-video');
-
-            db.ref(`movie_rooms/${code}/video`).on('value', (snapshot) => {
-                const vData = snapshot.val();
-                if(!vData || !video) return;
-
-                if(video.src !== vData.url) {
-                    video.src = vData.url;
-                    document.getElementById('movie-url-input').value = vData.url;
-                }
-
-                if(Math.abs(video.currentTime - vData.currentTime) > 1.5) {
-                    video.currentTime = vData.currentTime;
-                }
-
-                if(vData.isPlaying && video.paused) {
-                    video.play().catch(() => {});
-                } else if(!vData.isPlaying && !video.paused) {
+        video.onpause = () => {
+            if(isRemoteAction) return;
+            fbSet(`rooms/${currentRoomId}`, { action: 'pause', time: video.currentTime });
+        };
+
+        video.onseeking = () => {
+            if(isRemoteAction) return;
+            fbSet(`rooms/${currentRoomId}`, { action: 'seek', time: video.currentTime });
+        };
+
+        // گوش دادن زنده به تغییرات دیتابیس
+        setInterval(async () => {
+            if(!currentRoomId) return;
+            const state = await fbGet(`rooms/${currentRoomId}`);
+            if(state && !isRemoteAction) {
+                isRemoteAction = true;
+                if(state.action === 'play' && video.paused) {
+                    video.currentTime = state.time;
+                    video.play();
+                } else if(state.action === 'pause' && !video.paused) {
+                    video.currentTime = state.time;
                     video.pause();
+                } else if(Math.abs(video.currentTime - state.time) > 1.5) {
+                    video.currentTime = state.time;
                 }
-            });
-
-            video.onplay = () => {
-                if(!activeMainRoomCode) return;
-                db.ref(`movie_rooms/${activeMainRoomCode}/video`).update({ isPlaying: true, currentTime: video.currentTime });
-            };
-
-            video.onpause = () => {
-                if(!activeMainRoomCode) return;
-                db.ref(`movie_rooms/${activeMainRoomCode}/video`).update({ isPlaying: false, currentTime: video.currentTime });
-            };
-
-            video.onseeked = () => {
-                if(!activeMainRoomCode) return;
-                db.ref(`movie_rooms/${activeMainRoomCode}/video`).update({ currentTime: video.currentTime });
-            };
-        }
-
-        function listenMovieChat(code) {
-            const box = document.getElementById('movie-chat-messages-box');
-            const floatBox = document.getElementById('floating-chat-messages-box');
-
-            db.ref(`movie_rooms/${code}/chat`).on('value', (snapshot) => {
-                if(!box) return;
-                box.innerHTML = '';
-                if(floatBox) floatBox.innerHTML = '';
-
-                if(!snapshot.exists()) return;
-
-                snapshot.forEach(child => {
-                    const msg = child.val();
-                    const isMine = msg.senderUid === globalUserId;
-                    const div = document.createElement('div');
-                    div.className = `message ${isMine ? 'mine' : 'theirs'}`;
-                    div.innerHTML = `<span class="msg-sender">${msg.senderName}</span><div>${msg.text}</div>`;
-
-                    box.appendChild(div);
-                    if(floatBox) floatBox.appendChild(div.cloneNode(true));
-                });
-
-                box.scrollTop = box.scrollHeight;
-                if(floatBox) floatBox.scrollTop = floatBox.scrollHeight;
-            });
-        }
-
-        function sendMovieChatMessage() {
-            const input = document.getElementById('movie-chat-input');
-            const text = input.value.trim();
-            if(!text || !activeMainRoomCode) return;
-
-            db.ref(`movie_rooms/${activeMainRoomCode}/chat`).push({
-                senderUid: globalUserId,
-                senderName: globalUserName,
-                text: text,
-                timestamp: Date.now()
-            });
-            input.value = '';
-        }
-
-        function sendFloatingChatMessage() {
-            const input = document.getElementById('floating-chat-input');
-            const text = input.value.trim();
-            if(!text || !activeMainRoomCode) return;
-
-            db.ref(`movie_rooms/${activeMainRoomCode}/chat`).push({
-                senderUid: globalUserId,
-                senderName: globalUserName,
-                text: text,
-                timestamp: Date.now()
-            });
-            input.value = '';
-        }
-
-        function handleMovieChatKeyPress(e) { if(e.key === 'Enter') sendMovieChatMessage(); }
-        function handleFloatingChatKeyPress(e) { if(e.key === 'Enter') sendFloatingChatMessage(); }
-
-        function toggleVideoFullscreen() {
-            const box = document.getElementById('video-container-box');
-            if(!document.fullscreenElement) {
-                box.requestFullscreen().then(() => toggleFloatingChat(true)).catch(e => console.error(e));
-            } else {
-                document.exitFullscreen().then(() => toggleFloatingChat(false));
+                setTimeout(() => { isRemoteAction = false; }, 500);
             }
-        }
+        }, 1000);
+    }
 
-        function toggleFloatingChat(show) {
-            const floatChat = document.getElementById('floating-movie-chat');
-            if(floatChat) floatChat.classList.toggle('active', show);
-        }
+    function closePlayer() {
+        const video = document.getElementById('mainVideo');
+        video.pause();
+        video.src = '';
+        switchTab('movies');
+    }
+</script>
 
-        /* --- 11. لحظات --- */
-        let cameraStream = null;
-
-        function enterMomentRoom(code) {
-            document.getElementById('moment-room-title').innerText = `لحظات: ${code}`;
-            setupPresence('moment', code);
-            goToScreen('moment-screen');
-            startCamera();
-            listenMomentsGallery(code);
-        }
-
-        async function startCamera() {
-            try {
-                cameraStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
-                const video = document.getElementById('camera-video');
-                if(video) video.srcObject = cameraStream;
-            } catch(e) {
-                console.error(e);
-                alert('امکان دسترسی به دوربین وجود ندارد!');
-            }
-        }
-
-        function stopCameraStream() {
-            if(cameraStream) {
-                cameraStream.getTracks().forEach(t => t.stop());
-                cameraStream = null;
-            }
-        }
-
-        function captureAndSendPhoto() {
-            const video = document.getElementById('camera-video');
-            const canvas = document.getElementById('camera-canvas');
-            if(!video || !canvas || !activeMainRoomCode) return;
-
-            canvas.width = video.videoWidth || 320;
-            canvas.height = video.videoHeight || 240;
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-            const dataUrl = canvas.toDataURL('image/jpeg', 0.6);
-
-            db.ref(`moment_rooms/${activeMainRoomCode}/photos`).push({
-                senderName: globalUserName,
-                photoUrl: dataUrl,
-                timestamp: Date.now()
-            });
-
-            alert('عکس خاطره‌انگیز شما ثبت و ارسال شد! 📸');
-        }
-
-        function listenMomentsGallery(code) {
-            const box = document.getElementById('moments-gallery-box');
-            db.ref(`moment_rooms/${code}/photos`).on('value', (snapshot) => {
-                box.innerHTML = '';
-                if(!snapshot.exists()) {
-                    box.innerHTML = '<span style="font-size: 11px; color: rgba(255,255,255,0.4); align-self: center;">هنوز عکسی ثبت نشده...</span>';
-                    return;
-                }
-
-                snapshot.forEach(child => {
-                    const item = child.val();
-                    const img = document.createElement('img');
-                    img.src = item.photoUrl;
-                    img.className = 'moment-thumb';
-                    img.title = `عکس توسط ${item.senderName}`;
-                    img.onclick = () => window.open(item.photoUrl, '_blank');
-                    box.appendChild(img);
-                });
-            });
-        }
-
-        /* --- 12. غر و قور --- */
-        function enterGhorRoomDirect(code) {
-            document.getElementById('ghor-room-title').innerText = `اتاق غر و قور: ${code}`;
-            setupPresence('ghor', code);
-            goToScreen('ghor-screen');
-            listenGhorHistory(code);
-        }
-
-        function submitGhorStatus() {
-            const status = document.getElementById('ghor-status-select').value;
-            const reason = document.getElementById('ghor-reason-input').value.trim();
-            if(!reason || !activeMainRoomCode) {
-                alert('لطفاً دلیل وضعیت خود را بنویسید!');
-                return;
-            }
-
-            db.ref(`ghor_rooms/${activeMainRoomCode}/history`).push({
-                senderName: globalUserName,
-                status: status,
-                reason: reason,
-                timestamp: Date.now()
-            });
-
-            document.getElementById('ghor-reason-input').value = '';
-            alert('وضعیت و غرهای شما با موفقیت ثبت شد!');
-        }
-
-        function listenGhorHistory(code) {
-            const box = document.getElementById('ghor-history-box');
-            const alertBox = document.getElementById('ghor-alert-box');
-
-            db.ref(`ghor_rooms/${code}/history`).on('value', (snapshot) => {
-                box.innerHTML = '';
-                if(!snapshot.exists()) {
-                    box.innerHTML = 'هنوز پیامی ثبت نشده...';
-                    return;
-                }
-
-                let latest = null;
-                snapshot.forEach(child => {
-                    const item = child.val();
-                    latest = item;
-
-                    const div = document.createElement('div');
-                    div.style.marginBottom = '8px';
-                    div.style.borderBottom = '1px solid rgba(255,255,255,0.1)';
-                    div.style.paddingBottom = '4px';
-
-                    const icon = item.status === 'happy' ? '😊' : '🤬';
-                    const timeStr = new Date(item.timestamp).toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' });
-
-                    div.innerHTML = `<strong>${item.senderName} (${icon}):</strong> ${item.reason} <span style="font-size:9px; color:rgba(255,255,255,0.4);">[${timeStr}]</span>`;
-                    box.appendChild(div);
-                });
-
-                if(latest && alertBox) {
-                    alertBox.style.display = 'block';
-                    alertBox.className = `alert-banner ${latest.status === 'happy' ? 'happy' : ''}`;
-                    document.getElementById('ghor-alert-title').innerText = latest.status === 'happy' ? '😊 پیام خوشحالی' : '🤬 اعلام غر جدید!';
-                    document.getElementById('ghor-alert-text').innerText = `${latest.senderName}: ${latest.reason}`;
-                }
-            });
-        }
-    </script>
 </body>
 </html>
