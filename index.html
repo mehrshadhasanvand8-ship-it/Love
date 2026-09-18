@@ -130,7 +130,7 @@
             background: #000;
             border-radius: 12px;
             overflow: hidden;
-            margin-bottom: 10px;
+            margin-bottom: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -219,7 +219,6 @@
             color: #fff;
         }
 
-        /* استایل مودال انتخاب کاربر */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -305,19 +304,22 @@
             <h3>ثبت فیلم جدید</h3>
             <input type="text" id="movieTitle" placeholder="نام فیلم...">
             <input type="text" id="movieCover" placeholder="لینک پوستر...">
-            <input type="text" id="movieUrl" placeholder="لینک مستقیم ویدیو...">
+            <input type="text" id="movieUrl" placeholder="لینک مستقیم ویدیو (mp4)...">
             <button onclick="saveMovie()">ثبت فیلم</button>
         </div>
 
         <div id="playerTab" class="hidden">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
                 <h3 id="playingTitle" style="margin:0; font-size: 14px;">در حال پخش...</h3>
                 <span style="font-size: 11px; color: #10b981;">👥 بینندگان این صفحه: <strong id="movieViewerCount">0</strong> نفر</span>
             </div>
             
             <div class="player-wrapper">
-                <video id="mainVideo" controls></video>
+                <video id="mainVideo" controls playsinline preload="metadata">
+                    مرورگر شما از پخش ویدیو پشتیبانی نمی‌کند.
+                </video>
             </div>
+            <div id="videoErrorMsg" style="color: #ef4444; font-size: 10px; text-align: center; margin-bottom: 6px; min-height: 14px;"></div>
 
             <div style="display: flex; gap: 6px; margin-bottom: 6px;">
                 <button id="camToggleBtn" onclick="toggleCameraAndShowUsers()" style="background: #10b981; margin: 0; font-size: 11px;">📹 روشن کردن دوربین</button>
@@ -427,7 +429,6 @@
                 const now = Date.now();
                 await fbSet(`online/${currentUser}`, now);
                 if(currentMovieId) {
-                    // ثبت دقیق حضور در صفحه این فیلم خاص
                     await fbSet(`movie_viewers/${currentMovieId}/${currentUser}`, now);
                 }
                 updateOnlineCounts();
@@ -514,7 +515,6 @@
             btn.style.background = '#f59e0b';
             document.getElementById('bottomCams').classList.remove('hidden');
 
-            // دریافت لیست کاربران آنلاین در همان صفحه فیلم یا لابی
             const viewers = currentMovieId ? (await fbGet(`movie_viewers/${currentMovieId}`) || {}) : (await fbGet('online') || {});
             const now = Date.now();
             const availableUsers = Object.keys(viewers).filter(u => u !== currentUser && (now - viewers[u] < 10000));
@@ -524,7 +524,6 @@
                 return;
             }
 
-            // نمایش مودال انتخاب کاربر
             const modalList = document.getElementById('modalUserList');
             modalList.innerHTML = '';
             availableUsers.forEach(u => {
@@ -601,9 +600,9 @@
     }
 
     async function saveMovie() {
-        const title = document.getElementById('movieTitle').value;
-        const cover = document.getElementById('movieCover').value;
-        const url = document.getElementById('movieUrl').value;
+        const title = document.getElementById('movieTitle').value.trim();
+        const cover = document.getElementById('movieCover').value.trim();
+        const url = document.getElementById('movieUrl').value.trim();
         if(!title || !url) return alert('اطلاعات ناقص است.');
         const id = 'movie_' + Date.now();
         await fbSet(`movies/${id}`, { id, title, cover, url });
@@ -759,9 +758,30 @@
         }
 
         openPlayerUI(partnerId || 'در انتظار پارتنر...');
-        document.getElementById('mainVideo').src = movie.url;
+        
+        document.getElementById('videoErrorMsg').innerText = '';
+        const video = document.getElementById('mainVideo');
+        video.src = movie.url;
+        video.load();
+        
         document.getElementById('playingTitle').innerText = movie.title;
     }
+
+    // مانیتورینگ خطاهای ویدیو جهت عیب‌یابی راحت‌تر لینک‌ها
+    const videoElement = document.getElementById('mainVideo');
+    videoElement.onerror = function() {
+        const error = videoElement.error;
+        let errText = "خطا در بارگذاری ویدیو!";
+        if(error) {
+            switch (error.code) {
+                case 1: errText = "بارگذاری ویدیو لغو شد."; break;
+                case 2: errText = "خطای شبکه: لینک ویدیو در دسترس نیست یا قطع است."; break;
+                case 3: errText = "خطای دیکد: فرمت ویدیو برای پخش مناسب نیست."; break;
+                case 4: errText = "فرمت ویدیو پشتیبانی نمی‌شود یا لینک مستقیم نیست!"; break;
+            }
+        }
+        document.getElementById('videoErrorMsg').innerText = errText;
+    };
 
     function openPlayerUI(pLabel) {
         switchTab('player');
