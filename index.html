@@ -315,7 +315,8 @@
             </div>
             
             <div class="player-wrapper">
-                <video id="mainVideo" controls playsinline preload="metadata">
+                <video id="mainVideo" controls playsinline preload="auto">
+                    <source id="videoSource" src="" type="video/mp4">
                     مرورگر شما از پخش ویدیو پشتیبانی نمی‌کند.
                 </video>
             </div>
@@ -760,14 +761,17 @@
         openPlayerUI(partnerId || 'در انتظار پارتنر...');
         
         document.getElementById('videoErrorMsg').innerText = '';
+        
+        // تنظیم استاندارد منبع ویدیو برای جلوگیری از خطای مرورگرهای موبایل
         const video = document.getElementById('mainVideo');
-        video.src = movie.url;
+        const source = document.getElementById('videoSource');
+        source.src = movie.url;
         video.load();
+        video.play().catch(() => {});
         
         document.getElementById('playingTitle').innerText = movie.title;
     }
 
-    // مانیتورینگ خطاهای ویدیو جهت عیب‌یابی راحت‌تر لینک‌ها
     const videoElement = document.getElementById('mainVideo');
     videoElement.onerror = function() {
         const error = videoElement.error;
@@ -866,7 +870,8 @@
     async function closePlayer() {
         const video = document.getElementById('mainVideo');
         video.pause();
-        video.src = '';
+        document.getElementById('videoSource').src = '';
+        video.load();
         if(syncInterval) clearInterval(syncInterval);
         if(localStream) {
             localStream.getTracks().forEach(track => track.stop());
