@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Watch Party - بنفش و دارک آنلاین</title>
+    <title>LOVE ROOM - Watch Party</title>
     <style>
         :root {
             --bg-main: #09070f;
@@ -11,7 +11,6 @@
             --accent: #8b5cf6;
             --accent-hover: #7c3aed;
             --text-light: #f3f4f6;
-            --text-muted: #9ca3af;
         }
 
         * {
@@ -29,38 +28,35 @@
             justify-content: center;
             align-items: center;
             padding: 15px;
+            padding-bottom: 110px; /* فضا برای ویدیوی دو طرف در پایین صفحه */
         }
 
         .container {
             width: 100%;
-            max-width: 900px;
+            max-width: 800px;
             background: var(--card-bg);
             border: 1px solid #2e2352;
             border-radius: 20px;
-            padding: 25px;
+            padding: 20px;
             box-shadow: 0 10px 30px rgba(139, 92, 246, 0.15);
         }
 
         h2, h3 {
             color: var(--accent);
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         input, button {
             width: 100%;
             padding: 12px;
             margin-top: 8px;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             border-radius: 10px;
             border: 1px solid #3b2d6b;
             background: #0f0a21;
             color: #fff;
             outline: none;
-        }
-
-        input:focus {
-            border-color: var(--accent);
         }
 
         button {
@@ -71,15 +67,21 @@
             transition: 0.3s;
         }
 
-        button:hover {
-            background: var(--accent-hover);
+        button:hover { background: var(--accent-hover); }
+        .hidden { display: none !important; }
+
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
         }
 
-        .hidden { display: none !important; }
+        .nav-tabs button { margin: 0; background: #1a1336; }
+        .nav-tabs button.active { background: var(--accent); }
 
         .movie-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
             gap: 15px;
             margin-top: 15px;
         }
@@ -91,70 +93,100 @@
             overflow: hidden;
             text-align: center;
             cursor: pointer;
-            transition: 0.2s;
         }
 
-        .movie-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--accent);
-        }
+        .movie-card img { width: 100%; height: 160px; object-fit: cover; }
+        .movie-card p { padding: 8px; font-size: 13px; }
 
-        .movie-card img {
-            width: 100%;
-            height: 180px;
-            object-fit: cover;
-        }
-
-        .movie-card p {
-            padding: 8px;
-            font-size: 13px;
-        }
-
-        .player-container {
-            position: relative;
+        .player-wrapper {
             width: 100%;
             background: #000;
             border-radius: 15px;
             overflow: hidden;
+            margin-bottom: 15px;
         }
 
         video#mainVideo {
             width: 100%;
-            max-height: 450px;
+            max-height: 380px;
             display: block;
         }
 
-        .cam-overlay {
-            position: absolute;
-            bottom: 15px;
-            left: 15px;
+        /* بخش چت */
+        .chat-box {
+            background: #0b0718;
+            border: 1px solid #2a1f4d;
+            border-radius: 12px;
+            padding: 12px;
+            height: 180px;
             display: flex;
-            gap: 10px;
-            z-index: 10;
+            flex-direction: column;
         }
 
-        .cam-overlay video {
-            width: 90px;
-            height: 120px;
-            object-fit: cover;
-            border-radius: 10px;
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .chat-msg {
+            background: #181135;
+            padding: 6px 10px;
+            border-radius: 8px;
+            max-width: 80%;
+            font-size: 12px;
+        }
+
+        .chat-msg.me { align-self: flex-end; background: var(--accent); }
+        .chat-msg span { font-size: 9px; opacity: 0.7; display: block; }
+
+        .chat-input-group { display: flex; gap: 8px; margin-top: 8px; }
+        .chat-input-group input { margin: 0; }
+        .chat-input-group button { width: auto; padding: 0 15px; margin: 0; }
+
+        /* استایل دوربین‌های ثابت در پایین‌ترین جای صفحه */
+        .bottom-cams-container {
+            position: fixed;
+            bottom: 10px;
+            left: 0;
+            right: 0;
+            padding: 0 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .cam-box {
+            width: 85px;
+            height: 110px;
+            background: #000;
             border: 2px solid var(--accent);
-            background: #222;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+            position: relative;
+            pointer-events: auto;
         }
 
-        .nav-tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
+        .cam-box video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
-        .nav-tabs button {
-            margin: 0;
-            background: #1a1336;
-        }
-
-        .nav-tabs button.active {
-            background: var(--accent);
+        .cam-label {
+            position: absolute;
+            bottom: 2px;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.6);
+            font-size: 9px;
+            text-align: center;
+            color: #fff;
         }
     </style>
 </head>
@@ -162,13 +194,13 @@
 
 <div class="container">
 
-    <!-- ورود و ثبت‌نام -->
+    <!-- بخش ورود -->
     <div id="authSection">
-        <h2>💜 ورود به Watch Party (Firebase)</h2>
+        <h2>💜 ورود به LOVE ROOM</h2>
         <input type="text" id="authId" placeholder="آیدی کاربری...">
         <input type="password" id="authPass" placeholder="رمز عبور...">
         <button onclick="login()">ورود</button>
-        <button onclick="register()" style="background: transparent; border: 1px solid var(--accent);">ثبت‌نام حساب جدید</button>
+        <button onclick="register()" style="background: transparent; border: 1px solid var(--accent);">ثبت‌نام جدید</button>
     </div>
 
     <!-- پنل اصلی -->
@@ -179,83 +211,100 @@
             <button onclick="switchTab('addMovie')" id="tabAdd">➕ افزودن فیلم</button>
         </div>
 
-        <!-- لیست فیلم‌ها -->
         <div id="moviesTab">
-            <h3>فیلم‌های آنلاین دیتابیس</h3>
+            <h3>فیلم‌های موجود</h3>
             <div class="movie-grid" id="movieList"></div>
         </div>
 
-        <!-- سرچ و دوستان -->
         <div id="friendsTab" class="hidden">
             <h3>جستجوی آیدی دوست</h3>
-            <input type="text" id="searchFriendId" placeholder="آیدی دوست را وارد کنید...">
-            <button onclick="addFriend()">افزودن به لیست دوستان</button>
-            
+            <input type="text" id="searchFriendId" placeholder="آیدی دوست...">
+            <button onclick="addFriend()">افزودن به دوستان</button>
             <h3 style="margin-top: 20px;">لیست دوستان</h3>
-            <ul id="friendsList" style="list-style: none; padding: 0;"></ul>
+            <ul id="friendsList" style="list-style: none;"></ul>
         </div>
 
-        <!-- افزودن فیلم -->
         <div id="addMovieTab" class="hidden">
-            <h3>ثبت فیلم جدید در سرور آنلاین</h3>
+            <h3>ثبت فیلم جدید</h3>
             <input type="text" id="movieTitle" placeholder="نام فیلم...">
-            <input type="text" id="movieCover" placeholder="لینک عکس پوستر (URL)...">
-            <input type="text" id="movieUrl" placeholder="لینک مستقیم فایل ویدیو (MP4)...">
-            <button onclick="saveMovie()">ثبت عمومی فیلم</button>
+            <input type="text" id="movieCover" placeholder="لینک پوستر...">
+            <input type="text" id="movieUrl" placeholder="لینک مستقیم ویدیو...">
+            <button onclick="saveMovie()">ثبت فیلم</button>
         </div>
 
-        <!-- پخش‌کننده فیلم و دوربین -->
+        <!-- پخش فیلم -->
         <div id="playerTab" class="hidden">
             <h3 id="playingTitle">در حال پخش...</h3>
-            <div class="player-container">
+            
+            <div class="player-wrapper">
                 <video id="mainVideo" controls></video>
-                
-                <div class="cam-overlay">
-                    <video id="myCam" autoplay muted></video>
-                    <video id="partnerCam" autoplay></video>
+            </div>
+
+            <!-- دکمه فعال‌سازی دوربین -->
+            <button id="camToggleBtn" onclick="toggleCamera()" style="background: #10b981; margin-bottom: 10px;">📹 روشن کردن دوربین من</button>
+
+            <!-- چت متنی -->
+            <div class="chat-box">
+                <div class="chat-messages" id="chatMessages"></div>
+                <div class="chat-input-group">
+                    <input type="text" id="msgInput" placeholder="پیامی بنویسید..." onkeypress="if(event.key==='Enter') sendChat()">
+                    <button onclick="sendChat()">ارسال</button>
                 </div>
             </div>
+
             <button onclick="closePlayer()" style="margin-top: 15px; background: #ef4444;">خروج از پخش</button>
         </div>
     </div>
 
 </div>
 
+<!-- ویدیوهای لایو در پایین‌ترین جای صفحه -->
+<div id="bottomCams" class="bottom-cams-container hidden">
+    <!-- سمت چپ پایین: تصویر خودتان -->
+    <div class="cam-box">
+        <video id="myCam" autoplay muted playsinline></video>
+        <div class="cam-label">شما</div>
+    </div>
+
+    <!-- سمت راست پایین: تصویر دوستتان -->
+    <div class="cam-box">
+        <video id="partnerCam" autoplay playsinline></video>
+        <div class="cam-label" id="partnerLabel">پارتنر</div>
+    </div>
+</div>
+
 <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
 <script>
     const DB_URL = "https://crazyapp-9663a-default-rtdb.firebaseio.com";
     let currentUser = null;
-    let peer = null;
     let isRemoteAction = false;
     let currentRoomId = null;
+    let lastMsgCount = 0;
+    let peer = null;
+    let localStream = null;
 
-    // توابع REST API برای Firebase
     async function fbGet(path) {
-        const res = await fetch(`${DB_URL}/${path}.json`);
-        return await res.json();
+        try { const res = await fetch(`${DB_URL}/${path}.json`); return await res.json(); } catch(e) { return null; }
     }
 
     async function fbSet(path, data) {
-        await fetch(`${DB_URL}/${path}.json`, {
-            method: 'PUT',
-            body: JSON.stringify(data)
-        });
+        await fetch(`${DB_URL}/${path}.json`, { method: 'PUT', body: JSON.stringify(data) });
     }
 
-    // ثبت‌نام آنلاین
+    async function fbPush(path, data) {
+        await fetch(`${DB_URL}/${path}.json`, { method: 'POST', body: JSON.stringify(data) });
+    }
+
     async function register() {
         const id = document.getElementById('authId').value.trim();
         const pass = document.getElementById('authPass').value.trim();
         if(!id || !pass) return alert('آیدی و رمز را وارد کنید.');
-
         const user = await fbGet(`users/${id}`);
         if(user) return alert('این آیدی قبلاً ثبت شده است.');
-
         await fbSet(`users/${id}`, { pass: pass, friends: {} });
-        alert('ثبت‌نام آنلاین با موفقیت انجام شد!');
+        alert('ثبت‌نام انجام شد!');
     }
 
-    // ورود آنلاین
     async function login() {
         const id = document.getElementById('authId').value.trim();
         const pass = document.getElementById('authPass').value.trim();
@@ -270,21 +319,57 @@
             loadFriends();
             listenToWatchRequests();
         } else {
-            alert('آیدی یا رمز عبور اشتباه است.');
+            alert('اطلاعات ورود اشتباه است.');
         }
     }
 
+    // راه اندازی سرویس ویدیو آنلاین PeerJS
     function initPeer() {
         peer = new Peer(currentUser);
         peer.on('call', (call) => {
-            navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
-                document.getElementById('myCam').srcObject = stream;
-                call.answer(stream);
+            if(localStream) {
+                call.answer(localStream);
                 call.on('stream', (remoteStream) => {
                     document.getElementById('partnerCam').srcObject = remoteStream;
                 });
-            });
+            }
         });
+    }
+
+    // فعال کردن دوربین با اجازه کاربر
+    async function toggleCamera() {
+        if(localStream) {
+            localStream.getTracks().forEach(track => track.stop());
+            localStream = null;
+            document.getElementById('myCam').srcObject = null;
+            document.getElementById('camToggleBtn').innerText = '📹 روشن کردن دوربین من';
+            document.getElementById('camToggleBtn').style.background = '#10b981';
+            return;
+        }
+
+        try {
+            localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+            document.getElementById('myCam').srcObject = localStream;
+            document.getElementById('camToggleBtn').innerText = '🎥 خاموش کردن دوربین';
+            document.getElementById('camToggleBtn').style.background = '#f59e0b';
+
+            // اگر دوستی در اتاق هست، اتصال برقرار شود
+            const partnerId = getPartnerId();
+            if(partnerId && peer) {
+                const call = peer.call(partnerId, localStream);
+                call.on('stream', (remoteStream) => {
+                    document.getElementById('partnerCam').srcObject = remoteStream;
+                });
+            }
+        } catch(e) {
+            alert('دسترسی به دوربین داده نشد.');
+        }
+    }
+
+    function getPartnerId() {
+        if(!currentRoomId) return null;
+        const parts = currentRoomId.split('_');
+        return parts.find(p => p !== currentUser && p !== 'solo');
     }
 
     function switchTab(tab) {
@@ -292,166 +377,162 @@
         document.getElementById('friendsTab').classList.add('hidden');
         document.getElementById('addMovieTab').classList.add('hidden');
         document.getElementById('playerTab').classList.add('hidden');
+        document.getElementById('bottomCams').classList.add('hidden');
 
-        if(tab === 'movies') document.getElementById('moviesTab').classList.remove('hidden');
-        if(tab === 'friends') document.getElementById('friendsTab').classList.remove('hidden');
-        if(tab === 'addMovie') document.getElementById('addMovieTab').classList.remove('hidden');
+        document.querySelectorAll('.nav-tabs button').forEach(btn => btn.classList.remove('active'));
+
+        if(tab === 'movies') { document.getElementById('moviesTab').classList.remove('hidden'); document.getElementById('tabMovies').classList.add('active'); }
+        if(tab === 'friends') { document.getElementById('friendsTab').classList.remove('hidden'); document.getElementById('tabFriends').classList.add('active'); }
+        if(tab === 'addMovie') { document.getElementById('addMovieTab').classList.remove('hidden'); document.getElementById('tabAdd').classList.add('active'); }
     }
 
-    // ثبت فیلم آنلاین در دیتابیس
     async function saveMovie() {
         const title = document.getElementById('movieTitle').value;
         const cover = document.getElementById('movieCover').value;
         const url = document.getElementById('movieUrl').value;
-
-        if(!title || !url) return alert('نام و لینک ویدیو الزامی است.');
-
-        const movieId = Date.now();
-        await fbSet(`movies/${movieId}`, { title, cover, url });
-        
-        alert('فیلم در دیتابیس آنلاین ثبت شد!');
+        if(!title || !url) return alert('اطلاعات ناقص است.');
+        await fbSet(`movies/${Date.now()}`, { title, cover, url });
+        alert('فیلم ذخیره شد.');
         loadMovies();
         switchTab('movies');
     }
 
-    // دریافت آنلاین لیست فیلم‌ها
     async function loadMovies() {
         const list = document.getElementById('movieList');
-        list.innerHTML = 'در حال دریافت فیلم‌ها...';
+        list.innerHTML = 'در حال دریافت...';
         const movies = await fbGet('movies') || {};
         list.innerHTML = '';
-
         Object.values(movies).forEach((m) => {
             const card = document.createElement('div');
             card.className = 'movie-card';
-            card.innerHTML = `
-                <img src="${m.cover || 'https://via.placeholder.com/150'}" alt="${m.title}">
-                <p>${m.title}</p>
-            `;
+            card.innerHTML = `<img src="${m.cover || 'https://via.placeholder.com/150'}"><p>${m.title}</p>`;
             card.onclick = () => startWatchingMovie(m.title, m.url);
             list.appendChild(card);
         });
     }
 
-    // افزودن دوست
     async function addFriend() {
         const friendId = document.getElementById('searchFriendId').value.trim();
-        if(friendId === currentUser) return alert('نمی‌توانید خودتان را اضافه کنید.');
-
+        if(!friendId || friendId === currentUser) return;
         const user = await fbGet(`users/${friendId}`);
-        if(!user) return alert('کاربری با این آیدی یافت نشد.');
-
+        if(!user) return alert('کاربر پیدا نشد.');
         await fbSet(`users/${currentUser}/friends/${friendId}`, true);
-        alert('دوست با موفقیت اضافه شد!');
+        alert('دوست اضافه شد!');
         loadFriends();
     }
 
-    // بارگذاری لیست دوستان
     async function loadFriends() {
         const list = document.getElementById('friendsList');
         list.innerHTML = '';
         const user = await fbGet(`users/${currentUser}`);
         const friends = user.friends || {};
-
         Object.keys(friends).forEach(f => {
             const li = document.createElement('li');
-            li.style.padding = '10px';
-            li.style.borderBottom = '1px solid #221a42';
-            li.style.display = 'flex';
-            li.style.justifyContent = 'space-between';
-            li.innerHTML = `<span>👤 ${f}</span> <button onclick="requestWatch('${f}')" style="width:auto; padding:5px 10px; margin:0;">درخواست تماشا</button>`;
+            li.style.cssText = 'padding:10px 0; border-bottom:1px solid #221a42; display:flex; justify-content:space-between; align-items:center;';
+            li.innerHTML = `<span>👤 ${f}</span> <button onclick="requestWatch('${f}')" style="width:auto; padding:5px 10px; margin:0;">دعوت به تماشا</button>`;
             list.appendChild(li);
         });
     }
 
-    // ارسال درخواست تماشای فیلم آنلاین
     async function requestWatch(friendId) {
-        currentRoomId = `${currentUser}_${friendId}`;
+        currentRoomId = [currentUser, friendId].sort().join('_');
         await fbSet(`requests/${friendId}`, { from: currentUser, roomId: currentRoomId });
-        alert(`درخواست تماشا برای ${friendId} ارسال شد. منتظر تایید باشید...`);
+        alert(`دعوت‌نامه برای ${friendId} ارسال شد.`);
     }
 
-    // دریافت درخواست‌های تماشای آنلاین
     function listenToWatchRequests() {
         setInterval(async () => {
             const req = await fbGet(`requests/${currentUser}`);
             if(req) {
-                if(confirm(`کاربر ${req.from} درخواست تماشای هم‌زمان فیلم داده است. می‌پذیرید؟`)) {
+                if(confirm(`کاربر ${req.from} شما را به تماشای فیلم دعوت کرده است. قبول می‌کنید؟`)) {
                     currentRoomId = req.roomId;
                     await fbSet(`requests/${currentUser}`, null);
-                    startVideoChat(req.from);
-                    syncPlayerEvents();
+                    switchTab('player');
+                    document.getElementById('playerTab').classList.remove('hidden');
+                    document.getElementById('bottomCams').classList.remove('hidden');
+                    document.getElementById('partnerLabel').innerText = req.from;
+                    syncPlayerAndChat();
                 }
             }
         }, 3000);
     }
 
-    // شروع هم‌زمانی و ویدیوچت
     function startWatchingMovie(title, url) {
         switchTab('player');
         document.getElementById('playerTab').classList.remove('hidden');
+        document.getElementById('bottomCams').classList.remove('hidden');
         document.getElementById('playingTitle').innerText = title;
 
         const video = document.getElementById('mainVideo');
         video.src = url;
 
-        if(!currentRoomId) currentRoomId = `room_${Date.now()}`;
-        syncPlayerEvents();
+        if(!currentRoomId) currentRoomId = `solo_${currentUser}_${Date.now()}`;
+        const partner = getPartnerId();
+        if(partner) document.getElementById('partnerLabel').innerText = partner;
+
+        syncPlayerAndChat();
     }
 
-    function startVideoChat(partnerId) {
-        navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
-            document.getElementById('myCam').srcObject = stream;
-            const call = peer.call(partnerId, stream);
-            call.on('stream', (remoteStream) => {
-                document.getElementById('partnerCam').srcObject = remoteStream;
-            });
+    async function sendChat() {
+        const input = document.getElementById('msgInput');
+        const text = input.value.trim();
+        if(!text || !currentRoomId) return;
+
+        await fbPush(`rooms/${currentRoomId}/messages`, {
+            sender: currentUser,
+            text: text,
+            time: new Date().toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' })
         });
+        input.value = '';
     }
 
-    // هم‌زمان‌سازی اکشن‌های پخش (Play / Pause / Seek) در دیتابیس
-    function syncPlayerEvents() {
+    function syncPlayerAndChat() {
         const video = document.getElementById('mainVideo');
 
-        video.onplay = () => {
-            if(isRemoteAction) return;
-            fbSet(`rooms/${currentRoomId}`, { action: 'play', time: video.currentTime });
-        };
+        video.onplay = () => { if(!isRemoteAction) fbSet(`rooms/${currentRoomId}/sync`, { action: 'play', time: video.currentTime }); };
+        video.onpause = () => { if(!isRemoteAction) fbSet(`rooms/${currentRoomId}/sync`, { action: 'pause', time: video.currentTime }); };
+        video.onseeking = () => { if(!isRemoteAction) fbSet(`rooms/${currentRoomId}/sync`, { action: 'seek', time: video.currentTime }); };
 
-        video.onpause = () => {
-            if(isRemoteAction) return;
-            fbSet(`rooms/${currentRoomId}`, { action: 'pause', time: video.currentTime });
-        };
-
-        video.onseeking = () => {
-            if(isRemoteAction) return;
-            fbSet(`rooms/${currentRoomId}`, { action: 'seek', time: video.currentTime });
-        };
-
-        // گوش دادن زنده به تغییرات دیتابیس
         setInterval(async () => {
             if(!currentRoomId) return;
-            const state = await fbGet(`rooms/${currentRoomId}`);
-            if(state && !isRemoteAction) {
-                isRemoteAction = true;
-                if(state.action === 'play' && video.paused) {
-                    video.currentTime = state.time;
-                    video.play();
-                } else if(state.action === 'pause' && !video.paused) {
-                    video.currentTime = state.time;
-                    video.pause();
-                } else if(Math.abs(video.currentTime - state.time) > 1.5) {
-                    video.currentTime = state.time;
+
+            // دریافت پیام‌های چت
+            const msgs = await fbGet(`rooms/${currentRoomId}/messages`);
+            if(msgs) {
+                const msgList = Object.values(msgs);
+                if(msgList.length !== lastMsgCount) {
+                    lastMsgCount = msgList.length;
+                    const container = document.getElementById('chatMessages');
+                    container.innerHTML = '';
+                    msgList.forEach(m => {
+                        const div = document.createElement('div');
+                        div.className = `chat-msg ${m.sender === currentUser ? 'me' : ''}`;
+                        div.innerHTML = `<span>${m.sender} - ${m.time}</span>${m.text}`;
+                        container.appendChild(div);
+                    });
+                    container.scrollTop = container.scrollHeight;
                 }
-                setTimeout(() => { isRemoteAction = false; }, 500);
             }
-        }, 1000);
+
+            // هم‌زمانی فیلم
+            const sync = await fbGet(`rooms/${currentRoomId}/sync`);
+            if(sync && !isRemoteAction) {
+                isRemoteAction = true;
+                if(sync.action === 'play' && video.paused) { video.currentTime = sync.time; video.play(); }
+                else if(sync.action === 'pause' && !video.paused) { video.currentTime = sync.time; video.pause(); }
+                else if(Math.abs(video.currentTime - sync.time) > 1.5) { video.currentTime = sync.time; }
+                setTimeout(() => { isRemoteAction = false; }, 400);
+            }
+        }, 1200);
     }
 
     function closePlayer() {
         const video = document.getElementById('mainVideo');
         video.pause();
         video.src = '';
+        if(localStream) toggleCamera();
+        currentRoomId = null;
+        lastMsgCount = 0;
         switchTab('movies');
     }
 </script>
