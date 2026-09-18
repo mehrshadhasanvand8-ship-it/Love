@@ -331,6 +331,7 @@
     let localStream = null;
     let partnerId = null;
     let syncInterval = null;
+    let activeCall = null;
 
     async function fbGet(path) {
         try { const res = await fetch(`${DB_URL}/${path}.json`); return await res.json(); } catch(e) { return null; }
@@ -377,7 +378,6 @@
     }
 
     function startPresence() {
-        // بازه زمانی مطمئن‌تر (۱۰ ثانیه) برای جلوگیری از خطای شمارش آنلاین‌ها
         setInterval(async () => {
             if(currentUser) {
                 const now = Date.now();
@@ -387,7 +387,7 @@
                 }
                 updateOnlineCounts();
             }
-        }, 4000);
+        }, 3000);
 
         window.addEventListener('beforeunload', () => {
             if(currentUser) {
@@ -404,8 +404,7 @@
         const now = Date.now();
         let totalOnline = 0;
         Object.keys(onlineUsers).forEach(user => {
-            // بازه ۱۰ ثانیه‌ای برای محاسبه دقیق‌تر وضعیت آنلاین بودن
-            if(now - onlineUsers[user] < 10000) totalOnline++;
+            if(now - onlineUsers[user] < 7000) totalOnline++;
         });
         document.getElementById('totalOnlineCount').innerText = totalOnline;
 
@@ -413,13 +412,13 @@
             const viewers = await fbGet(`movie_viewers/${currentMovieId}`) || {};
             let activeViewers = 0;
             Object.keys(viewers).forEach(user => {
-                if(now - viewers[user] < 10000) activeViewers++;
+                if(now - viewers[user] < 7000) activeViewers++;
             });
             document.getElementById('movieViewerCount').innerText = activeViewers;
         }
     }
 
-    /* سیستم اتصال ویدئویی PeerJS اصلاح‌شده برای تبادل دوطرفه تصویر */
+    /* سیستم اتصال دوطرفه PeerJS به‌روزرسانی شده */
     function initPeer() {
         if(peer) peer.destroy();
         peer = new Peer(currentUser);
@@ -447,6 +446,7 @@
                 partnerVid.srcObject = remoteStream;
                 partnerVid.play().catch(e => console.log(e));
             });
+            activeCall = call;
         });
     }
 
@@ -468,18 +468,31 @@
             btn.innerText = '🎥 خاموش کردن دوربین';
             btn.style.background = '#f59e0b';
 
-            // اگر پارتنری در اتاق حضور دارد، فوراً به او زنگ بزنیم تا ارتباط دوطرفه برقرار شود
+            // اگر پارتنری مشخص شده باشد، فوراً تماس دوطرفه را برقرار می‌کنیم
             if(partnerId && peer) {
-                const call = peer.call(partnerId, localStream);
+                connectToPartner(partnerId);
+            }
+        } catch(e) {
+            alert('دسترسی به دوربین و میکروفون رد شد.');
+        }
+    }
+
+    function connectToPartner(targetId) {
+        if(!peer || !localStream || !targetId) return;
+        partnerId = targetId;
+        document.getElementById('partnerLabel').innerText = `پارتنر: ${partnerId}`;
+
+        try {
+            const call = peer.call(partnerId, localStream);
+            if(call) {
                 call.on('stream', (remoteStream) => {
                     const partnerVid = document.getElementById('partnerCam');
                     partnerVid.srcObject = remoteStream;
                     partnerVid.play().catch(e => console.log(e));
                 });
+                activeCall = call;
             }
-        } catch(e) {
-            alert('دسترسی به دوربین و میکروفون رد شد یا پشتیبانی نمی‌شود.');
-        }
+        } catch(e) {}
     }
 
     function switchTab(tab) {
@@ -521,7 +534,7 @@
             let activeCount = 0;
             if(movieViewers[m.id]) {
                 Object.values(movieViewers[m.id]).forEach(time => {
-                    if(now - time < 10000) activeCount++;
+                    if(now - time < 7000) activeCount++;
                 });
             }
 
@@ -595,7 +608,7 @@
         const now = Date.now();
 
         Object.keys(friends).forEach(f => {
-            const isOnline = onlineUsers[f] && (now - onlineUsers[f] < 10000);
+            const isOnline = onlineUsers[f] && (now - onlineUsers[f] < 7000);
             const li = document.createElement('li');
             li.style.cssText = 'padding:8px 0; border-bottom:1px solid #221a42; display:flex; justify-content:space-between; align-items:center; font-size: 13px;';
             li.innerHTML = `<span>👤 ${f} ${isOnline ? '🟢' : '⚪'}</span> <button onclick="requestWatch('${f}')" style="width:auto; padding:4px 8px; margin:0; font-size:11px;">دعوت به تماشا</button>`;
@@ -656,7 +669,7 @@
             currentRoomId = [currentUser, partnerId].sort().join('_');
         } else {
             const viewers = await fbGet(`movie_viewers/${currentMovieId}`) || {};
-            const viewerIds = Object.keys(viewers).filter(id => id !== currentUser && (now - viewers[id] < 10000));
+            const viewerIds = Object.keys(viewers).filter(id => id !== currentUser && (now - viewers[id] < 7000));
 
             if(viewerIds.length > 0) {
                 partnerId = viewerIds[Math.floor(Math.random() * viewerIds.length)];
@@ -671,16 +684,9 @@
         document.getElementById('mainVideo').src = movie.url;
         document.getElementById('playingTitle').innerText = movie.title;
 
-        // اگر پارتنر مشخص شد و ما از قبل دوربین را روشن کرده بودیم، فوراً به او زنگ بزن
-        if(partnerId && peer && localStream) {
-            try {
-                const call = peer.call(partnerId, localStream);
-                call.on('stream', (remoteStream) => {
-                    const partnerVid = document.getElementById('partnerCam');
-                    partnerVid.srcObject = remoteStream;
-                    partnerVid.play().catch(e => console.log(e));
-                });
-            } catch(e) {}
+        // اگر پارتنر مشخص بود و استریم آماده بود، اتصال ویدئویی را برقرار کن
+        if(partnerId && localStream) {
+            connectToPartner(partnerId);
         }
     }
 
