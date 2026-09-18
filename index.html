@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LOVE ROOM - Watch Party Pro</title>
+    <title>LOVE ROOM - Realtime Watch Party</title>
     <style>
         :root {
             --bg-main: #09070f;
@@ -267,7 +267,7 @@
         <div id="playerTab" class="hidden">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                 <h3 id="playingTitle" style="margin:0;">در حال پخش...</h3>
-                <span style="font-size: 12px; color: #10b981;">👥 بینندگان این فیلم: <strong id="movieViewerCount">1</strong> نفر</span>
+                <span style="font-size: 12px; color: #10b981;">👥 بینندگان این فیلم: <strong id="movieViewerCount">0</strong> نفر</span>
             </div>
             
             <div class="player-wrapper">
@@ -307,7 +307,8 @@
 <script>
     const DB_URL = "https://crazyapp-9663a-default-rtdb.firebaseio.com";
     let currentUser = null;
-    let isRemoteAction = false;
+    let isSyncing = false;
+    let lastActionTime = 0;
     let currentRoomId = null;
     let currentMovieId = null;
     let lastMsgCount = 0;
@@ -315,6 +316,7 @@
     let localStream = null;
     let activeCall = null;
     let partnerId = null;
+    let syncInterval = null;
 
     async function fbGet(path) {
         try { const res = await fetch(`${DB_URL}/${path}.json`); return await res.json(); } catch(e) { return null; }
@@ -359,24 +361,58 @@
         }
     }
 
-    /* پینگ آنلاین بودن کاربران */
+    /* پینگ آنلاین بودن واقعی با پاکسازی لحظه‌ای کاربران قطع شده */
     function startPresence() {
+        // بروزرسانی زمان فعال بودن کاربر هر ۲ ثانیه
         setInterval(async () => {
             if(currentUser) {
-                await fbSet(`online/${currentUser}`, Date.now());
-                updateOnlineStatus();
+                const now = Date.now();
+                await fbSet(`online/${currentUser}`, now);
+
+                if(currentMovieId) {
+                    await fbSet(`movie_viewers/${currentMovieId}/${currentUser}`, now);
+                }
+
+                updateOnlineCounts();
             }
-        }, 3000);
+        }, 2000);
+
+        // حذف کاربر از دیتابیس هنگام بستن مرورگر
+        window.addEventListener('beforeunload', () => {
+            if(currentUser) {
+                navigator.sendBeacon(`${DB_URL}/online/${currentUser}.json`, 'null');
+                if(currentMovieId) {
+                    navigator.sendBeacon(`${DB_URL}/movie_viewers/${currentMovieId}/${currentUser}.json`, 'null');
+                }
+            }
+        });
     }
 
-    async function updateOnlineStatus() {
+    /* محاسبه دقیق و واقعی افراد آنلاین */
+    async function updateOnlineCounts() {
         const onlineUsers = await fbGet('online') || {};
         const now = Date.now();
-        let count = 0;
-        Object.values(onlineUsers).forEach(time => {
-            if(now - time < 8000) count++;
+        let totalOnline = 0;
+
+        // فقط کسانی که در ۵ ثانیه اخیر سیگنال فرستادن آنلاین حساب میشن
+        Object.keys(onlineUsers).forEach(user => {
+            if(now - onlineUsers[user] < 5000) {
+                totalOnline++;
+            }
         });
-        document.getElementById('totalOnlineCount').innerText = count;
+        document.getElementById('totalOnlineCount').innerText = totalOnline;
+
+        // به‌روزرسانی بینندگان فیلم جاری
+        if(currentMovieId) {
+            const viewers = await fbGet(`movie_viewers/${currentMovieId}`) || {};
+            let activeViewers = 0;
+            Object.keys(viewers).forEach(user => {
+                if(now - viewers[user] < 5000) {
+                    activeViewers++;
+                }
+            });
+            document.getElementById('movieViewerCount').innerText = activeViewers;
+        }
     }
 
     function initPeer() {
@@ -453,19 +489,27 @@
         switchTab('movies');
     }
 
+    /* دریافت فیلم‌ها با تعداد بینندگان واقعی زنده */
     async function loadMovies() {
         const list = document.getElementById('movieList');
         list.innerHTML = 'در حال دریافت...';
         const movies = await fbGet('movies') || {};
         const movieViewers = await fbGet('movie_viewers') || {};
+        const now = Date.now();
         list.innerHTML = '';
 
         Object.values(movies).forEach((m) => {
-            const viewers = movieViewers[m.id] ? Object.keys(movieViewers[m.id]).length : 0;
+            let activeCount = 0;
+            if(movieViewers[m.id]) {
+                Object.values(movieViewers[m.id]).forEach(time => {
+                    if(now - time < 5000) activeCount++;
+                });
+            }
+
             const card = document.createElement('div');
             card.className = 'movie-card';
             card.innerHTML = `
-                <span class="viewer-count">👁️ ${viewers}</span>
+                <span class="viewer-count">👁️ ${activeCount}</span>
                 <img src="${m.cover || 'https://via.placeholder.com/150'}">
                 <p>${m.title}</p>
             `;
@@ -517,17 +561,15 @@
         }, 3000);
     }
 
-    /* الگوریتم گروه‌بندی ۲ به ۲ هوشمند و تصادفی */
     async function startWatchingMovie(movie) {
         currentMovieId = movie.id;
-        await fbSet(`movie_viewers/${currentMovieId}/${currentUser}`, true);
+        const now = Date.now();
+        await fbSet(`movie_viewers/${currentMovieId}/${currentUser}`, now);
 
-        // یافتن افراد منتظر برای این فیلم
         const viewers = await fbGet(`movie_viewers/${currentMovieId}`) || {};
-        const viewerIds = Object.keys(viewers).filter(id => id !== currentUser);
+        const viewerIds = Object.keys(viewers).filter(id => id !== currentUser && (now - viewers[id] < 5000));
 
         if(viewerIds.length > 0) {
-            // انتخاب یک نفر شانسى از بین افراد موجود
             partnerId = viewerIds[Math.floor(Math.random() * viewerIds.length)];
             currentRoomId = [currentUser, partnerId].sort().join('_');
         } else {
@@ -545,7 +587,7 @@
         document.getElementById('playerTab').classList.remove('hidden');
         document.getElementById('bottomCams').classList.remove('hidden');
         document.getElementById('partnerLabel').innerText = pLabel;
-        syncPlayerAndChat();
+        setupVideoSync();
     }
 
     async function sendChat() {
@@ -561,23 +603,30 @@
         input.value = '';
     }
 
-    function syncPlayerAndChat() {
+    function setupVideoSync() {
         const video = document.getElementById('mainVideo');
 
-        video.onplay = () => { if(!isRemoteAction) fbSet(`rooms/${currentRoomId}/sync`, { action: 'play', time: video.currentTime }); };
-        video.onpause = () => { if(!isRemoteAction) fbSet(`rooms/${currentRoomId}/sync`, { action: 'pause', time: video.currentTime }); };
-        video.onseeking = () => { if(!isRemoteAction) fbSet(`rooms/${currentRoomId}/sync`, { action: 'seek', time: video.currentTime }); };
+        const sendSyncState = async (action) => {
+            if (isSyncing) return;
+            lastActionTime = Date.now();
+            await fbSet(`rooms/${currentRoomId}/sync`, {
+                action: action,
+                time: video.currentTime,
+                by: currentUser,
+                timestamp: Date.now()
+            });
+        };
 
-        setInterval(async () => {
+        video.onplay = () => sendSyncState('play');
+        video.onpause = () => sendSyncState('pause');
+        video.onseeked = () => sendSyncState('seek');
+
+        if(syncInterval) clearInterval(syncInterval);
+
+        syncInterval = setInterval(async () => {
             if(!currentRoomId) return;
 
-            // به‌روزرسانی تعداد بینندگان فیلم جاری
-            if(currentMovieId) {
-                const viewers = await fbGet(`movie_viewers/${currentMovieId}`) || {};
-                document.getElementById('movieViewerCount').innerText = Object.keys(viewers).length;
-            }
-
-            // سینک چت
+            // چت
             const msgs = await fbGet(`rooms/${currentRoomId}/messages`);
             if(msgs) {
                 const msgList = Object.values(msgs);
@@ -597,20 +646,30 @@
 
             // سینک ویدیو
             const sync = await fbGet(`rooms/${currentRoomId}/sync`);
-            if(sync && !isRemoteAction) {
-                isRemoteAction = true;
-                if(sync.action === 'play' && video.paused) { video.currentTime = sync.time; video.play(); }
-                else if(sync.action === 'pause' && !video.paused) { video.currentTime = sync.time; video.pause(); }
-                else if(Math.abs(video.currentTime - sync.time) > 1.5) { video.currentTime = sync.time; }
-                setTimeout(() => { isRemoteAction = false; }, 400);
+            if(sync && sync.by !== currentUser && sync.timestamp > lastActionTime) {
+                isSyncing = true;
+                
+                if(Math.abs(video.currentTime - sync.time) > 1.2) {
+                    video.currentTime = sync.time;
+                }
+
+                if(sync.action === 'play' && video.paused) {
+                    await video.play().catch(() => {});
+                } else if(sync.action === 'pause' && !video.paused) {
+                    video.pause();
+                }
+
+                lastActionTime = sync.timestamp;
+                setTimeout(() => { isSyncing = false; }, 600);
             }
-        }, 1200);
+        }, 1000);
     }
 
     async function closePlayer() {
         const video = document.getElementById('mainVideo');
         video.pause();
         video.src = '';
+        if(syncInterval) clearInterval(syncInterval);
         if(localStream) toggleCamera();
         if(currentMovieId && currentUser) {
             await fbSet(`movie_viewers/${currentMovieId}/${currentUser}`, null);
