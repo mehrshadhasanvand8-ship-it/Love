@@ -2281,6 +2281,9 @@
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(payload)
                 });
+                if (!response.ok) {
+                    throw new Error('خطا در ارتباط با سرور فایربیس');
+                }
                 return await response.json();
             } catch(err) {
                 console.log("Firebase sync error:", err);
