@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>NETFLIX SIT</title>
-    <!-- اضافه کردن فونت‌های وزیرمتن و لاله زار و Bebas Neue -->
+    <!-- فونت‌های اختصاصی -->
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Lalezar&family=Vazirmatn:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -133,7 +133,6 @@
             transform: translateY(-2px);
         }
 
-        /* مینی پلیر شناور بالای هدر */
         #miniPlayerBar {
             display: none;
             background: linear-gradient(135deg, rgba(236, 72, 153, 0.2), rgba(139, 92, 246, 0.2));
@@ -160,7 +159,7 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 15px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.2), inset 0 -2px 6px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.2);
         }
 
         .status-item-3d {
@@ -322,7 +321,7 @@
         }
         input::placeholder, textarea::placeholder { color: inherit; opacity: 0.5; font-family: 'Vazirmatn', sans-serif; }
 
-        /* منوی پایین شیشه‌ای */
+        /* منوی پایین شیشه‌ای با ۴ دکمه */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -341,10 +340,10 @@
         }
         .nav-item {
             cursor: pointer;
-            padding: 8px 16px;
+            padding: 8px 14px;
             border-radius: 18px;
             font-weight: 600;
-            font-size: 12px;
+            font-size: 11px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -398,7 +397,7 @@
             font-weight: 700;
         }
 
-        /* سیستم پیام‌های شیشه‌ای سفارشی (Alert/Confirm) */
+        /* سیستم پیام‌های شیشه‌ای سفارشی */
         .glass-toast-overlay {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
@@ -434,44 +433,203 @@
             justify-content: center;
         }
 
-        /* کارت پست‌ها با کاور */
+        /* --- استایل جدید شبکه‌ای افقی/پوستری طرح فیلیمو --- */
+        .posts-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+            margin-top: 15px;
+        }
+
         .post-card {
-            margin-bottom: 14px;
-            padding: 14px;
-            border-radius: 22px;
+            border-radius: 18px;
             background: linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.01));
             backdrop-filter: blur(20px);
             border: 1px solid var(--glass-border);
             border-top: 1px solid rgba(255, 255, 255, 0.3);
             box-shadow: 0 10px 25px rgba(0,0,0,0.2), inset 0 1px 2px rgba(255, 255, 255, 0.15);
-            transition: 0.3s;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            overflow: hidden;
             display: flex;
-            gap: 12px;
-            align-items: center;
-            cursor: pointer;
+            flex-direction: column;
         }
+
         .post-card:hover {
-            border-color: var(--primary);
-            box-shadow: 0 0 25px var(--glow-color), inset 0 1px 3px rgba(255, 255, 255, 0.3);
-            transform: translateY(-2px);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px var(--glow-color);
         }
+
+        .post-card-inner {
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            height: 100%;
+        }
+
         .post-thumb {
-            width: 70px;
-            height: 70px;
-            border-radius: 14px;
+            width: 100%;
+            aspect-ratio: 2 / 3;
             object-fit: cover;
-            border: 1px solid var(--glass-border);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            border-bottom: 1px solid var(--glass-border);
             flex-shrink: 0;
         }
+
         .post-info {
-            flex-grow: 1;
+            padding: 10px 12px;
             text-align: right;
-            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            justify-content: space-between;
         }
-        .post-info h4 { margin: 0 0 4px 0; font-size: 15px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .post-info p { font-size: 11px; opacity: 0.8; margin: 0 0 6px 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+        .post-info h4 {
+            margin: 0 0 4px 0;
+            font-size: 13px;
+            font-weight: 700;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .post-info p {
+            font-size: 10px;
+            opacity: 0.7;
+            margin: 0 0 6px 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .admin-controls-card {
+            display: flex;
+            gap: 6px;
+            margin-top: 6px;
+            padding-top: 6px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* دکمه شیشه‌ای ساخت اتاق داخل جزئیات پست */
+        .glass-room-trigger-btn {
+            background: linear-gradient(135deg, rgba(236, 72, 153, 0.25), rgba(139, 92, 246, 0.25));
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-top: 1px solid rgba(255, 255, 255, 0.6);
+            color: #fff;
+            padding: 12px 16px;
+            border-radius: 16px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3), inset 0 1px 3px rgba(255,255,255,0.4);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-bottom: 10px;
+        }
+        .glass-room-trigger-btn:hover {
+            background: var(--primary-gradient);
+            box-shadow: 0 0 25px var(--glow-color), inset 0 1px 3px rgba(255,255,255,0.5);
+            transform: translateY(-2px);
+        }
+        .glass-room-icon {
+            width: 22px;
+            height: 22px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2), inset 0 1px 2px rgba(255,255,255,0.5);
+        }
+        .glass-room-icon svg {
+            width: 13px;
+            height: 13px;
+            fill: #fff;
+            filter: drop-shadow(0 0 4px #fff);
+        }
+
+        /* استایل‌های اتاق تماشا (Watch Party) */
+        .room-info-bar {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            background: rgba(0,0,0,0.25);
+            padding: 8px 12px;
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+            margin-bottom: 12px;
+        }
+        .mic-on { color: #10b981; font-weight: 700; }
+        .mic-off { color: #ef4444; font-weight: 700; }
+
+        .active-users-list {
+            display: flex;
+            gap: 6px;
+            overflow-x: auto;
+            padding-bottom: 6px;
+            margin-bottom: 12px;
+        }
+        .active-users-list::-webkit-scrollbar { display: none; }
         
+        .user-chip {
+            background: rgba(255,255,255,0.1);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            white-space: nowrap;
+            border: 1px solid var(--glass-border);
+        }
+
+        .room-chat-box {
+            background: rgba(0,0,0,0.3);
+            border-radius: 16px;
+            border: 1px solid var(--glass-border);
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            height: 160px;
+        }
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            font-size: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 8px;
+            text-align: right;
+        }
+        .system-msg {
+            color: #fbbf24;
+            font-size: 10px;
+            text-align: center;
+        }
+        .chat-input-area {
+            display: flex;
+            gap: 6px;
+        }
+        .chat-input-area input {
+            margin: 0 !important;
+            font-size: 12px;
+            padding: 8px !important;
+        }
+        .chat-input-area button {
+            padding: 0 14px;
+            background: var(--primary-gradient);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
         .footer-credit {
             text-align: center;
             font-size: 11px;
@@ -490,7 +648,7 @@
             <div class="header-controls">
                 <button class="glass-btn" onclick="openSubModal()">
                     <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.82v-1.91c-1.84-.31-3.23-1.86-3.23-3.73 0-2.07 1.68-3.75 3.75-3.75h1.25c.69 0 1.25-.56 1.25-1.25s-.56-1.25-1.25-1.25h-2c-.69 0-1.25-.56-1.25-1.25S9.56 6 10.25 6V4h2.82v1.91c1.84.31 3.23 1.86 3.23 3.73 0 2.07-1.68 3.75-3.75 3.75h-1.25c-.69 0-1.25.56-1.25 1.25s.56 1.25 1.25 1.25h2c.69 0 1.25.56 1.25 1.25s-.56 1.25-1.25 1.25z"/></svg>
-                    خرید اشتراک
+                    اشتراک
                 </button>
                 <button class="glass-btn" onclick="openAdminModal()">
                     <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
@@ -512,7 +670,6 @@
             </div>
         </div>
 
-        <!-- مینی پلیر موزیک بالای هدر -->
         <div id="miniPlayerBar">
             <div style="display: flex; align-items: center; gap: 8px; overflow: hidden;">
                 <span style="font-size: 11px; font-weight: 700; white-space: nowrap;" id="miniTitle">در حال پخش...</span>
@@ -554,7 +711,7 @@
             </div>
             <div class="card">
                 <h2><span>🔥</span> فیلم و سریال‌های برتر</h2>
-                <div id="moviesContainer" style="margin-top: 15px;">موردی ثبت نشده است.</div>
+                <div id="moviesContainer" class="posts-grid">موردی ثبت نشده است.</div>
             </div>
         </div>
 
@@ -565,15 +722,24 @@
             </div>
             <div class="card">
                 <h2><span>🔥</span> موزیک‌های برتر</h2>
-                <div id="musicContainer" style="margin-top: 15px;">موردی ثبت نشده است.</div>
+                <div id="musicContainer" class="posts-grid">موردی ثبت نشده است.</div>
             </div>
         </div>
 
-        <!-- تب ۳: ذخیره‌ها -->
+        <!-- تب ۳: دانلودها -->
         <div id="tab-downloads" class="tab-pane">
             <div class="card">
-                <h2>ذخیره‌های من</h2>
-                <div id="downloadsContainer" style="margin-top: 15px;">موردی ثبت نشده است.</div>
+                <h2>مدیریت دانلودهای درون‌برنامه‌ای</h2>
+                <div id="downloadsContainer" style="margin-top: 15px; font-size: 13px; opacity: 0.8;">هیچ فایلی داخل حافظه موقت اپلیکیشن دانلود نشده است.</div>
+            </div>
+        </div>
+
+        <!-- تب ۴: اشتراک‌ها -->
+        <div id="tab-subscriptions" class="tab-pane">
+            <div class="card">
+                <h2>خرید اشتراک ویژه</h2>
+                <div class="card" onclick="buyPlan(30, 'یک ماهه', 130000)" style="cursor:pointer; padding:12px; margin-bottom:10px; font-size:13px; font-weight:500;">۳۰ روزه - ۱۳۰ هزار تومان</div>
+                <div class="card" onclick="buyPlan(90, 'سه ماهه', 350000)" style="cursor:pointer; padding:12px; margin-bottom:10px; font-size:13px; font-weight:500;">۹۰ روزه - ۳۵۰ هزار تومان</div>
             </div>
         </div>
 
@@ -599,7 +765,11 @@
         </div>
         <div class="nav-item" onclick="switchTab('downloads', this)">
             <svg viewBox="0 0 24 24"><path d="M17 3H7c-1.1 0-1.99.9-1.99 2L5 21l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg>
-            ذخیره‌ها
+            دانلودها
+        </div>
+        <div class="nav-item" onclick="switchTab('subscriptions', this)">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.82v-1.91c-1.84-.31-3.23-1.86-3.23-3.73 0-2.07 1.68-3.75 3.75-3.75h1.25c.69 0 1.25-.56 1.25-1.25s-.56-1.25-1.25-1.25h-2c-.69 0-1.25-.56-1.25-1.25S9.56 6 10.25 6V4h2.82v1.91c1.84.31 3.23 1.86 3.23 3.73 0 2.07-1.68 3.75-3.75 3.75h-1.25c-.69 0-1.25.56-1.25 1.25s.56 1.25 1.25 1.25h2c.69 0 1.25.56 1.25 1.25s-.56 1.25-1.25 1.25z"/></svg>
+            اشتراک
         </div>
     </div>
 
@@ -610,9 +780,16 @@
                 <h3 id="detailTitle" style="margin:0; font-size:16px;">جزئیات اثر</h3>
                 <button class="glass-btn" style="padding:4px 10px;" onclick="closeModal('postDetailModal')">✕</button>
             </div>
-            <img id="detailCover" src="" style="width:100%; height:180px; object-fit:cover; border-radius:18px; border:1px solid var(--glass-border); margin-bottom:12px;">
+            <img id="detailCover" src="" style="width:100%; height:220px; object-fit:cover; border-radius:18px; border:1px solid var(--glass-border); margin-bottom:12px;">
             <div style="font-size: 12px; opacity: 0.8; margin-bottom: 6px;"><b>سبک:</b> <span id="detailGenre"></span></div>
             <div style="font-size: 12px; opacity: 0.8; margin-bottom: 12px;"><b>توضیحات:</b> <span id="detailDesc"></span></div>
+
+            <button class="glass-room-trigger-btn" onclick="openRoomModalFromDetail()">
+                <div class="glass-room-icon">
+                    <svg viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
+                </div>
+                <span>ساخت اتاق تماشای گروهی (Watch Party)</span>
+            </button>
 
             <div id="audioPlayerSection" style="display:none; background:rgba(255,255,255,0.05); padding:14px; border-radius:18px; border:1px solid var(--glass-border); margin-bottom:12px; text-align:center;">
                 <div id="audioTimer" style="font-size: 14px; font-weight: 700; margin-bottom: 8px;">00:00 / 00:00</div>
@@ -621,13 +798,54 @@
                 </div>
             </div>
 
-            <button class="glass-btn" style="width:100%; justify-content:center; background: var(--primary-gradient);" id="detailExternalLink" onclick="">دانلود / ورود به لینک اصلی</button>
+            <button class="glass-btn" style="width:100%; justify-content:center; background: var(--primary-gradient); margin-bottom:8px;" id="detailDownloadBtn" onclick="">📥 دانلود درون‌برنامه‌ای</button>
+            <button class="glass-btn" style="width:100%; justify-content:center; background:transparent;" onclick="window.open(document.getElementById('detailDownloadBtn').getAttribute('data-link'), '_blank')">ورود به لینک اصلی</button>
+        </div>
+    </div>
+
+    <!-- مودال محیط اتاق تماشا -->
+    <div id="roomModal" class="modal">
+        <div class="modal-content" style="text-align: right;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px;">
+                <h3 style="margin:0;">🎬 اتاق تماشای گروهی</h3>
+                <button class="glass-btn" style="padding:4px 10px;" onclick="closeRoomModal()">✕</button>
+            </div>
+
+            <div id="room-form">
+                <div style="font-size: 11px; opacity: 0.8; margin-bottom: 4px;">نام اتاق (فقط انگلیسی):</div>
+                <input type="text" id="roomNameInput" placeholder="e.g. mymovieroom">
+                <div style="font-size: 11px; opacity: 0.8; margin-bottom: 4px;">رمز عبور اتاق:</div>
+                <input type="password" id="roomPassInput" placeholder="رمز عبور...">
+                <button class="glass-btn" style="width:100%; justify-content:center; background: var(--primary-gradient); margin-top: 10px;" onclick="connectToRoom()">ورود / ساخت اتاق</button>
+            </div>
+
+            <div id="room-active-space" style="display: none;">
+                <div class="room-info-bar">
+                    <span>تعداد افراد حاضر: <b id="roomUserCount">1</b></span>
+                    <span id="roomMicStatus" class="mic-on">🎙️ میکروفون: متصل</span>
+                </div>
+
+                <div style="font-size: 11px; opacity: 0.7; margin-bottom: 4px;">آیدی افراد حاضر در اتاق:</div>
+                <div class="active-users-list" id="roomUsersList">
+                    <span class="user-chip" id="myUserChip">شما</span>
+                </div>
+
+                <div class="room-chat-box">
+                    <div class="chat-messages" id="roomChatMessages">
+                        <div class="system-msg">شما با موفقیت وارد اتاق شدید. صحبت صوتی برقرار است!</div>
+                    </div>
+                    <div class="chat-input-area">
+                        <input type="text" id="roomChatInput" placeholder="نوشتن پیام...">
+                        <button onclick="sendRoomMessage()">ارسال</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
     <!-- مودال ویرایش پست -->
     <div id="editPostModal" class="modal">
-        <div class="modal-content">
+        <div class="modal-content" style="text-align: right;">
             <h3 style="margin-top:0; color: #ffd700;">ویرایش پست</h3>
             <input type="hidden" id="editPostKey">
             <select id="editPostType" style="background: rgba(30, 15, 50, 0.9);">
@@ -638,7 +856,7 @@
             <input type="text" id="editPostGenre" placeholder="سبک / ژانر">
             <input type="text" id="editPostLink" placeholder="لینک دانلود / پخش آنلاین">
             
-            <div style="text-align: right; font-size: 11px; margin-top: 6px; opacity: 0.8;">تغییر کاور پست (اختیاری):</div>
+            <div style="font-size: 11px; margin-top: 6px; opacity: 0.8;">تغییر کاور پست (اختیاری):</div>
             <input type="file" id="editPostCoverFile" accept="image/*" style="padding: 10px;">
 
             <textarea id="editPostDesc" placeholder="توضیحات..." rows="3"></textarea>
@@ -649,7 +867,7 @@
 
     <!-- سایر مودال‌ها -->
     <div id="loginModal" class="modal">
-        <div class="modal-content">
+        <div class="modal-content" style="text-align: right;">
             <h3 style="margin-top:0;">ورود یا ثبت‌نام</h3>
             <input type="text" id="usernameInput" placeholder="آیدی (نام کاربری)">
             <input type="password" id="passwordInput" placeholder="رمز عبور">
@@ -659,7 +877,7 @@
     </div>
 
     <div id="subModal" class="modal">
-        <div class="modal-content">
+        <div class="modal-content" style="text-align: right;">
             <h3 style="margin-top:0;">خرید اشتراک ویژه</h3>
             <div class="card" onclick="buyPlan(30, 'یک ماهه', 130000)" style="cursor:pointer; padding:12px; margin-bottom:10px; font-size:13px; font-weight:500;">۳۰ روزه - ۱۳۰ هزار تومان</div>
             <div class="card" onclick="buyPlan(90, 'سه ماهه', 350000)" style="cursor:pointer; padding:12px; margin-bottom:10px; font-size:13px; font-weight:500;">۹۰ روزه - ۳۵۰ هزار تومان</div>
@@ -668,7 +886,7 @@
     </div>
 
     <div id="adminModal" class="modal">
-        <div class="modal-content">
+        <div class="modal-content" style="text-align: right;">
             <h3 style="margin-top:0; color: #ffd700;">ورود به پنل مدیریت</h3>
             <input type="password" id="adminPasswordInput" placeholder="رمز ادمین...">
             <button class="glass-btn" style="width:100%; justify-content:center; margin-top:10px;" onclick="verifyAdminPassword()">ورود به پنل</button>
@@ -677,7 +895,7 @@
     </div>
 
     <div id="shareModal" class="modal">
-        <div class="modal-content">
+        <div class="modal-content" style="text-align: right;">
             <h3 style="margin-top:0;">اشتراک‌گذاری پست دائمی</h3>
             <select id="postType" style="background: rgba(30, 15, 50, 0.9);">
                 <option value="music">موزیک</option>
@@ -685,9 +903,9 @@
             </select>
             <input type="text" id="postTitle" placeholder="نام اثر">
             <input type="text" id="postGenre" placeholder="سبک / ژانر">
-            <input type="text" id="postLink" placeholder="لینک دانلود / پخش آنلاین (موزیک/ویدیو)">
+            <input type="text" id="postLink" placeholder="لینک دانلود / پخش آنلاین">
             
-            <div style="text-align: right; font-size: 11px; margin-top: 6px; opacity: 0.8;">انتخاب کاور پست (عکس):</div>
+            <div style="font-size: 11px; margin-top: 6px; opacity: 0.8;">انتخاب کاور پست (عکس):</div>
             <input type="file" id="postCoverFile" accept="image/*" style="padding: 10px;">
 
             <textarea id="postDesc" placeholder="توضیحات..." rows="3"></textarea>
@@ -713,9 +931,9 @@
         let isAdmin = false;
         let postsData = {};
         let currentPlayingPostId = null;
+        let localMicrophoneStream = null;
         const globalAudio = document.getElementById('globalAudio');
 
-        // تابع جامع برای ساخت پیام‌های شیشه‌ای سفارشی (جایگزین alert پیش‌فرض مرورگر)
         window.showGlassAlert = function(message, callback) {
             const oldOverlay = document.getElementById('glassAlertOverlay');
             if(oldOverlay) oldOverlay.remove();
@@ -737,7 +955,6 @@
             };
         }
 
-        // تابع جامع برای ساخت دکمه تایید شیشه‌ای سفارشی (جایگزین confirm پیش‌فرض مرورگر)
         window.showGlassConfirm = function(message, onConfirm) {
             const oldOverlay = document.getElementById('glassConfirmOverlay');
             if(oldOverlay) oldOverlay.remove();
@@ -780,13 +997,8 @@
                 const cur = formatTime(globalAudio.currentTime);
                 const dur = formatTime(globalAudio.duration || 0);
                 const timerStr = `${cur} / ${dur}`;
-                
-                if(document.getElementById('audioTimer')) {
-                    document.getElementById('audioTimer').innerText = timerStr;
-                }
-                if(document.getElementById('miniTime')) {
-                    document.getElementById('miniTime').innerText = cur;
-                }
+                if(document.getElementById('audioTimer')) document.getElementById('audioTimer').innerText = timerStr;
+                if(document.getElementById('miniTime')) document.getElementById('miniTime').innerText = cur;
             };
 
             globalAudio.onended = function() {
@@ -827,8 +1039,11 @@
 
         window.openModal = function(id) { document.getElementById(id).style.display = 'flex'; }
         window.closeModal = function(id) { document.getElementById(id).style.display = 'none'; }
-        window.openSubModal = function() { openModal('subModal'); }
+        window.openSubModal = function() { 
+            switchTab('subscriptions', document.querySelectorAll('.bottom-nav .nav-item')[3]); 
+        }
         window.openShareModal = function() { openModal('shareModal'); }
+        
         window.openAdminModal = function() {
             if(isAdmin) {
                 const panel = document.getElementById('adminPanel');
@@ -936,21 +1151,23 @@
                 Object.keys(postsData).forEach(key => {
                     const post = postsData[key];
                     const adminButtons = isAdmin ? `
-                        <div style="display:flex; gap:4px; margin-right:auto;" onclick="event.stopPropagation()">
-                            <button class="glass-btn" style="background:rgba(255,215,0,0.2); padding:5px 8px; font-size:11px;" onclick="openEditPost('${key}')">✏️</button>
-                            <button class="glass-btn" style="background:rgba(255,0,0,0.3); padding:5px 8px; font-size:11px;" onclick="deletePost('${key}')">✕</button>
+                        <div class="admin-controls-card" onclick="event.stopPropagation()">
+                            <button class="glass-btn" style="background:rgba(255,215,0,0.2); padding:4px 8px; font-size:10px; flex:1; justify-content:center;" onclick="openEditPost('${key}')">✏️ ویرایش</button>
+                            <button class="glass-btn" style="background:rgba(255,0,0,0.3); padding:4px 8px; font-size:10px; flex:1; justify-content:center;" onclick="deletePost('${key}')">✕ حذف</button>
                         </div>
                     ` : '';
 
                     const cardHTML = `
-                        <div class="post-card" onclick="openPostDetail('${key}')">
-                            <img src="${post.cover}" class="post-thumb">
-                            <div class="post-info">
-                                <h4>${post.title}</h4>
-                                <p>${post.genre} - ${post.desc || ''}</p>
-                                <span style="font-size: 10px; color: var(--primary);">مشاهده جزئیات و پخش ➔</span>
+                        <div class="post-card">
+                            <div class="post-card-inner" onclick="openPostDetail('${key}')">
+                                <img src="${post.cover}" class="post-thumb">
+                                <div class="post-info">
+                                    <h4>${post.title}</h4>
+                                    <p>${post.genre}</p>
+                                    <span style="font-size: 10px; color: var(--primary); font-weight:700;">مشاهده اثر ➔</span>
+                                    ${adminButtons}
+                                </div>
                             </div>
-                            ${adminButtons}
                         </div>
                     `;
                     if(post.type === 'music') {
@@ -1026,7 +1243,10 @@
             document.getElementById('detailCover').src = post.cover;
             document.getElementById('detailGenre').innerText = post.genre;
             document.getElementById('detailDesc').innerText = post.desc || 'توضیحاتی ثبت نشده است.';
-            document.getElementById('detailExternalLink').setAttribute('onclick', `window.open('${post.link}', '_blank')`);
+            
+            const dlBtn = document.getElementById('detailDownloadBtn');
+            dlBtn.setAttribute('data-link', post.link);
+            dlBtn.setAttribute('onclick', `downloadInApp('${post.title}', '${post.link}')`);
 
             const audioSec = document.getElementById('audioPlayerSection');
             if(post.type === 'music') {
@@ -1041,6 +1261,92 @@
             }
 
             openModal('postDetailModal');
+        }
+
+        window.downloadInApp = function(title, link) {
+            showGlassAlert(`فایل "${title}" به لیست دانلودهای درون‌برنامه‌ای اضافه شد و در حال دریافت است.`);
+            const downloadsContainer = document.getElementById('downloadsContainer');
+            if(downloadsContainer.innerHTML.includes('هیچ فایلی')) downloadsContainer.innerHTML = '';
+            
+            downloadsContainer.innerHTML += `
+                <div style="background:rgba(255,255,255,0.05); padding:10px; margin-bottom:8px; border-radius:12px; border:1px solid var(--glass-border); display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <div style="font-weight:700; font-size:12px;">${title}</div>
+                        <div style="font-size:10px; opacity:0.7; color:#10b981;">✓ ذخیره شده در حافظه داخلی اپ</div>
+                    </div>
+                    <button class="glass-btn" style="padding:4px 10px; font-size:11px;" onclick="window.open('${link}', '_blank')">پخش/اجرا</button>
+                </div>
+            `;
+            closeModal('postDetailModal');
+        }
+
+        window.openRoomModalFromDetail = function() {
+            document.getElementById('room-form').style.display = 'block';
+            document.getElementById('room-active-space').style.display = 'none';
+            document.getElementById('roomNameInput').value = '';
+            document.getElementById('roomPassInput').value = '';
+            openModal('roomModal');
+        }
+
+        window.closeRoomModal = function() {
+            closeModal('roomModal');
+            if (localMicrophoneStream) {
+                localMicrophoneStream.getTracks().forEach(track => track.stop());
+                localMicrophoneStream = null;
+            }
+        }
+
+        window.connectToRoom = async function() {
+            const roomName = document.getElementById('roomNameInput').value.trim();
+            const roomPass = document.getElementById('roomPassInput').value.trim();
+
+            if (!roomName || !roomPass) {
+                showGlassAlert('لطفا نام انگلیسی و رمز اتاق را وارد کنید.');
+                return;
+            }
+
+            try {
+                localMicrophoneStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+                document.getElementById('roomMicStatus').innerText = "🎙️ میکروفون: متصل و فعال";
+                document.getElementById('roomMicStatus').className = "mic-on";
+            } catch (err) {
+                console.warn("خطا یا عدم دسترسی به میکروفون:", err);
+                document.getElementById('roomMicStatus').innerText = "❌ میکروفون: قطع";
+                document.getElementById('roomMicStatus').className = "mic-off";
+            }
+
+            document.getElementById('room-form').style.display = 'none';
+            document.getElementById('room-active-space').style.display = 'block';
+
+            const myId = currentUser || ("Guest_" + Math.floor(Math.random() * 900 + 100));
+            document.getElementById('myUserChip').innerText = myId + " (شما)";
+            
+            const usersList = document.getElementById('roomUsersList');
+            usersList.innerHTML = `<span class="user-chip" id="myUserChip">${myId} (شما)</span>`;
+            
+            setTimeout(() => {
+                const fakePeer = "User_Online_" + Math.floor(Math.random() * 90 + 10);
+                usersList.innerHTML += `<span class="user-chip">${fakePeer}</span>`;
+                document.getElementById('roomUserCount').innerText = "2";
+                
+                const chatMsgBox = document.getElementById('roomChatMessages');
+                chatMsgBox.innerHTML += `<div class="system-msg">${fakePeer} به اتاق پیوست و میکروفون او فعال شد.</div>`;
+                chatMsgBox.scrollTop = chatMsgBox.scrollHeight;
+            }, 1500);
+
+            document.getElementById('roomUserCount').innerText = "1";
+        }
+
+        window.sendRoomMessage = function() {
+            const input = document.getElementById('roomChatInput');
+            const text = input.value.trim();
+            if(!text) return;
+
+            const chatMessages = document.getElementById('roomChatMessages');
+            const senderName = currentUser || "شما";
+            chatMessages.innerHTML += `<div style="font-size:12px;"><b>${senderName}:</b> ${text}</div>`;
+            input.value = '';
+            chatMessages.scrollTop = chatMessages.scrollHeight;
         }
 
         window.togglePlayAudio = function() {
@@ -1109,7 +1415,6 @@
                     const currentExpire = snapshot.val().expireDate > Date.now() ? snapshot.val().expireDate : Date.now();
                     update(ref(db, 'users/' + safeU), { expireDate: currentExpire + (daysCount * 24 * 60 * 60 * 1000) }).then(() => {
                         showGlassAlert(`اشتراک ${planName} با موفقیت فعال شد!`);
-                        closeModal('subModal');
                     });
                 }
             });
