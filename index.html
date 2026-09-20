@@ -1188,10 +1188,10 @@
         let userSavedItems = []; 
         let activeMediaElement = null;
 
-        window.onload = function() {
+        window.onload = async function() {
             loadSavedUserSession();
-            loadFromFirebase();
-            setInterval(loadFromFirebase, 3000);
+            await loadFromFirebase();
+            setInterval(loadFromFirebase, 5000);
         };
 
         function showGlassAlert(title, message, type = 'info') {
@@ -1486,7 +1486,7 @@
             }
         }
 
-        function handleShareSubmit(e) {
+        async function handleShareSubmit(e) {
             e.preventDefault();
             const category = document.getElementById("shareCategory").value;
             const title = document.getElementById("shareTitle").value;
@@ -1511,6 +1511,7 @@
                 downloads: 0
             });
 
+            await syncToFirebase();
             showGlassAlert("موفقیت", "پست شما به عنوان جدیدترین اثر در سایت منتشر شد و برای همه قابل مشاهده است!", "success");
             closeModal('shareModal');
             document.getElementById("shareTitle").value = "";
@@ -1521,7 +1522,6 @@
             document.querySelectorAll('input[name="genre"]').forEach(cb => cb.checked = false);
             
             renderPosts();
-            syncToFirebase();
         }
 
         function checkAccessAndOpenPost(post) {
@@ -1687,12 +1687,12 @@
             document.getElementById("floatingMediaBar").style.display = "none";
         }
 
-        function startDownload(postId) {
+        async function startDownload(postId) {
             let post = posts.find(p => p.id === postId);
             if (!post) return;
 
             post.downloads = (post.downloads || 0) + 1;
-            syncToFirebase();
+            await syncToFirebase();
 
             const a = document.createElement('a');
             a.href = post.downloadLink;
@@ -1725,12 +1725,14 @@
             selectedPlanNameText = el.querySelector(".plan-title").innerText + " (" + el.querySelector(".plan-price").innerText + ")";
         }
 
-        function handleAuthSubmit(e) {
+        async function handleAuthSubmit(e) {
             e.preventDefault();
             const name = document.getElementById("regName").value.trim();
             const username = document.getElementById("regUsername").value.trim();
             const password = document.getElementById("regPassword").value.trim();
             
+            await loadFromFirebase();
+
             let existingUser = usersList.find(u => u.username === username);
             if (existingUser) {
                 showGlassAlert("خطا", "این آیدی کاربری قبلا ثبت‌نام کرده است. لطفا از بخش ورود استفاده کنید.", "error");
@@ -1739,7 +1741,6 @@
 
             currentUser = { name, username, password, subscriptionDaysLeft: 0, isBanned: false };
             usersList.push(currentUser);
-            saveUserSession();
 
             const autoCardMessage = `سلام ${name} عزیز.\nجهت فعالسازی اشتراک "${selectedPlanNameText}"، مبلغ ${selectedPlanPrice.toLocaleString()} تومان را به شماره کارت زیر واریز نموده و رسید آن را ارسال کنید:\n\n💳 شماره کارت: 6219-8618-6551-7824\n👤 به نام: فرشاد حسنوند`;
 
@@ -1757,18 +1758,22 @@
                 });
             }
 
+            await syncToFirebase();
+            saveUserSession();
+
             closeModal('authModal');
-            syncToFirebase();
             updateSubStatusBar();
             renderPosts();
             showGlassAlert("خوش آمدید", `ثبت‌نام با موفقیت انجام شد. سلام ${name} عزیز!`, "success");
             openUserChatModal();
         }
 
-        function handleLoginSubmit(e) {
+        async function handleLoginSubmit(e) {
             e.preventDefault();
             const username = document.getElementById("loginUsername").value.trim();
             const password = document.getElementById("loginPassword").value.trim();
+
+            await loadFromFirebase();
 
             let foundUser = usersList.find(u => u.username === username && u.password === password);
             if (foundUser) {
@@ -1790,7 +1795,7 @@
             }
         }
 
-        function handleDeleteAccount() {
+        async function handleDeleteAccount() {
             const username = document.getElementById("loginUsername").value.trim();
             const password = document.getElementById("loginPassword").value.trim();
 
@@ -1798,6 +1803,8 @@
                 showGlassAlert("خطا", "لطفا ابتدا آیدی و رمز عبور خود را در فرم ورود وارد کنید سپس روی حذف اکانت بزنید.", "error");
                 return;
             }
+
+            await loadFromFirebase();
 
             const userIndex = usersList.findIndex(u => u.username === username && u.password === password);
             if (userIndex !== -1) {
@@ -1809,8 +1816,8 @@
                     saveUserSession();
                 }
 
+                await syncToFirebase();
                 closeModal('loginModal');
-                syncToFirebase();
                 updateSubStatusBar();
                 renderPosts();
                 showGlassAlert("حذف موفق", "حساب کاربری شما با موفقیت از سیستم حذف شد.", "success");
@@ -1867,7 +1874,7 @@
             container.scrollTop = container.scrollHeight;
         }
 
-        function sendChatMessage() {
+        async function sendChatMessage() {
             const input = document.getElementById("chatTextInput");
             const text = input.value.trim();
             if (!text || !activeChatUsername) return;
@@ -1894,13 +1901,13 @@
 
             input.value = "";
             renderChatMessages();
-            syncToFirebase();
+            await syncToFirebase();
         }
 
-        function sendChatImage(input) {
+        async function sendChatImage(input) {
             if (input.files && input.files[0] && activeChatUsername) {
                 const reader = new FileReader();
-                reader.onload = function(e) {
+                reader.onload = async function(e) {
                     let chat = chatRequests.find(c => c.username === activeChatUsername);
                     if (!chat) {
                         let userObj = usersList.find(u => u.username === activeChatUsername);
@@ -1921,7 +1928,7 @@
                     }
 
                     renderChatMessages();
-                    syncToFirebase();
+                    await syncToFirebase();
                 };
                 reader.readAsDataURL(input.files[0]);
             }
@@ -2113,7 +2120,7 @@
             openModal('customSubModal');
         }
 
-        function processApproval(isApproved) {
+        async function processApproval(isApproved) {
             const days = parseInt(document.getElementById("customDaysInput").value) || 30;
             
             let user = usersList.find(u => u.username === targetSubUsername);
@@ -2148,22 +2155,22 @@
 
             closeModal('customSubModal');
             closeModal('adminPanelModal');
+            await syncToFirebase();
             loadAdminData();
-            syncToFirebase();
             renderPosts();
         }
 
-        function deleteChatConversation() {
+        async function deleteChatConversation() {
             if (!targetSubUsername) return;
             chatRequests = chatRequests.filter(c => c.username !== targetSubUsername);
+            await syncToFirebase();
             showGlassAlert("حذف چت", "مکالمه این کاربر به طور کامل از دیتابیس پاک شد.", "success");
             closeModal('customSubModal');
             closeModal('adminPanelModal');
             loadAdminData();
-            syncToFirebase();
         }
 
-        function handleDirectSubSubmit(e) {
+        async function handleDirectSubSubmit(e) {
             e.preventDefault();
             const username = document.getElementById("directSubUsername").value.trim();
             const days = parseInt(document.getElementById("directSubDays").value) || 30;
@@ -2193,27 +2200,27 @@
             document.getElementById("directSubUsername").value = "";
             document.getElementById("directSubDays").value = "30";
             closeModal('adminPanelModal');
-            syncToFirebase();
+            await syncToFirebase();
             updateSubStatusBar();
             renderPosts();
             showGlassAlert("موفقیت", `اشتراک ${days} روزه با موفقیت برای آیدی ${username} اعمال شد.`, "success");
         }
 
-        function deletePost(id) {
+        async function deletePost(id) {
             posts = posts.filter(p => p.id !== id);
+            await syncToFirebase();
             loadAdminData();
             renderPosts();
-            syncToFirebase();
             showGlassAlert("حذف", "پست از سایت و دیتابیس حذف شد.", "success");
         }
 
-        function banUserByUsername(username) {
+        async function banUserByUsername(username) {
             let u = usersList.find(user => user.username === username);
             if (u) {
                 u.isBanned = true;
+                await syncToFirebase();
                 showGlassAlert("مسدودسازی", `کاربر ${username} مسدود شد.`, "error");
                 loadAdminData();
-                syncToFirebase();
             }
         }
 
@@ -2266,41 +2273,47 @@
 
         function goHome() { selectCategory('movie'); }
 
-        function syncToFirebase() {
+        async function syncToFirebase() {
             const payload = { posts, usersList, chatRequests };
-            fetch(FIREBASE_URL + "data.json", {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload)
-            }).catch(err => console.log("Firebase sync error:", err));
+            try {
+                let response = await fetch(FIREBASE_URL + "data.json", {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                });
+                return await response.json();
+            } catch(err) {
+                console.log("Firebase sync error:", err);
+            }
         }
 
-        function loadFromFirebase() {
-            fetch(FIREBASE_URL + "data.json")
-                .then(res => res.json())
-                .then(data => {
-                    if (data) {
-                        if (data.posts) posts = data.posts;
-                        if (data.usersList) usersList = data.usersList;
-                        if (data.chatRequests) chatRequests = data.chatRequests;
-                        
-                        if (currentCategory === 'downloads') {
-                            renderDownloads();
-                        } else if (currentCategory === 'saved') {
-                            renderSavedItems();
-                        } else {
-                            renderPosts();
-                        }
-
-                        if (document.getElementById("adminPanelModal").style.display === "flex") {
-                            loadAdminData();
-                        }
-                        if (document.getElementById("chatModal").style.display === "flex" && activeChatUsername) {
-                            renderChatMessages();
-                        }
+        async function loadFromFirebase() {
+            try {
+                let res = await fetch(FIREBASE_URL + "data.json");
+                let data = await res.json();
+                if (data) {
+                    if (data.posts) posts = data.posts;
+                    if (data.usersList) usersList = data.usersList;
+                    if (data.chatRequests) chatRequests = data.chatRequests;
+                    
+                    if (currentCategory === 'downloads') {
+                        renderDownloads();
+                    } else if (currentCategory === 'saved') {
+                        renderSavedItems();
+                    } else {
+                        renderPosts();
                     }
-                })
-                .catch(err => console.log("Firebase load error:", err));
+
+                    if (document.getElementById("adminPanelModal").style.display === "flex") {
+                        loadAdminData();
+                    }
+                    if (document.getElementById("chatModal").style.display === "flex" && activeChatUsername) {
+                        renderChatMessages();
+                    }
+                }
+            } catch(err) {
+                console.log("Firebase load error:", err);
+            }
         }
 
         renderSubFilterTabs();
