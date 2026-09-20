@@ -1057,8 +1057,8 @@
             <h2>ورود به پنل ادمین</h2>
             <form onsubmit="adminLoginSubmit(event)">
                 <div class="form-group">
-                    <label>رمز عبور (1398)</label>
-                    <input type="password" class="form-control" id="adminPassInput" required placeholder="رمز عبور">
+                    <label>رمز عبور مدیریت</label>
+                    <input type="password" class="form-control" id="adminPassInput" required placeholder="رمز عبور را وارد کنید">
                 </div>
                 <button type="submit" class="btn-action" style="width: 100%;">ورود</button>
             </form>
@@ -1066,7 +1066,7 @@
     </div>
 
     <div class="modal-overlay" id="adminPanelModal">
-        <div class="modal-box glass" style="max-width: 950px;">
+        <div class="modal-box glass" style="max-width: 1000px;">
             <button class="modal-close" onclick="closeModal('adminPanelModal')"><i class="fa-solid fa-xmark"></i></button>
             <h2>پنل مدیریت کامل‌تر ادمین</h2>
             <div class="admin-tabs">
@@ -1120,7 +1120,10 @@
             </div>
 
             <div class="admin-section" id="admin-section-users">
-                <h3>لیست اعضا</h3>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 10px;">
+                    <h3 style="margin: 0;">لیست اعضا و اعطای اشتراک</h3>
+                    <input type="text" id="adminUserSearchInput" class="form-control" placeholder="جستجوی نام یا آیدی کاربر..." oninput="filterAdminUsers()" style="max-width: 280px; padding: 8px 12px;">
+                </div>
                 <div style="max-height: 350px; overflow-y: auto;">
                     <table class="admin-table">
                         <thead>
@@ -1734,16 +1737,20 @@
 
             const autoCardMessage = `سلام ${name} عزیز.\nجهت فعالسازی اشتراک "${selectedPlanNameText}"، مبلغ ${selectedPlanPrice.toLocaleString()} تومان را به شماره کارت زیر واریز نموده و رسید آن را ارسال کنید:\n\n💳 شماره کارت: 6219-8618-6551-7824\n👤 به نام: فرشاد حسنوند`;
 
-            chatRequests.push({
-                username: username,
-                name: name,
-                plan: selectedPlanNameText,
-                status: "pending",
-                messages: [
-                    { sender: username, text: `سلام، درخواست خرید اشتراک (${selectedPlanNameText}) را دارم.` },
-                    { sender: "admin", text: autoCardMessage }
-                ]
-            });
+            // بررسی و ثبت یکتا در درخواست‌های چت ادمین
+            let existingChat = chatRequests.find(c => c.username === username);
+            if (!existingChat) {
+                chatRequests.push({
+                    username: username,
+                    name: name,
+                    plan: selectedPlanNameText,
+                    status: "pending",
+                    messages: [
+                        { sender: username, text: `سلام، درخواست خرید اشتراک (${selectedPlanNameText}) را دارم.` },
+                        { sender: "admin", text: autoCardMessage }
+                    ]
+                });
+            }
 
             closeModal('authModal');
             syncToFirebase();
@@ -1851,7 +1858,13 @@
 
             let chat = chatRequests.find(c => c.username === activeChatUsername);
             if (!chat) {
-                chat = { username: activeChatUsername, name: currentUser ? currentUser.name : "کاربر", plan: selectedPlanNameText, status: "pending", messages: [] };
+                chat = { 
+                    username: activeChatUsername, 
+                    name: currentUser ? currentUser.name : activeChatUsername, 
+                    plan: selectedPlanNameText, 
+                    status: "pending", 
+                    messages: [] 
+                };
                 chatRequests.push(chat);
             }
 
@@ -1868,7 +1881,13 @@
                 reader.onload = function(e) {
                     let chat = chatRequests.find(c => c.username === activeChatUsername);
                     if (!chat) {
-                        chat = { username: activeChatUsername, name: currentUser ? currentUser.name : "کاربر", plan: selectedPlanNameText, status: "pending", messages: [] };
+                        chat = { 
+                            username: activeChatUsername, 
+                            name: currentUser ? currentUser.name : activeChatUsername, 
+                            plan: selectedPlanNameText, 
+                            status: "pending", 
+                            messages: [] 
+                        };
                         chatRequests.push(chat);
                     }
                     const sender = (currentUser && activeChatUsername === currentUser.username) ? currentUser.username : "admin";
@@ -1982,20 +2001,7 @@
                 `;
             });
 
-            const usersBody = document.getElementById("adminUsersTableBody");
-            usersBody.innerHTML = "";
-            usersList.forEach((u, idx) => {
-                usersBody.innerHTML += `
-                    <tr>
-                        <td>${u.name}</td>
-                        <td>${u.username}</td>
-                        <td>${u.subscriptionDaysLeft} روز</td>
-                        <td>
-                            <button class="btn-glass" style="padding: 4px 8px; font-size: 0.8rem; color: #ef4444;" onclick="banUser(${idx})">بن کردن</button>
-                        </td>
-                    </tr>
-                `;
-            });
+            renderAdminUsersTable(usersList);
 
             const pendingList = document.getElementById("adminPendingChatsList");
             const approvedList = document.getElementById("adminApprovedChatsList");
@@ -2013,14 +2019,14 @@
 
             chatRequests.forEach((req) => {
                 let isApproved = req.status === "approved";
-                let msgsHtml = req.messages.map(m => `<div style="font-size:0.85rem; margin:4px 0;"><strong>${m.sender}:</strong> ${m.isImage ? '<img src="'+m.text+'" style="max-height:80px; border-radius:4px;">' : m.text}</div>`).join('');
+                let msgsHtml = (req.messages || []).map(m => `<div style="font-size:0.85rem; margin:4px 0;"><strong>${m.sender}:</strong> ${m.isImage ? '<img src="'+m.text+'" style="max-height:80px; border-radius:4px;">' : m.text}</div>`).join('');
                 
                 let cardHtml = `
                     <div class="glass" style="padding: 15px; border-radius: 14px; margin-bottom: 12px; border-color: ${isApproved ? '#22c55e' : 'var(--glass-border)'};">
-                        <div style="font-weight: 700; margin-bottom: 6px;">${req.name} (${req.username}) - طرح: ${req.plan} [وضعیت: ${isApproved ? 'تایید شده ✅' : 'در انتظار ⏳'}]</div>
+                        <div style="font-weight: 700; margin-bottom: 6px;">${req.name || req.username} (${req.username}) - طرح: ${req.plan || 'نامشخص'} [وضعیت: ${isApproved ? 'تایید شده ✅' : 'در انتظار ⏳'}]</div>
                         <div style="background: rgba(0,0,0,0.25); padding: 10px; border-radius: 8px; margin-bottom: 10px; max-height: 120px; overflow-y: auto;">${msgsHtml}</div>
                         <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                            <button class="btn-action" style="padding: 6px 12px; font-size: 0.85rem;" onclick="openCustomSubModal('${req.username}', '${req.name}')">بررسی و تایید/لغو اشتراک</button>
+                            <button class="btn-action" style="padding: 6px 12px; font-size: 0.85rem;" onclick="openCustomSubModal('${req.username}', '${req.name || req.username}')">بررسی و تایید/لغو اشتراک</button>
                             <button class="btn-glass" style="padding: 6px 12px; font-size: 0.85rem;" onclick="openAdminChatReply('${req.username}')">پاسخ و مشاهده کامل چت</button>
                         </div>
                     </div>
@@ -2037,6 +2043,36 @@
 
             if (!hasPending) pendingList.innerHTML = `<p style="color:var(--text-muted); text-align:center;">مورد در انتظاری نیست.</p>`;
             if (!hasApproved) approvedList.innerHTML = `<p style="color:var(--text-muted); text-align:center;">مورد تایید شده‌ای نیست.</p>`;
+        }
+
+        function renderAdminUsersTable(listToRender) {
+            const usersBody = document.getElementById("adminUsersTableBody");
+            usersBody.innerHTML = "";
+            if (listToRender.length === 0) {
+                usersBody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-muted);">کاربری یافت نشد.</td></tr>`;
+                return;
+            }
+            listToRender.forEach((u) => {
+                usersBody.innerHTML += `
+                    <tr>
+                        <td>${u.name}</td>
+                        <td>${u.username}</td>
+                        <td>${u.subscriptionDaysLeft} روز</td>
+                        <td>
+                            <div style="display: flex; gap: 6px;">
+                                <button class="btn-action" style="padding: 4px 10px; font-size: 0.75rem;" onclick="openCustomSubModal('${u.username}', '${u.name}')">اعطای اشتراک</button>
+                                <button class="btn-glass" style="padding: 4px 8px; font-size: 0.75rem; color: #ef4444;" onclick="banUserByUsername('${u.username}')">بن</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function filterAdminUsers() {
+            const query = document.getElementById("adminUserSearchInput").value.trim().toLowerCase();
+            const filtered = usersList.filter(u => u.name.toLowerCase().includes(query) || u.username.toLowerCase().includes(query));
+            renderAdminUsersTable(filtered);
         }
 
         function openCustomSubModal(username, name) {
@@ -2135,11 +2171,14 @@
             showGlassAlert("حذف", "پست حذف شد.", "success");
         }
 
-        function banUser(idx) {
-            usersList[idx].isBanned = true;
-            showGlassAlert("مسدودسازی", `کاربر ${usersList[idx].username} بن شد.`, "error");
-            loadAdminData();
-            syncToFirebase();
+        function banUserByUsername(username) {
+            let u = usersList.find(user => user.username === username);
+            if (u) {
+                u.isBanned = true;
+                showGlassAlert("مسدودسازی", `کاربر ${username} مسدود شد.`, "error");
+                loadAdminData();
+                syncToFirebase();
+            }
         }
 
         function updateSubStatusBar() {
@@ -2215,6 +2254,9 @@
 
                         if (document.getElementById("adminPanelModal").style.display === "flex") {
                             loadAdminData();
+                        }
+                        if (document.getElementById("chatModal").style.display === "flex" && activeChatUsername) {
+                            renderChatMessages();
                         }
                     }
                 })
