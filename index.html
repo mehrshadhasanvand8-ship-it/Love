@@ -18,7 +18,7 @@
             --accent-secondary: #ec4899;
             --accent-glow: rgba(168, 85, 247, 0.4);
             --card-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-            --modal-bg: rgba(15, 23, 42, 0.9);
+            --modal-bg: rgba(15, 23, 42, 0.92);
         }
 
         [data-theme="day"] {
@@ -49,7 +49,7 @@
             min-height: 100vh;
             overflow-x: hidden;
             position: relative;
-            padding-bottom: 110px;
+            padding-bottom: 150px;
         }
 
         .glass {
@@ -166,6 +166,47 @@
             margin-bottom: 25px;
             flex-wrap: wrap;
             gap: 10px;
+        }
+
+        /* Floating Media Progress Bar (Above Bottom Nav) */
+        .floating-media-bar {
+            position: fixed;
+            bottom: 85px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 550px;
+            padding: 12px 18px;
+            border-radius: 18px;
+            z-index: 997;
+            display: none;
+            flex-direction: column;
+            gap: 8px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--accent-primary);
+            box-shadow: var(--card-shadow);
+        }
+
+        .floating-media-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .floating-media-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .floating-media-controls input[type="range"] {
+            flex-grow: 1;
+            accent-color: var(--accent-primary);
+            cursor: pointer;
         }
 
         /* Bottom Fixed Glass Navigation Bar */
@@ -633,6 +674,25 @@
             background: #ef4444;
             color: #fff;
         }
+
+        /* Glass Media Player Screen */
+        .glass-player-screen {
+            width: 100%;
+            max-height: 400px;
+            background: #000;
+            border-radius: 14px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            position: relative;
+        }
+        .glass-player-screen video, .glass-player-screen audio {
+            width: 100%;
+            max-height: 380px;
+            outline: none;
+        }
     </style>
 </head>
 <body>
@@ -671,7 +731,7 @@
             <div class="badge-glass" id="userBadgeName">مهمان</div>
         </div>
 
-        <!-- Action Bar (Share Post & Admin Full Management Button) -->
+        <!-- Action Bar -->
         <div class="action-bar">
             <div id="adminManagementTrigger" style="display: none;">
                 <button class="btn-action" style="background: linear-gradient(135deg, #22c55e, #16a34a);" onclick="openModal('adminPanelModal'); loadAdminData();">
@@ -683,12 +743,25 @@
             </button>
         </div>
 
-        <!-- Posts Grid -->
+        <!-- Posts Grid / Downloads Grid -->
         <div class="section-title" id="sectionTitle">
             <i class="fa-solid fa-fire" style="color: var(--accent-primary);"></i> فیلم و سریال‌های محبوب
         </div>
         <div class="posts-grid" id="postsGrid"></div>
 
+    </div>
+
+    <!-- Floating Active Media Progress Bar (Above Bottom Nav) -->
+    <div class="glass floating-media-bar" id="floatingMediaBar">
+        <div class="floating-media-info">
+            <span id="floatingMediaTitle" style="color: var(--accent-primary);"><i class="fa-solid fa-play"></i> در حال پخش...</span>
+            <span id="floatingMediaTime" style="font-size: 0.75rem; color: var(--text-muted);">00:00 / 00:00</span>
+        </div>
+        <div class="floating-media-controls">
+            <button class="btn-glass" style="padding: 4px 8px;" onclick="toggleFloatingPlayPause()" id="floatingPlayBtn"><i class="fa-solid fa-pause"></i></button>
+            <input type="range" id="floatingSeekBar" value="0" min="0" max="100" step="0.1" oninput="seekFloatingMedia(this.value)">
+            <button class="btn-glass" style="padding: 4px 8px; color: #ef4444;" onclick="closeFloatingMedia()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
     </div>
 
     <!-- Bottom Fixed Glass Navigation Bar -->
@@ -699,8 +772,8 @@
         <div class="bottom-nav-item" onclick="selectCategory('music')" id="cat-music">
             <i class="fa-solid fa-music"></i> موزیک
         </div>
-        <div class="bottom-nav-item" onclick="selectCategory('game')" id="cat-game">
-            <i class="fa-solid fa-gamepad"></i> بازی
+        <div class="bottom-nav-item" onclick="selectCategory('downloads')" id="cat-downloads">
+            <i class="fa-solid fa-download" style="color: var(--accent-primary);"></i> دانلودها
         </div>
     </div>
 
@@ -717,7 +790,6 @@
                     <select class="form-control" id="shareCategory">
                         <option value="movie">فیلم و سریال</option>
                         <option value="music">موزیک</option>
-                        <option value="game">بازی</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -725,8 +797,8 @@
                     <input type="text" class="form-control" id="shareTitle" required placeholder="نام فیلم یا موزیک">
                 </div>
                 <div class="form-group">
-                    <label>لینک دانلود</label>
-                    <input type="text" class="form-control" id="shareDownloadLink" required placeholder="https://...">
+                    <label>لینک دانلود/پخش مدیا (لینک مستقیم فایل MP4 یا MP3)</label>
+                    <input type="text" class="form-control" id="shareDownloadLink" required placeholder="https://...file.mp4">
                 </div>
                 <div class="form-group">
                     <label>عکس کاور (لینک URL یا فایل)</label>
@@ -756,7 +828,7 @@
         </div>
     </div>
 
-    <!-- 2. Auth Modal (Register & Subscription) -->
+    <!-- 2. Auth Modal -->
     <div class="modal-overlay" id="authModal">
         <div class="modal-box glass">
             <button class="modal-close" onclick="closeModal('authModal')"><i class="fa-solid fa-xmark"></i></button>
@@ -800,7 +872,7 @@
         </div>
     </div>
 
-    <!-- 3. Login Modal (For Existing Users) -->
+    <!-- 3. Login Modal -->
     <div class="modal-overlay" id="loginModal">
         <div class="modal-box glass" style="max-width: 420px;">
             <button class="modal-close" onclick="closeModal('loginModal')"><i class="fa-solid fa-xmark"></i></button>
@@ -819,7 +891,7 @@
         </div>
     </div>
 
-    <!-- 4. Chat with Admin Modal -->
+    <!-- 4. Chat Modal -->
     <div class="modal-overlay" id="chatModal">
         <div class="modal-box glass">
             <button class="modal-close" onclick="closeModal('chatModal')"><i class="fa-solid fa-xmark"></i></button>
@@ -833,15 +905,14 @@
                     <button type="button" class="btn-action" onclick="sendChatMessage()" style="padding: 8px 16px;"><i class="fa-solid fa-paper-plane"></i></button>
                 </div>
             </div>
-            <p style="font-size: 0.8rem; color: var(--text-muted); text-align: center;">شماره کارت جهت واریز در چت ارسال شده است. می‌توانید عکس رسید را بفرستید.</p>
         </div>
     </div>
 
-    <!-- 5. Post Details Modal -->
+    <!-- 5. Glass Media Player Modal -->
     <div class="modal-overlay" id="postModal">
-        <div class="modal-box glass" style="max-width: 700px;">
-            <button class="modal-close" onclick="closeModal('postModal')"><i class="fa-solid fa-xmark"></i></button>
-            <div id="postModalContent" style="display: flex; gap: 20px; flex-wrap: wrap;"></div>
+        <div class="modal-box glass" style="max-width: 750px;" onanimationend="" onclose="">
+            <button class="modal-close" onclick="closePostModalAndKeepPlaying()"><i class="fa-solid fa-xmark"></i></button>
+            <div id="postModalContent"></div>
         </div>
     </div>
 
@@ -864,7 +935,7 @@
         </div>
     </div>
 
-    <!-- 7. Active Room View Modal -->
+    <!-- 7. Active Room Modal -->
     <div class="modal-overlay" id="activeRoomModal">
         <div class="modal-box glass" style="max-width: 1100px; width: 95%;">
             <button class="modal-close" onclick="leaveRoom()"><i class="fa-solid fa-xmark"></i></button>
@@ -921,7 +992,6 @@
                 <button class="admin-tab-btn" onclick="switchAdminTab('users', this)">مدیریت اعضا</button>
             </div>
 
-            <!-- Tab 1: Posts -->
             <div class="admin-section active" id="admin-section-posts">
                 <h3>حذف پست‌ها</h3>
                 <div style="max-height: 350px; overflow-y: auto; margin-top: 15px;">
@@ -939,19 +1009,16 @@
                 </div>
             </div>
 
-            <!-- Tab 2: Pending Chats -->
             <div class="admin-section" id="admin-section-pendingChats">
                 <h3>درخواست‌های نیازمند بررسی و تایید</h3>
                 <div style="max-height: 350px; overflow-y: auto;" id="adminPendingChatsList"></div>
             </div>
 
-            <!-- Tab 3: Approved Chats -->
             <div class="admin-section" id="admin-section-approvedChats">
                 <h3>کاربران دارای اشتراک تایید شده</h3>
                 <div style="max-height: 350px; overflow-y: auto;" id="adminApprovedChatsList"></div>
             </div>
 
-            <!-- Tab 4: Users -->
             <div class="admin-section" id="admin-section-users">
                 <h3>لیست اعضا</h3>
                 <div style="max-height: 350px; overflow-y: auto;">
@@ -971,7 +1038,7 @@
         </div>
     </div>
 
-    <!-- 10. Glassmorphic Custom Subscription Approval Menu -->
+    <!-- 10. Custom Subscription Approval Menu -->
     <div class="modal-overlay" id="customSubModal">
         <div class="modal-box glass" style="max-width: 420px;">
             <button class="modal-close" onclick="closeModal('customSubModal')"><i class="fa-solid fa-xmark"></i></button>
@@ -1009,11 +1076,15 @@
         let posts = [];
         let usersList = [];
         let chatRequests = [];
+        let userDownloads = [];
+
+        // Active floating media reference
+        let activeMediaElement = null;
 
         window.onload = function() {
             loadSavedUserSession();
             loadFromFirebase();
-            setInterval(loadFromFirebase, 3000); // Live sync polling every 3 seconds
+            setInterval(loadFromFirebase, 3000);
         };
 
         function saveUserSession() {
@@ -1023,18 +1094,21 @@
                 localStorage.removeItem("netflix_sit_user");
             }
             localStorage.setItem("netflix_sit_admin", isAdminLoggedIn ? "true" : "false");
+            localStorage.setItem("netflix_sit_downloads", JSON.stringify(userDownloads));
         }
 
         function loadSavedUserSession() {
             const saved = localStorage.getItem("netflix_sit_user");
             if (saved) {
-                try {
-                    currentUser = JSON.parse(saved);
-                } catch(e) { currentUser = null; }
+                try { currentUser = JSON.parse(saved); } catch(e) { currentUser = null; }
             }
             if (localStorage.getItem("netflix_sit_admin") === "true") {
                 isAdminLoggedIn = true;
                 document.getElementById("adminManagementTrigger").style.display = "block";
+            }
+            const savedDl = localStorage.getItem("netflix_sit_downloads");
+            if (savedDl) {
+                try { userDownloads = JSON.parse(savedDl); } catch(e) { userDownloads = []; }
             }
         }
 
@@ -1057,9 +1131,14 @@
             document.querySelectorAll(".bottom-nav-item").forEach(c => c.classList.remove("active"));
             document.getElementById(`cat-${cat}`).classList.add("active");
             
-            const titles = { movie: "فیلم و سریال‌های محبوب", music: "موزیک‌های برتر", game: "بازی‌های هیجان‌انگیز" };
-            document.getElementById("sectionTitle").innerHTML = `<i class="fa-solid fa-fire" style="color: var(--accent-primary);"></i> ${titles[cat]}`;
-            renderPosts();
+            if (cat === 'downloads') {
+                document.getElementById("sectionTitle").innerHTML = `<i class="fa-solid fa-download" style="color: var(--accent-primary);"></i> مدیریت فایل‌های دانلود شده (Download / NETFLIX SIT)`;
+                renderDownloads();
+            } else {
+                const titles = { movie: "فیلم و سریال‌های محبوب", music: "موزیک‌های برتر" };
+                document.getElementById("sectionTitle").innerHTML = `<i class="fa-solid fa-fire" style="color: var(--accent-primary);"></i> ${titles[cat]}`;
+                renderPosts();
+            }
         }
 
         function renderPosts() {
@@ -1080,7 +1159,6 @@
                 }
             }
 
-            // If admin is logged in, all locks are open automatically
             const hasActiveSub = isAdminLoggedIn || (currentUser && currentUser.subscriptionDaysLeft > 0);
             updateSubStatusBar();
 
@@ -1106,15 +1184,38 @@
             });
         }
 
+        function renderDownloads() {
+            const grid = document.getElementById("postsGrid");
+            grid.innerHTML = "";
+
+            if (userDownloads.length === 0) {
+                grid.innerHTML = `<p style="color: var(--text-muted); grid-column: span 3; text-align: center; padding: 40px;">هیچ فایلی در پوشه Download / NETFLIX SIT دانلود نشده است.</p>`;
+                return;
+            }
+
+            userDownloads.forEach((d, index) => {
+                const card = document.createElement("div");
+                card.className = "post-card glass";
+                card.innerHTML = `
+                    <img src="${d.image}" class="post-poster" alt="${d.title}">
+                    <div class="post-info">
+                        <div class="post-title">${d.title}</div>
+                        <div class="post-genre" style="color: #22c55e;"><i class="fa-solid fa-circle-check"></i> دانلود شده در NETFLIX SIT</div>
+                        <div style="display: flex; gap: 8px; margin-top: 8px;">
+                            <button class="btn-action" style="flex: 1; padding: 6px;" onclick="playDownloadedMedia('${d.link}', '${d.title}', '${d.category}')"><i class="fa-solid fa-play"></i> پخش</button>
+                            <button class="btn-glass" style="color: #ef4444; padding: 6px;" onclick="removeDownload(${index})"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
         function openModal(id) { document.getElementById(id).style.display = "flex"; }
         function closeModal(id) { document.getElementById(id).style.display = "none"; }
 
         function openAuthModal() { 
-            if(currentUser) {
-                openChatModal(currentUser.username);
-            } else {
-                openModal('authModal'); 
-            }
+            if(currentUser) { openChatModal(currentUser.username); } else { openModal('authModal'); }
         }
         function openLoginModal() { openModal('loginModal'); }
         function openAdminLoginModal() { openModal('adminLoginModal'); }
@@ -1175,9 +1276,7 @@
 
             if (currentUser) {
                 let foundU = usersList.find(u => u.username === currentUser.username);
-                if (foundU) {
-                    currentUser.subscriptionDaysLeft = foundU.subscriptionDaysLeft;
-                }
+                if (foundU) { currentUser.subscriptionDaysLeft = foundU.subscriptionDaysLeft; }
             }
 
             if (!currentUser || currentUser.subscriptionDaysLeft <= 0) {
@@ -1186,6 +1285,133 @@
                 return;
             }
             openPostModal(post);
+        }
+
+        function openPostModal(post) {
+            const modalContent = document.getElementById("postModalContent");
+            const isMusic = post.category === 'music';
+            
+            modalContent.innerHTML = `
+                <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 20px;">
+                    <img src="${post.image}" style="width: 160px; height: 220px; object-fit: cover; border-radius: 12px;" alt="${post.title}">
+                    <div style="flex-grow: 1;">
+                        <h2 style="margin-bottom: 8px;">${post.title}</h2>
+                        <span class="badge-glass" style="display: inline-block; margin-bottom: 8px;">ژانر: ${post.genre}</span>
+                        <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.5; margin-bottom: 10px;">${post.desc}</p>
+                    </div>
+                </div>
+                
+                <div class="glass-player-screen">
+                    ${isMusic ? 
+                        `<audio id="activePlayerMedia" controls src="${post.downloadLink}" style="width: 90%;"></audio>` : 
+                        `<video id="activePlayerMedia" controls src="${post.downloadLink}" poster="${post.image}"></video>`
+                    }
+                </div>
+
+                <div style="display: flex; gap: 12px; justify-content: space-between; flex-wrap: wrap; margin-top: 15px;">
+                    <button class="btn-action" style="flex: 1;" onclick="startDownload('${post.title}', '${post.downloadLink}', '${post.image}', '${post.category}')"><i class="fa-solid fa-download"></i> دانلود در پوشه NETFLIX SIT</button>
+                    <button class="btn-glass" style="flex: 1; justify-content: center;" onclick="openRoomSetupModal()"><i class="fa-solid fa-users"></i> ساخت اتاق لایو</button>
+                </div>
+            `;
+            openModal('postModal');
+            setupMediaListeners(post.title);
+        }
+
+        function playDownloadedMedia(link, title, category) {
+            const modalContent = document.getElementById("postModalContent");
+            const isMusic = category === 'music';
+            modalContent.innerHTML = `
+                <h2 style="margin-bottom: 15px;">پخش فایل دانلود شده: ${title}</h2>
+                <div class="glass-player-screen">
+                    ${isMusic ? `<audio id="activePlayerMedia" controls autoplay src="${link}" style="width: 90%;"></audio>` : `<video id="activePlayerMedia" controls autoplay src="${link}"></video>`}
+                </div>
+            `;
+            openModal('postModal');
+            setupMediaListeners(title);
+        }
+
+        function setupMediaListeners(title) {
+            const media = document.getElementById("activePlayerMedia");
+            if (!media) return;
+            activeMediaElement = media;
+
+            media.addEventListener('timeupdate', () => {
+                if (isNaN(media.duration)) return;
+                const percent = (media.currentTime / media.duration) * 100;
+                const seekBar = document.getElementById("floatingSeekBar");
+                if (seekBar) seekBar.value = percent;
+
+                const timeText = document.getElementById("floatingMediaTime");
+                if (timeText) {
+                    timeText.innerText = `${formatTime(media.currentTime)} / ${formatTime(media.duration)}`;
+                }
+            });
+        }
+
+        function formatTime(seconds) {
+            const m = Math.floor(seconds / 60);
+            const s = Math.floor(seconds % 60);
+            return `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
+        }
+
+        function closePostModalAndKeepPlaying() {
+            closeModal('postModal');
+            const media = document.getElementById("activePlayerMedia");
+            if (media && !media.paused) {
+                // Show floating bar above bottom nav
+                const bar = document.getElementById("floatingMediaBar");
+                bar.style.display = "flex";
+            }
+        }
+
+        function toggleFloatingPlayPause() {
+            if (activeMediaElement) {
+                if (activeMediaElement.paused) {
+                    activeMediaElement.play();
+                    document.getElementById("floatingPlayBtn").innerHTML = `<i class="fa-solid fa-pause"></i>`;
+                } else {
+                    activeMediaElement.pause();
+                    document.getElementById("floatingPlayBtn").innerHTML = `<i class="fa-solid fa-play"></i>`;
+                }
+            }
+        }
+
+        function seekFloatingMedia(val) {
+            if (activeMediaElement && !isNaN(activeMediaElement.duration)) {
+                const targetTime = (val / 100) * activeMediaElement.duration;
+                activeMediaElement.currentTime = targetTime;
+            }
+        }
+
+        function closeFloatingMedia() {
+            if (activeMediaElement) {
+                activeMediaElement.pause();
+                activeMediaElement = null;
+            }
+            document.getElementById("floatingMediaBar").style.display = "none";
+        }
+
+        function startDownload(title, link, image, category) {
+            const a = document.createElement('a');
+            a.href = link;
+            a.download = title;
+            a.target = '_blank';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+
+            if (!userDownloads.some(d => d.title === title)) {
+                userDownloads.push({ title, link, image, category });
+                saveUserSession();
+            }
+
+            alert(`فایل "${title}" با موفقیت برای دانلود ارسال شد و در پوشه Download / NETFLIX SIT دستگاه شما ذخیره می‌گردد.`);
+        }
+
+        function removeDownload(index) {
+            userDownloads.splice(index, 1);
+            saveUserSession();
+            renderDownloads();
         }
 
         function selectPlan(months, price, el) {
@@ -1242,10 +1468,7 @@
 
             let foundUser = usersList.find(u => u.username === username && u.password === password);
             if (foundUser) {
-                if(foundUser.isBanned) {
-                    alert("حساب کاربری شما مسدود شده است.");
-                    return;
-                }
+                if(foundUser.isBanned) { alert("حساب کاربری شما مسدود شده است."); return; }
                 currentUser = foundUser;
                 isAdminLoggedIn = false;
                 saveUserSession();
@@ -1309,7 +1532,6 @@
             }
 
             const sender = (currentUser && activeChatUsername === currentUser.username) ? currentUser.username : "admin";
-
             chat.messages.push({ sender: sender, text: text });
             input.value = "";
             renderChatMessages();
@@ -1334,31 +1556,6 @@
             }
         }
 
-        function openPostModal(post) {
-            const modalContent = document.getElementById("postModalContent");
-            modalContent.innerHTML = `
-                <img src="${post.image}" style="width: 220px; height: 310px; object-fit: cover; border-radius: 14px;" alt="${post.title}">
-                <div style="flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;">
-                    <div>
-                        <h2 style="margin-bottom: 10px;">${post.title}</h2>
-                        <span class="badge-glass" style="display: inline-block; margin-bottom: 12px;">ژانر: ${post.genre}</span>
-                        <p style="color: var(--text-muted); line-height: 1.6; font-size: 0.95rem; margin-bottom: 15px;">${post.desc}</p>
-                        <a href="${post.downloadLink}" target="_blank" class="btn-action" style="display: inline-block; text-decoration: none; margin-bottom: 10px;"><i class="fa-solid fa-download"></i> دانلود / پخش</a>
-                    </div>
-                    <div style="display: flex; gap: 12px; margin-top: 15px;">
-                        <button class="btn-action" onclick="playForMyself('${post.title}')"><i class="fa-solid fa-play"></i> پخش شخصی</button>
-                        <button class="btn-glass" onclick="openRoomSetupModal()"><i class="fa-solid fa-users"></i> ساخت اتاق لایو</button>
-                    </div>
-                </div>
-            `;
-            openModal('postModal');
-        }
-
-        function playForMyself(title) {
-            closeModal('postModal');
-            alert(`بارگذاری مدیا: ${title}`);
-        }
-
         function openRoomSetupModal() {
             closeModal('postModal');
             openModal('roomSetupModal');
@@ -1377,13 +1574,9 @@
             };
 
             closeModal('roomSetupModal');
-            openActiveRoomModal();
-        }
-
-        function openActiveRoomModal() {
+            openModal('activeRoomModal');
             document.getElementById("activeRoomTitle").innerText = `اتاق: ${activeRoomData.name}`;
             renderRoomChat();
-            openModal('activeRoomModal');
         }
 
         function renderRoomChat() {
@@ -1402,7 +1595,6 @@
             const input = document.getElementById("roomChatInput");
             const text = input.value.trim();
             if (!text) return;
-
             const senderName = currentUser ? currentUser.name : "میهمان";
             activeRoomData.messages.push({ sender: senderName, text: text });
             input.value = "";
@@ -1431,11 +1623,11 @@
             const pass = document.getElementById("adminPassInput").value;
             if (pass === "1398") {
                 isAdminLoggedIn = true;
-                currentUser = null; // Clear normal user session if admin logs in
+                currentUser = null;
                 saveUserSession();
                 document.getElementById("adminManagementTrigger").style.display = "block";
                 closeModal('adminLoginModal');
-                alert("رمز ادمین تایید شد! تمامی قفل‌های سایت باز شدند و دکمه مدیریت کامل‌تر فعال گردید.");
+                alert("رمز ادمین تایید شد!");
                 updateSubStatusBar();
                 renderPosts();
             } else {
@@ -1549,21 +1741,13 @@
             if (isApproved) {
                 user.subscriptionDaysLeft = days; 
                 chat.status = "approved";
-                chat.messages.push({ 
-                    sender: "admin", 
-                    text: `✅ کاربر تایید شد و اشتراک ${days} روزه برای شما فعال گردید! قفل‌ها باز شدند.`, 
-                    isSystemSuccess: true 
-                });
-                alert(`اشتراک ${days} روزه با موفقیت تایید شد.`);
+                chat.messages.push({ sender: "admin", text: `✅ اشتراک ${days} روزه فعال شد!`, isSystemSuccess: true });
+                alert(`اشتراک ${days} روزه تایید شد.`);
             } else {
                 user.subscriptionDaysLeft = 0;
                 chat.status = "rejected";
-                chat.messages.push({ 
-                    sender: "admin", 
-                    text: `❌ درخواست اشتراک شما توسط ادمین لغو شد.`, 
-                    isSystemDanger: true 
-                });
-                alert(`درخواست کاربر لغو شد.`);
+                chat.messages.push({ sender: "admin", text: `❌ درخواست اشتراک لغو شد.`, isSystemDanger: true });
+                alert(`درخواست لغو شد.`);
             }
 
             if (currentUser && currentUser.username === targetSubUsername) {
@@ -1599,7 +1783,6 @@
         }
 
         function updateSubStatusBar() {
-            const bar = document.getElementById("subStatusBar");
             const textElem = document.getElementById("subStatusText");
             const badgeElem = document.getElementById("userBadgeName");
             const authBtn = document.getElementById("headerAuthBtn");
@@ -1607,7 +1790,7 @@
 
             if (isAdminLoggedIn) {
                 badgeElem.innerText = "مدیر کل (Admin)";
-                textElem.innerHTML = `وضعیت: <strong style="color: #4ade80;">دسترسی کامل ادمین فعال (همه قفل‌ها باز است)</strong>`;
+                textElem.innerHTML = `وضعیت: <strong style="color: #4ade80;">دسترسی کامل ادمین فعال</strong>`;
                 authBtn.innerHTML = `<i class="fa-solid fa-user-shield"></i> ادمین`;
                 loginBtn.innerHTML = `<i class="fa-solid fa-right-from-bracket"></i> خروج`;
                 loginBtn.setAttribute("onclick", "logoutUser()");
@@ -1620,7 +1803,7 @@
                 if (currentUser.subscriptionDaysLeft > 0) {
                     textElem.innerHTML = `اشتراک فعال: <strong style="color: #4ade80;">${currentUser.subscriptionDaysLeft} روز</strong> باقی مانده`;
                 } else {
-                    textElem.innerHTML = `وضعیت: <span style="color: #f87171;">بدون اشتراک</span> (منتظر تایید ادمین یا نیازمند خرید)`;
+                    textElem.innerHTML = `وضعیت: <span style="color: #f87171;">بدون اشتراک</span>`;
                 }
             } else {
                 badgeElem.innerText = "مهمان";
@@ -1639,14 +1822,11 @@
             document.getElementById("adminManagementTrigger").style.display = "none";
             updateSubStatusBar();
             renderPosts();
-            alert("از حساب کاربری / پنل ادمین خارج شدید.");
+            alert("از حساب کاربری خارج شدید.");
         }
 
-        function goHome() {
-            selectCategory('movie');
-        }
+        function goHome() { selectCategory('movie'); }
 
-        // Firebase Sync
         function syncToFirebase() {
             const payload = { posts, usersList, chatRequests };
             fetch(FIREBASE_URL + "data.json", {
@@ -1664,7 +1844,11 @@
                         if (data.posts) posts = data.posts;
                         if (data.usersList) usersList = data.usersList;
                         if (data.chatRequests) chatRequests = data.chatRequests;
-                        renderPosts();
+                        if (currentCategory === 'downloads') {
+                            renderDownloads();
+                        } else {
+                            renderPosts();
+                        }
                         if (document.getElementById("adminPanelModal").style.display === "flex") {
                             loadAdminData();
                         }
