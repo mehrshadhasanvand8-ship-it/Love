@@ -2,2333 +2,1137 @@
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نتفلیکس سایت | NETFLIX SIT</title>
-    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>NETFLIX SIT</title>
+    <!-- اضافه کردن فونت‌های وزیرمتن و لاله زار و Bebas Neue -->
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Lalezar&family=Vazirmatn:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-gradient: radial-gradient(circle at 20% 20%, #2e1065 0%, #09090b 70%, #020617 100%);
-            --glass-bg: rgba(255, 255, 255, 0.05);
-            --glass-border: rgba(255, 255, 255, 0.12);
-            --glass-hover: rgba(255, 255, 255, 0.1);
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --accent-primary: #a855f7;
-            --accent-secondary: #ec4899;
-            --accent-glow: rgba(168, 85, 247, 0.4);
-            --card-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-            --modal-bg: rgba(15, 23, 42, 0.92);
+            --bg-gradient: linear-gradient(135deg, #0d061f 0%, #220b3b 50%, #07020d 100%);
+            --glass-bg: rgba(25, 15, 45, 0.4);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --glass-shine: rgba(255, 255, 255, 0.1);
+            --text-color: #f3f4f6;
+            --primary: #c084fc;
+            --primary-gradient: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);
+            --glow-color: rgba(192, 132, 252, 0.4);
+            --card-bg: rgba(20, 10, 35, 0.45);
+            --shadow: 0 15px 35px 0 rgba(0, 0, 0, 0.5), inset 0 1px 2px rgba(255, 255, 255, 0.2);
+            --netflix-red: #E50914;
         }
 
         [data-theme="day"] {
-            --bg-gradient: radial-gradient(circle at 80% 20%, #fbcfe8 0%, #f8fafc 70%, #f1f5f9 100%);
-            --glass-bg: rgba(255, 255, 255, 0.65);
-            --glass-border: rgba(236, 72, 153, 0.2);
-            --glass-hover: rgba(255, 255, 255, 0.85);
-            --text-main: #0f172a;
-            --text-muted: #475569;
-            --accent-primary: #db2777;
-            --accent-secondary: #f43f5e;
-            --accent-glow: rgba(219, 39, 119, 0.25);
-            --card-shadow: 0 8px 32px 0 rgba(219, 39, 119, 0.1);
-            --modal-bg: rgba(255, 255, 255, 0.95);
+            --bg-gradient: linear-gradient(135deg, #fbcfe8 0%, #f472b6 50%, #e0e7ff 100%);
+            --glass-bg: rgba(255, 255, 255, 0.4);
+            --glass-border: rgba(255, 255, 255, 0.7);
+            --glass-shine: rgba(255, 255, 255, 0.5);
+            --text-color: #1f2937;
+            --primary: #db2777;
+            --primary-gradient: linear-gradient(135deg, #f43f5e 0%, #db2777 100%);
+            --glow-color: rgba(219, 39, 119, 0.4);
+            --card-bg: rgba(255, 255, 255, 0.45);
+            --shadow: 0 15px 35px 0 rgba(31, 38, 135, 0.15), inset 0 1px 2px rgba(255, 255, 255, 0.6);
+            --netflix-red: #E50914;
         }
 
         * {
             box-sizing: border-box;
-            margin: 0;
-            padding: 0;
+            -webkit-tap-highlight-color: transparent;
             font-family: 'Vazirmatn', sans-serif;
-            transition: background 0.3s ease, color 0.3s ease, border 0.3s ease, box-shadow 0.3s ease;
         }
 
         body {
             background: var(--bg-gradient);
-            color: var(--text-main);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            width: 100%;
             min-height: 100vh;
+            padding-bottom: 110px;
             overflow-x: hidden;
-            position: relative;
-            padding-bottom: 150px;
+            transition: background 0.6s ease, color 0.6s ease;
         }
 
-        .glass {
-            background: var(--glass-bg);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid var(--glass-border);
-            box-shadow: var(--card-shadow);
-        }
-
+        /* هدر شیشه‌ای یکپارچه */
         header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            min-height: 75px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 10px 3%;
-            z-index: 1000;
+            background: var(--glass-bg);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
             border-bottom: 1px solid var(--glass-border);
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            width: 100%;
+            padding: 14px 16px;
+            margin-bottom: 16px;
+            display: flex;
+            flex-direction: column;
             gap: 10px;
         }
 
-        .logo-area {
+        .header-top {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 8px;
-            font-size: 1.05rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            cursor: pointer;
-            white-space: nowrap;
+            width: 100%;
+        }
+
+        .logo-area {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 28px;
+            color: var(--netflix-red);
+            letter-spacing: 2px;
+            font-weight: 900;
+            text-transform: uppercase;
+            text-shadow: 0 2px 15px rgba(229, 9, 20, 0.5);
+            line-height: 1;
         }
 
         .header-controls {
             display: flex;
+            gap: 8px;
             align-items: center;
             flex-wrap: wrap;
-            justify-content: flex-end;
-            gap: 8px;
         }
 
-        .btn-glass {
-            background: var(--glass-bg);
+        .glass-btn {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02));
             border: 1px solid var(--glass-border);
-            color: var(--text-main);
-            padding: 6px 12px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            backdrop-filter: blur(10px);
-            font-size: 0.82rem;
-            white-space: nowrap;
-        }
-
-        .btn-glass:hover {
-            background: var(--glass-hover);
-            border-color: var(--accent-primary);
-            box-shadow: 0 0 15px var(--accent-glow);
-            transform: translateY(-1px);
-        }
-
-        .theme-toggle {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 1rem;
-            color: var(--accent-primary);
-            border: 1px solid var(--glass-border);
-            background: var(--glass-bg);
-            flex-shrink: 0;
-        }
-
-        .theme-toggle:hover {
-            background: var(--glass-hover);
-            box-shadow: 0 0 15px var(--accent-glow);
-        }
-
-        .main-container {
-            padding: 100px 5% 50px 5%;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .sub-status-bar {
-            margin-bottom: 25px;
-            padding: 12px 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.4);
+            border-left: 1px solid rgba(255, 255, 255, 0.3);
+            color: var(--text-color);
+            padding: 9px 15px;
             border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(236, 72, 153, 0.15));
-            border: 1px solid var(--accent-primary);
-        }
-
-        .action-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .sub-filter-tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .sub-filter-btn {
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            color: var(--text-muted);
-            padding: 6px 14px;
-            border-radius: 12px;
             cursor: pointer;
-            font-weight: 600;
-            font-size: 0.85rem;
+            font-family: 'Vazirmatn', sans-serif;
+            font-size: 12px;
+            font-weight: 500;
             display: flex;
             align-items: center;
             gap: 6px;
-        }
-
-        .sub-filter-btn:hover {
-            color: var(--text-main);
-            border-color: var(--accent-primary);
-        }
-
-        .sub-filter-btn.active {
-            color: #fff;
-            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-            box-shadow: 0 0 15px var(--accent-glow);
-            border-color: transparent;
-        }
-
-        .floating-media-bar {
-            position: fixed;
-            bottom: 85px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 90%;
-            max-width: 550px;
-            padding: 12px 18px;
-            border-radius: 18px;
-            z-index: 997;
-            display: none;
-            flex-direction: column;
-            gap: 8px;
-            background: var(--glass-bg);
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--accent-primary);
-            box-shadow: var(--card-shadow);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2), inset 0 1px 2px rgba(255, 255, 255, 0.3);
+            white-space: nowrap;
+        }
+        .glass-btn svg {
+            width: 15px;
+            height: 15px;
+            fill: currentColor;
+            filter: drop-shadow(0 0 5px var(--glow-color));
         }
 
-        .floating-media-info {
+        .glass-btn:hover, .glass-btn:active {
+            background: var(--primary-gradient);
+            color: #fff;
+            border-color: rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 25px var(--glow-color), inset 0 1px 3px rgba(255, 255, 255, 0.4);
+            transform: translateY(-2px);
+        }
+
+        /* مینی پلیر شناور بالای هدر */
+        #miniPlayerBar {
+            display: none;
+            background: linear-gradient(135deg, rgba(236, 72, 153, 0.2), rgba(139, 92, 246, 0.2));
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 14px;
+            padding: 8px 12px;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 4px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .user-status-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.03));
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid var(--glass-border);
+            border-top: 1px solid rgba(255, 255, 255, 0.4);
+            border-left: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 22px;
+            padding: 16px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 0.85rem;
-            font-weight: 600;
+            margin-bottom: 15px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.2), inset 0 -2px 6px rgba(0, 0, 0, 0.2);
         }
 
-        .floating-media-controls {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .floating-media-controls input[type="range"] {
-            flex-grow: 1;
-            accent-color: var(--accent-primary);
-            cursor: pointer;
-        }
-
-        .bottom-nav-bar {
-            position: fixed;
-            bottom: 15px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 96%;
-            max-width: 720px;
-            height: 62px;
-            display: flex;
-            align-items: center;
-            justify-content: space-around;
-            padding: 0 5px;
-            border-radius: 30px;
-            z-index: 998;
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            box-shadow: var(--card-shadow);
-        }
-
-        .bottom-nav-item {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            padding: 6px 12px;
-            border-radius: 18px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: var(--text-muted);
-            transition: all 0.3s ease;
-            white-space: nowrap;
-        }
-
-        .bottom-nav-item:hover {
-            color: var(--text-main);
-            background: var(--glass-hover);
-        }
-
-        .bottom-nav-item.active {
-            color: #fff;
-            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-            box-shadow: 0 0 15px var(--accent-glow);
-        }
-
-        .section-title {
-            font-size: 1.3rem;
-            font-weight: 700;
-            margin-bottom: 20px;
+        .status-item-3d {
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
-        .posts-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 25px;
-        }
-
-        .post-card {
-            border-radius: 18px;
-            overflow: hidden;
-            cursor: pointer;
-            transition: transform 0.3s, box-shadow 0.3s;
+        .status-icon-3d {
+            width: 38px;
+            height: 38px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-top: 1px solid rgba(255, 255, 255, 0.5);
             display: flex;
-            flex-direction: column;
-            position: relative;
-        }
-
-        .post-card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 12px 35px var(--accent-glow);
-            border-color: var(--accent-primary);
-        }
-
-        .post-poster-wrapper {
-            position: relative;
-            width: 100%;
-            height: 300px;
-        }
-
-        .post-poster {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .poster-stats-overlay {
-            position: absolute;
-            bottom: 8px;
-            right: 8px;
-            left: 8px;
-            display: flex;
-            justify-content: space-between;
-            background: rgba(0, 0, 0, 0.65);
-            backdrop-filter: blur(6px);
-            padding: 5px 10px;
-            border-radius: 10px;
-            font-size: 0.75rem;
-            color: #fff;
-            border: 1px solid rgba(255,255,255,0.15);
-        }
-
-        .poster-stat-item {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .post-info {
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            flex-grow: 1;
-        }
-
-        .post-title {
-            font-size: 1.05rem;
-            font-weight: 700;
-        }
-
-        .post-genre {
-            font-size: 0.85rem;
-            color: var(--accent-primary);
-            font-weight: 600;
-        }
-
-        .lock-overlay {
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(4px);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
             justify-content: center;
-            gap: 8px;
-            color: #fff;
-            font-size: 1rem;
-            font-weight: 600;
-            z-index: 5;
-        }
-
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(8px);
-            display: none;
             align-items: center;
-            justify-content: center;
-            z-index: 2000;
-            padding: 20px;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2), inset 0 1px 2px rgba(255, 255, 255, 0.4);
         }
 
-        .modal-box {
-            background: var(--modal-bg);
+        .status-icon-3d svg {
+            width: 20px;
+            height: 20px;
+            fill: var(--primary);
+            filter: drop-shadow(0 2px 6px var(--glow-color));
+        }
+
+        .action-main-btn {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.03));
             backdrop-filter: blur(25px);
             border: 1px solid var(--glass-border);
-            border-radius: 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 20px;
+            padding: 16px;
             width: 100%;
-            max-width: 550px;
-            padding: 30px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-            position: relative;
+            text-align: center;
+            color: var(--text-color);
+            font-family: 'Vazirmatn', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            margin-bottom: 16px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3), inset 0 1px 3px rgba(255, 255, 255, 0.3);
+            transition: all 0.35s ease;
+        }
+        .action-main-btn:hover {
+            background: var(--primary-gradient);
+            color: #fff;
+            border-color: rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 30px var(--glow-color), inset 0 1px 3px rgba(255, 255, 255, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .sub-filters {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 6px;
+            margin-bottom: 16px;
+        }
+        .sub-filters::-webkit-scrollbar { display: none; }
+
+        .filter-chip {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
+            color: var(--text-color);
+            padding: 9px 18px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15), inset 0 1px 2px rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        .filter-chip.active {
+            background: var(--primary-gradient);
+            color: #fff;
+            border-color: rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 20px var(--glow-color), inset 0 1px 3px rgba(255, 255, 255, 0.4);
+        }
+
+        .container {
+            width: 92%;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 0 5px;
+        }
+
+        .tab-pane {
+            display: none;
+            width: 100%;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+        .tab-pane.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+            backdrop-filter: blur(30px);
+            border: 1px solid var(--glass-border);
+            border-top: 1px solid rgba(255, 255, 255, 0.4);
+            border-left: 1px solid rgba(255, 255, 255, 0.25);
+            padding: 20px;
+            margin-bottom: 16px;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), inset 0 1px 3px rgba(255, 255, 255, 0.2);
+            width: 100%;
+        }
+
+        .card h2 {
+            font-size: 17px;
+            font-weight: 700;
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-shadow: 0 2px 8px var(--glow-color);
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 14px;
+            margin: 8px 0;
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            color: var(--text-color);
+            box-sizing: border-box;
+            font-family: 'Vazirmatn', sans-serif;
+            font-size: 13px;
+            outline: none;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+        input:focus, textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 20px var(--glow-color), inset 0 2px 5px rgba(0, 0, 0, 0.2);
+            background: rgba(255, 255, 255, 0.08);
+        }
+        input::placeholder, textarea::placeholder { color: inherit; opacity: 0.5; font-family: 'Vazirmatn', sans-serif; }
+
+        /* منوی پایین شیشه‌ای */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 10px;
+            z-index: 1000;
+            border-radius: 28px 28px 0 0;
+            background: var(--glass-bg);
+            backdrop-filter: blur(35px);
+            border-top: 1px solid var(--glass-border);
+            border-left: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 -15px 40px rgba(0, 0, 0, 0.5), inset 0 1px 2px rgba(255, 255, 255, 0.3);
+        }
+        .nav-item {
+            cursor: pointer;
+            padding: 8px 16px;
+            border-radius: 18px;
+            font-weight: 600;
+            font-size: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: var(--text-color);
+            opacity: 0.7;
+            transition: all 0.3s ease;
+        }
+        .nav-item svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+            filter: drop-shadow(0 0 5px var(--glow-color));
+        }
+        .nav-item.active {
+            background: var(--primary-gradient);
+            color: white;
+            opacity: 1;
+            box-shadow: 0 0 25px var(--glow-color), inset 0 1px 3px rgba(255, 255, 255, 0.4);
+            transform: translateY(-3px);
+        }
+
+        /* مودال‌های شیشه‌ای */
+        .modal {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(5, 2, 10, 0.8);
+            backdrop-filter: blur(25px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            padding: 15px;
+        }
+        .modal-content {
+            background: linear-gradient(135deg, rgba(30, 15, 50, 0.85), rgba(15, 8, 30, 0.9));
+            backdrop-filter: blur(40px);
+            border: 1px solid var(--glass-border);
+            border-top: 1px solid rgba(255, 255, 255, 0.4);
+            padding: 24px;
+            width: 100%;
+            max-width: 420px;
+            border-radius: 28px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6), 0 0 35px var(--glow-color), inset 0 1px 3px rgba(255, 255, 255, 0.3);
+            text-align: center;
             max-height: 90vh;
             overflow-y: auto;
         }
-
-        .modal-close {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            font-size: 1.2rem;
-            cursor: pointer;
-        }
-
-        .modal-close:hover {
-            color: var(--text-main);
-        }
-
-        .modal-box h2 {
-            margin-bottom: 20px;
-            font-size: 1.4rem;
+        .modal-content h3 {
+            font-size: 18px;
             font-weight: 700;
         }
 
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 6px;
-            font-size: 0.9rem;
-            color: var(--text-muted);
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 12px 16px;
-            border-radius: 12px;
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            color: var(--text-main);
-            font-size: 1rem;
-            outline: none;
-        }
-
-        .form-control:focus {
-            border-color: var(--accent-primary);
-            box-shadow: 0 0 10px var(--accent-glow);
-        }
-
-        .genres-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-top: 5px;
-        }
-
-        .genre-checkbox-label {
+        /* سیستم پیام‌های شیشه‌ای سفارشی (Alert/Confirm) */
+        .glass-toast-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(5, 2, 10, 0.7);
+            backdrop-filter: blur(20px);
             display: flex;
+            justify-content: center;
             align-items: center;
-            gap: 6px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            background: var(--glass-bg);
-            padding: 8px 12px;
-            border-radius: 8px;
+            z-index: 3000;
+            animation: fadeIn 0.3s ease;
+        }
+        .glass-toast-box {
+            background: linear-gradient(135deg, rgba(35, 18, 58, 0.9), rgba(18, 10, 35, 0.95));
+            backdrop-filter: blur(40px);
             border: 1px solid var(--glass-border);
+            border-top: 1px solid rgba(255, 255, 255, 0.5);
+            padding: 24px;
+            width: 85%;
+            max-width: 340px;
+            border-radius: 26px;
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.7), 0 0 30px var(--glow-color), inset 0 1px 3px rgba(255, 255, 255, 0.3);
+            text-align: center;
+        }
+        .glass-toast-box p {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        .glass-toast-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
         }
 
-        .genre-checkbox-label:hover {
-            border-color: var(--accent-primary);
-        }
-
-        .plan-options {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
+        /* کارت پست‌ها با کاور */
+        .post-card {
+            margin-bottom: 14px;
+            padding: 14px;
+            border-radius: 22px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.01));
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2), inset 0 1px 2px rgba(255, 255, 255, 0.15);
+            transition: 0.3s;
+            display: flex;
             gap: 12px;
-            margin-bottom: 20px;
-        }
-
-        .plan-card {
-            padding: 15px;
-            border-radius: 14px;
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            cursor: pointer;
-            text-align: center;
-            transition: all 0.2s;
-        }
-
-        .plan-card:hover, .plan-card.selected {
-            border-color: var(--accent-primary);
-            background: rgba(168, 85, 247, 0.1);
-            box-shadow: 0 0 15px var(--accent-glow);
-        }
-
-        .plan-title {
-            font-weight: 700;
-            font-size: 0.95rem;
-            margin-bottom: 5px;
-        }
-
-        .plan-price {
-            font-size: 0.9rem;
-            color: var(--accent-primary);
-            font-weight: 600;
-        }
-
-        .admin-btn {
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            color: var(--text-main);
-            padding: 6px 12px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: 600;
-            display: flex;
             align-items: center;
-            gap: 6px;
-            backdrop-filter: blur(10px);
-            font-size: 0.82rem;
-            white-space: nowrap;
-        }
-
-        .admin-btn:hover {
-            border-color: var(--accent-primary);
-            background: var(--glass-hover);
-            box-shadow: 0 0 15px var(--accent-glow);
-        }
-
-        .admin-tabs {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 20px;
-            border-bottom: 1px solid var(--glass-border);
-            padding-bottom: 10px;
-            flex-wrap: wrap;
-        }
-
-        .admin-tab-btn {
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            padding: 8px 14px;
-            border-radius: 8px;
             cursor: pointer;
-            font-weight: 600;
-            font-size: 0.85rem;
         }
-
-        .admin-tab-btn.active {
-            background: var(--accent-primary);
-            color: #fff;
+        .post-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 0 25px var(--glow-color), inset 0 1px 3px rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
         }
-
-        .admin-section {
-            display: none;
-        }
-
-        .admin-section.active {
-            display: block;
-        }
-
-        .admin-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-            font-size: 0.9rem;
-        }
-
-        .admin-table th, .admin-table td {
-            padding: 10px;
-            text-align: right;
-            border-bottom: 1px solid var(--glass-border);
-        }
-
-        .admin-table th {
-            color: var(--text-muted);
-            font-weight: 600;
-        }
-
-        .chat-box-container {
-            display: flex;
-            flex-direction: column;
-            height: 350px;
-            border: 1px solid var(--glass-border);
+        .post-thumb {
+            width: 70px;
+            height: 70px;
             border-radius: 14px;
-            background: var(--glass-bg);
-            overflow: hidden;
-            margin-bottom: 15px;
+            object-fit: cover;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            flex-shrink: 0;
         }
-
-        .chat-messages {
+        .post-info {
             flex-grow: 1;
-            padding: 15px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
+            text-align: right;
+            overflow: hidden;
         }
-
-        .chat-bubble {
-            max-width: 85%;
-            padding: 10px 14px;
-            border-radius: 12px;
-            font-size: 0.9rem;
-            word-break: break-word;
-            line-height: 1.5;
-        }
-
-        .chat-bubble.user {
-            background: var(--accent-primary);
-            color: #fff;
-            align-self: flex-start;
-            border-bottom-right-radius: 2px;
-        }
-
-        .chat-bubble.admin {
-            background: rgba(236, 72, 153, 0.2);
-            border: 1px solid var(--accent-secondary);
-            color: var(--text-main);
-            align-self: flex-end;
-            border-bottom-left-radius: 2px;
-        }
-
-        .chat-bubble.system-success {
-            background: rgba(34, 197, 94, 0.2);
-            border: 1px solid #22c55e;
-            color: #4ade80;
-            align-self: center;
+        .post-info h4 { margin: 0 0 4px 0; font-size: 15px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .post-info p { font-size: 11px; opacity: 0.8; margin: 0 0 6px 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        
+        .footer-credit {
             text-align: center;
-            font-weight: 600;
-        }
-
-        .chat-bubble.system-danger {
-            background: rgba(239, 68, 68, 0.2);
-            border: 1px solid #ef4444;
-            color: #f87171;
-            align-self: center;
-            text-align: center;
-            font-weight: 600;
-        }
-
-        .chat-input-row {
-            display: flex;
-            padding: 10px;
-            background: rgba(0,0,0,0.2);
-            gap: 8px;
-            align-items: center;
-        }
-
-        .room-container {
-            display: grid;
-            grid-template-columns: 1fr 300px;
-            gap: 20px;
-            height: 75vh;
-        }
-
-        @media(max-width: 900px) {
-            .room-container {
-                grid-template-columns: 1fr;
-                height: auto;
-            }
-        }
-
-        .media-player-box {
-            background: #000;
-            border-radius: 16px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-            min-height: 350px;
-        }
-
-        .room-chat-box {
-            display: flex;
-            flex-direction: column;
-            border-radius: 16px;
-            border: 1px solid var(--glass-border);
-            background: var(--glass-bg);
-            height: 100%;
-            overflow: hidden;
-        }
-
-        .room-members-list {
-            padding: 10px 15px;
-            font-size: 0.85rem;
-            border-bottom: 1px solid var(--glass-border);
-            color: var(--accent-primary);
-            font-weight: 600;
-        }
-
-        .badge-glass {
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            padding: 4px 10px;
-            border-radius: 8px;
-            font-size: 0.8rem;
-        }
-
-        .btn-action {
-            padding: 10px 20px;
-            border-radius: 12px;
-            border: none;
-            cursor: pointer;
-            font-weight: 600;
-            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-            color: #fff;
-            box-shadow: 0 4px 15px var(--accent-glow);
-        }
-        .btn-action:hover {
-            opacity: 0.9;
-        }
-
-        .btn-danger {
-            background: #ef4444;
-            color: #fff;
-        }
-
-        .glass-player-screen {
-            width: 100%;
-            max-height: 400px;
-            background: #000;
-            border-radius: 14px;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 15px;
-            position: relative;
-        }
-        .glass-player-screen video, .glass-player-screen audio, .glass-player-screen iframe {
-            width: 100%;
-            height: 380px;
-            outline: none;
-            border: none;
-        }
-
-        .bookmark-btn {
-            position: absolute;
-            top: 12px;
-            left: 12px;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(8px);
-            border: 1px solid var(--glass-border);
-            color: #fff;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            z-index: 6;
-            transition: 0.2s;
-        }
-        .bookmark-btn:hover {
-            background: var(--accent-primary);
-            transform: scale(1.1);
-        }
-        .bookmark-btn.saved {
-            color: #ec4899;
-            background: rgba(236, 72, 153, 0.2);
-            border-color: #ec4899;
+            font-size: 11px;
+            font-weight: 500;
+            opacity: 0.4;
+            margin-top: 25px;
+            letter-spacing: 1px;
         }
     </style>
 </head>
-<body>
+<body data-theme="night">
 
-    <header class="glass">
-        <div class="logo-area" onclick="goHome()">
-            <i class="fa-solid fa-play-circle"></i>
-            <span>NETFLIX SIT</span>
+    <header>
+        <div class="header-top">
+            <div class="logo-area">NETFLIX</div>
+            <div class="header-controls">
+                <button class="glass-btn" onclick="openSubModal()">
+                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.82v-1.91c-1.84-.31-3.23-1.86-3.23-3.73 0-2.07 1.68-3.75 3.75-3.75h1.25c.69 0 1.25-.56 1.25-1.25s-.56-1.25-1.25-1.25h-2c-.69 0-1.25-.56-1.25-1.25S9.56 6 10.25 6V4h2.82v1.91c1.84.31 3.23 1.86 3.23 3.73 0 2.07-1.68 3.75-3.75 3.75h-1.25c-.69 0-1.25.56-1.25 1.25s.56 1.25 1.25 1.25h2c.69 0 1.25.56 1.25 1.25s-.56 1.25-1.25 1.25z"/></svg>
+                    خرید اشتراک
+                </button>
+                <button class="glass-btn" onclick="openAdminModal()">
+                    <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
+                    ادمین
+                </button>
+            </div>
         </div>
-        <div class="header-controls">
-            <button class="admin-btn" onclick="openAdminLoginModal()">
-                <i class="fa-solid fa-user-shield"></i> ادمین
-            </button>
-            <button class="btn-glass" onclick="openAuthModal()" id="headerAuthBtn">
-                <i class="fa-solid fa-user-plus"></i> اشتراک
-            </button>
-            <button class="btn-glass" onclick="openLoginModal()" id="headerLoginBtn" style="border-color: var(--accent-primary);">
-                <i class="fa-solid fa-right-to-bracket"></i> ورود
-            </button>
-            <div class="theme-toggle" id="themeToggleBtn" onclick="toggleTheme()" title="تغییر تم شب و روز">
-                <i class="fa-solid fa-moon" id="themeIcon"></i>
+
+        <div class="header-top" style="margin-top: 4px;">
+            <div class="header-controls">
+                <button class="glass-btn" id="themeToggle" onclick="toggleTheme()">
+                    <svg id="themeIcon" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.4 5.4 0 0 1-3.14-9.83C12.92 3.04 12.46 3 12 3z"/></svg>
+                </button>
+                <button class="glass-btn" id="loginNavBtn" onclick="openModal('loginModal')">
+                    <svg viewBox="0 0 24 24"><path d="M11 7L9.6 8.4l2.6 2.6H2v2h10.2l-2.6 2.6L11 17l5-5-5-5zm9 12h-8v2h8c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-8v2h8v14z"/></svg>
+                    ورود / ثبت‌نام
+                </button>
+                <button class="glass-btn" id="logoutBtn" style="display:none; background: rgba(255,0,0,0.2);" onclick="logout()">خروج</button>
+            </div>
+        </div>
+
+        <!-- مینی پلیر موزیک بالای هدر -->
+        <div id="miniPlayerBar">
+            <div style="display: flex; align-items: center; gap: 8px; overflow: hidden;">
+                <span style="font-size: 11px; font-weight: 700; white-space: nowrap;" id="miniTitle">در حال پخش...</span>
+                <span style="font-size: 10px; opacity: 0.7;" id="miniTime">00:00</span>
+            </div>
+            <div style="display: flex; gap: 6px;">
+                <button class="glass-btn" style="padding: 4px 8px; font-size: 11px;" onclick="toggleMiniPlayPause()" id="miniPlayBtn">⏸️</button>
+                <button class="glass-btn" style="padding: 4px 8px; font-size: 11px; background: rgba(255,0,0,0.2);" onclick="stopAudio()">✕</button>
             </div>
         </div>
     </header>
 
-    <div class="main-container">
+    <div class="container">
         
-        <div class="sub-status-bar glass" id="subStatusBar" style="display: flex;">
-            <div>
-                <i class="fa-solid fa-crown" style="color: var(--accent-primary);"></i>
-                <span id="subStatusText">وضعیت: بدون اشتراک</span>
+        <div class="user-status-card">
+            <div class="status-item-3d">
+                <div class="status-icon-3d">
+                    <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                </div>
+                <div id="userInfoBadge" style="font-size: 13px; font-weight: 700;">مهمان</div>
             </div>
-            <div style="display: flex; gap: 8px; align-items: center;">
-                <button class="btn-glass" id="profileChatNavBtn" style="display: none; padding: 4px 10px; font-size: 0.8rem; border-color: var(--accent-primary);" onclick="openUserChatModal()">
-                    <i class="fa-solid fa-headset" style="color: var(--accent-primary);"></i> چت پشتیبانی
-                </button>
-                <div class="badge-glass" id="userBadgeName">مهمان</div>
+            <div class="status-item-3d">
+                <div class="status-icon-3d">
+                    <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                </div>
+                <div id="subInfo" style="font-size: 12px; font-weight: 700;">بدون اشتراک 👑</div>
             </div>
         </div>
 
-        <div class="action-bar">
-            <div id="adminManagementTrigger" style="display: none;">
-                <button class="btn-action" style="background: linear-gradient(135deg, #22c55e, #16a34a);" onclick="openModal('adminPanelModal'); loadAdminData();">
-                    <i class="fa-solid fa-sliders"></i> مدیریت کامل‌تر
-                </button>
+        <button class="action-main-btn" onclick="openShareModal()">
+            <svg style="width:18px; height:18px; fill:currentColor;" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92c0-1.61-1.31-2.92-2.92-2.92z"/></svg>
+            اشتراک‌گذاری پست دائمی
+        </button>
+
+        <!-- تب ۱: فیلم و سریال -->
+        <div id="tab-movies" class="tab-pane">
+            <div class="sub-filters">
+                <div class="filter-chip active" onclick="filterSubTab(this)">🎬 همه فیلم‌ها</div>
             </div>
-            <button class="btn-glass" style="padding: 12px 22px; border-radius: 16px; font-size: 1rem; background: var(--glass-bg); border-color: var(--accent-primary);" onclick="openShareModal()">
-                <i class="fa-solid fa-share-nodes" style="color: var(--accent-primary);"></i> اشتراک‌گذاری پست دائمی
-            </button>
+            <div class="card">
+                <h2><span>🔥</span> فیلم و سریال‌های برتر</h2>
+                <div id="moviesContainer" style="margin-top: 15px;">موردی ثبت نشده است.</div>
+            </div>
         </div>
 
-        <div id="subFilterContainer"></div>
-
-        <div class="section-title" id="sectionTitle">
-            <i class="fa-solid fa-fire" style="color: var(--accent-primary);"></i> فیلم و سریال‌های محبوب
+        <!-- تب ۲: موزیک -->
+        <div id="tab-music" class="tab-pane active">
+            <div class="sub-filters">
+                <div class="filter-chip active" onclick="filterSubTab(this)">🎵 همه موزیک‌ها</div>
+            </div>
+            <div class="card">
+                <h2><span>🔥</span> موزیک‌های برتر</h2>
+                <div id="musicContainer" style="margin-top: 15px;">موردی ثبت نشده است.</div>
+            </div>
         </div>
-        <div class="posts-grid" id="postsGrid"></div>
 
+        <!-- تب ۳: ذخیره‌ها -->
+        <div id="tab-downloads" class="tab-pane">
+            <div class="card">
+                <h2>ذخیره‌های من</h2>
+                <div id="downloadsContainer" style="margin-top: 15px;">موردی ثبت نشده است.</div>
+            </div>
+        </div>
+
+        <!-- پنل ادمین -->
+        <div id="adminPanel" class="card" style="display:none; border: 1px solid rgba(255, 215, 0, 0.4); margin-top: 15px;">
+            <h2 style="color: #ffd700; display:flex; align-items:center; gap:8px;">پنل مدیریت پیشرفته</h2>
+            <div style="font-size: 12px; margin-top:10px; opacity: 0.8;">لیست کاربران:</div>
+            <div id="adminUsersList" style="max-height: 220px; overflow-y:auto; margin-top:6px;"></div>
+        </div>
+
+        <div class="footer-credit">made by htmltoapk</div>
     </div>
 
-    <div class="glass floating-media-bar" id="floatingMediaBar">
-        <div class="floating-media-info">
-            <span id="floatingMediaTitle" style="color: var(--accent-primary);"><i class="fa-solid fa-play"></i> در حال پخش...</span>
-            <span id="floatingMediaTime" style="font-size: 0.75rem; color: var(--text-muted);">00:00 / 00:00</span>
+    <!-- منوی پایین -->
+    <div class="bottom-nav">
+        <div class="nav-item" onclick="switchTab('movies', this)">
+            <svg viewBox="0 0 24 24"><path d="M18 3v2h-2V3H8v2H6V3H4v18h2v-2h2v2h8v-2h2v2h2V3h-2zM8 17H6v-2h2v2zm0-4H6v-2h2v2zm0-4H6V7h2v2zm10 8h-2v-2h2v2zm0-4h-2v-2h2v2zm0-4h-2V7h2v2z"/></svg>
+            فیلم
         </div>
-        <div class="floating-media-controls">
-            <button class="btn-glass" style="padding: 4px 8px;" onclick="toggleFloatingPlayPause()" id="floatingPlayBtn"><i class="fa-solid fa-pause"></i></button>
-            <input type="range" id="floatingSeekBar" value="0" min="0" max="100" step="0.1" oninput="seekFloatingMedia(this.value)">
-            <button class="btn-glass" style="padding: 4px 8px; color: #ef4444;" onclick="closeFloatingMedia()"><i class="fa-solid fa-xmark"></i></button>
+        <div class="nav-item active" onclick="switchTab('music', this)">
+            <svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+            موزیک
         </div>
-    </div>
-
-    <div class="bottom-nav-bar glass">
-        <div class="bottom-nav-item active" onclick="selectCategory('movie')" id="cat-movie">
-            <i class="fa-solid fa-film"></i> فیلم
-        </div>
-        <div class="bottom-nav-item" onclick="selectCategory('music')" id="cat-music">
-            <i class="fa-solid fa-music"></i> موزیک
-        </div>
-        <div class="bottom-nav-item" onclick="selectCategory('saved')" id="cat-saved">
-            <i class="fa-solid fa-bookmark" style="color: var(--accent-secondary);"></i> ذخیره‌ها
-        </div>
-        <div class="bottom-nav-item" onclick="selectCategory('downloads')" id="cat-downloads">
-            <i class="fa-solid fa-download" style="color: var(--accent-primary);"></i> دانلودها
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="glassAlertModal" style="z-index: 3000;">
-        <div class="modal-box glass" style="max-width: 400px; text-align: center;">
-            <div id="glassAlertIcon" style="font-size: 2.5rem; color: var(--accent-primary); margin-bottom: 15px;">
-                <i class="fa-solid fa-circle-info"></i>
-            </div>
-            <h3 id="glassAlertTitle" style="margin-bottom: 10px; font-size: 1.2rem;">پیام سیستم</h3>
-            <p id="glassAlertMessage" style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; margin-bottom: 20px;"></p>
-            <button class="btn-action" style="width: 100%;" onclick="closeGlassAlert()">تایید</button>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="shareModal">
-        <div class="modal-box glass">
-            <button class="modal-close" onclick="closeModal('shareModal')"><i class="fa-solid fa-xmark"></i></button>
-            <h2>اشتراک‌گذاری پست جدید (نمایش دائمی برای همه)</h2>
-            <form onsubmit="handleShareSubmit(event)">
-                <div class="form-group">
-                    <label>دسته</label>
-                    <select class="form-control" id="shareCategory">
-                        <option value="movie">فیلم و سریال</option>
-                        <option value="music">موزیک</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>نام اثر</label>
-                    <input type="text" class="form-control" id="shareTitle" required placeholder="نام فیلم یا موزیک">
-                </div>
-                <div class="form-group">
-                    <label>لینک رسانه (یوتیوب، آپارات یا لینک مستقیم فایل MP4/MP3)</label>
-                    <input type="text" class="form-control" id="shareDownloadLink" required placeholder="https://www.youtube.com/watch?v=... یا https://...file.mp4" dir="ltr">
-                </div>
-                <div class="form-group">
-                    <label>عکس کاور (لینک URL یا فایل)</label>
-                    <div style="display: flex; gap: 10px; margin-bottom: 8px;">
-                        <input type="text" class="form-control" id="shareImage" placeholder="لینک تصویر">
-                        <input type="file" id="shareImageFile" accept="image/*" style="display: none;" onchange="handleShareImageFile(this)">
-                        <button type="button" class="btn-glass" onclick="document.getElementById('shareImageFile').click()"><i class="fa-solid fa-upload"></i> آپلود</button>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>ژانرها (چندژانری مجاز):</label>
-                    <div class="genres-grid">
-                        <label class="genre-checkbox-label"><input type="checkbox" name="genre" value="ترسناک"> ترسناک</label>
-                        <label class="genre-checkbox-label"><input type="checkbox" name="genre" value="کمدی"> کمدی</label>
-                        <label class="genre-checkbox-label"><input type="checkbox" name="genre" value="بزرگسالان"> بزرگسالان</label>
-                        <label class="genre-checkbox-label"><input type="checkbox" name="genre" value="ایرانی"> ایرانی</label>
-                        <label class="genre-checkbox-label"><input type="checkbox" name="genre" value="سانسور شده"> سانسور شده</label>
-                        <label class="genre-checkbox-label"><input type="checkbox" name="genre" value="دوبله"> دوبله</label>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>توضیحات</label>
-                    <textarea class="form-control" id="shareDesc" required placeholder="توضیحات..."></textarea>
-                </div>
-                <button type="submit" class="btn-action" style="width: 100%;">انتشار دائمی در سایت</button>
-            </form>
+        <div class="nav-item" onclick="switchTab('downloads', this)">
+            <svg viewBox="0 0 24 24"><path d="M17 3H7c-1.1 0-1.99.9-1.99 2L5 21l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg>
+            ذخیره‌ها
         </div>
     </div>
 
-    <div class="modal-overlay" id="authModal">
-        <div class="modal-box glass">
-            <button class="modal-close" onclick="closeModal('authModal')"><i class="fa-solid fa-xmark"></i></button>
-            <h2>ثبت‌نام و خرید اشتراک</h2>
-            <form onsubmit="handleAuthSubmit(event)">
-                <div class="form-group">
-                    <label>نام و نام خانوادگی</label>
-                    <input type="text" class="form-control" id="regName" required placeholder="نام">
+    <!-- مودال جزئیات پست -->
+    <div id="postDetailModal" class="modal">
+        <div class="modal-content" style="text-align: right;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px;">
+                <h3 id="detailTitle" style="margin:0; font-size:16px;">جزئیات اثر</h3>
+                <button class="glass-btn" style="padding:4px 10px;" onclick="closeModal('postDetailModal')">✕</button>
+            </div>
+            <img id="detailCover" src="" style="width:100%; height:180px; object-fit:cover; border-radius:18px; border:1px solid var(--glass-border); margin-bottom:12px;">
+            <div style="font-size: 12px; opacity: 0.8; margin-bottom: 6px;"><b>سبک:</b> <span id="detailGenre"></span></div>
+            <div style="font-size: 12px; opacity: 0.8; margin-bottom: 12px;"><b>توضیحات:</b> <span id="detailDesc"></span></div>
+
+            <div id="audioPlayerSection" style="display:none; background:rgba(255,255,255,0.05); padding:14px; border-radius:18px; border:1px solid var(--glass-border); margin-bottom:12px; text-align:center;">
+                <div id="audioTimer" style="font-size: 14px; font-weight: 700; margin-bottom: 8px;">00:00 / 00:00</div>
+                <div style="display:flex; gap:8px; justify-content:center;">
+                    <button class="glass-btn" onclick="togglePlayAudio()" id="modalPlayBtn">▶ پخش آنلاین</button>
                 </div>
-                <div class="form-group">
-                    <label>آیدی کاربری اختصاصی (Username)</label>
-                    <input type="text" class="form-control" id="regUsername" required placeholder="آیدی یکتا">
-                </div>
-                <div class="form-group">
-                    <label>رمز عبور</label>
-                    <input type="password" class="form-control" id="regPassword" required placeholder="••••••••">
-                </div>
-                <div class="form-group">
-                    <label>انتخاب اشتراک:</label>
-                    <div class="plan-options">
-                        <div class="plan-card selected" onclick="selectPlan(1, 128000, this)">
-                            <div class="plan-title">یک ماهه</div>
-                            <div class="plan-price">۱۲۸,۰۰۰ تومان</div>
-                        </div>
-                        <div class="plan-card" onclick="selectPlan(3, 330000, this)">
-                            <div class="plan-title">سه ماهه</div>
-                            <div class="plan-price">۳۳۰,۰۰۰ تومان</div>
-                        </div>
-                        <div class="plan-card" onclick="selectPlan(6, 650000, this)">
-                            <div class="plan-title">شش ماهه</div>
-                            <div class="plan-price">۶۵۰,۰۰۰ تومان</div>
-                        </div>
-                        <div class="plan-card" onclick="selectPlan(12, 1000000, this)">
-                            <div class="plan-title">یک ساله</div>
-                            <div class="plan-price">۱,۰۰۰,۰۰۰ تومان</div>
-                        </div>
-                    </div>
-                </div>
-                <button type="submit" class="btn-action" style="width: 100%;">ثبت و ورود به چت با ادمین</button>
-            </form>
+            </div>
+
+            <button class="glass-btn" style="width:100%; justify-content:center; background: var(--primary-gradient);" id="detailExternalLink" onclick="">دانلود / ورود به لینک اصلی</button>
         </div>
     </div>
 
-    <div class="modal-overlay" id="loginModal">
-        <div class="modal-box glass" style="max-width: 420px;">
-            <button class="modal-close" onclick="closeModal('loginModal')"><i class="fa-solid fa-xmark"></i></button>
-            <h2>ورود به اکانت کاربری</h2>
-            <form onsubmit="handleLoginSubmit(event)">
-                <div class="form-group">
-                    <label>آیدی کاربری</label>
-                    <input type="text" class="form-control" id="loginUsername" required placeholder="آیدی شما">
-                </div>
-                <div class="form-group">
-                    <label>رمز عبور</label>
-                    <input type="password" class="form-control" id="loginPassword" required placeholder="رمز عبور">
-                </div>
-                <div style="display: flex; gap: 10px;">
-                    <button type="submit" class="btn-action" style="flex: 2;">ورود به حساب</button>
-                    <button type="button" class="btn-glass" style="flex: 1; justify-content: center; color: #ef4444; border-color: rgba(239,68,68,0.4);" onclick="handleDeleteAccount()"><i class="fa-solid fa-user-xmark"></i> حذف اکانت</button>
-                </div>
-            </form>
+    <!-- مودال ویرایش پست -->
+    <div id="editPostModal" class="modal">
+        <div class="modal-content">
+            <h3 style="margin-top:0; color: #ffd700;">ویرایش پست</h3>
+            <input type="hidden" id="editPostKey">
+            <select id="editPostType" style="background: rgba(30, 15, 50, 0.9);">
+                <option value="music">موزیک</option>
+                <option value="movie">فیلم و سریال</option>
+            </select>
+            <input type="text" id="editPostTitle" placeholder="نام اثر">
+            <input type="text" id="editPostGenre" placeholder="سبک / ژانر">
+            <input type="text" id="editPostLink" placeholder="لینک دانلود / پخش آنلاین">
+            
+            <div style="text-align: right; font-size: 11px; margin-top: 6px; opacity: 0.8;">تغییر کاور پست (اختیاری):</div>
+            <input type="file" id="editPostCoverFile" accept="image/*" style="padding: 10px;">
+
+            <textarea id="editPostDesc" placeholder="توضیحات..." rows="3"></textarea>
+            <button class="glass-btn" style="width:100%; justify-content:center; background: var(--primary-gradient);" onclick="saveEditedPost()">ذخیره تغییرات</button>
+            <button class="glass-btn" style="width:100%; justify-content:center; margin-top:6px; background:transparent;" onclick="closeModal('editPostModal')">انصراف</button>
         </div>
     </div>
 
-    <div class="modal-overlay" id="chatModal">
-        <div class="modal-box glass">
-            <button class="modal-close" onclick="closeModal('chatModal')"><i class="fa-solid fa-xmark"></i></button>
-            <h2 id="chatModalHeaderTitle">چت با ادمین و ارسال رسید</h2>
-            <div class="chat-box-container">
-                <div class="chat-messages" id="chatMessages"></div>
-                <div class="chat-input-row">
-                    <input type="file" id="chatImageInput" accept="image/*" style="display: none;" onchange="sendChatImage(this)">
-                    <button type="button" class="btn-glass" onclick="document.getElementById('chatImageInput').click()" title="ارسال عکس رسید"><i class="fa-solid fa-image"></i></button>
-                    <input type="text" class="form-control" id="chatTextInput" placeholder="پیام خود را بنویسید..." style="flex-grow: 1; padding: 8px 12px;" onkeydown="if(event.key==='Enter') sendChatMessage()">
-                    <button type="button" class="btn-action" onclick="sendChatMessage()" style="padding: 8px 16px;"><i class="fa-solid fa-paper-plane"></i></button>
-                </div>
-            </div>
+    <!-- سایر مودال‌ها -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <h3 style="margin-top:0;">ورود یا ثبت‌نام</h3>
+            <input type="text" id="usernameInput" placeholder="آیدی (نام کاربری)">
+            <input type="password" id="passwordInput" placeholder="رمز عبور">
+            <button class="glass-btn" style="width:100%; justify-content:center; margin-top:10px;" onclick="loginOrRegister()">تایید و ورود</button>
+            <button class="glass-btn" style="width:100%; justify-content:center; margin-top:6px; background:transparent;" onclick="closeModal('loginModal')">بستن</button>
         </div>
     </div>
 
-    <div class="modal-overlay" id="postModal">
-        <div class="modal-box glass" style="max-width: 750px;">
-            <button class="modal-close" onclick="closePostModalAndKeepPlaying()"><i class="fa-solid fa-xmark"></i></button>
-            <div id="postModalContent"></div>
+    <div id="subModal" class="modal">
+        <div class="modal-content">
+            <h3 style="margin-top:0;">خرید اشتراک ویژه</h3>
+            <div class="card" onclick="buyPlan(30, 'یک ماهه', 130000)" style="cursor:pointer; padding:12px; margin-bottom:10px; font-size:13px; font-weight:500;">۳۰ روزه - ۱۳۰ هزار تومان</div>
+            <div class="card" onclick="buyPlan(90, 'سه ماهه', 350000)" style="cursor:pointer; padding:12px; margin-bottom:10px; font-size:13px; font-weight:500;">۹۰ روزه - ۳۵۰ هزار تومان</div>
+            <button class="glass-btn" style="width:100%; justify-content:center;" onclick="closeModal('subModal')">بستن</button>
         </div>
     </div>
 
-    <div class="modal-overlay" id="roomSetupModal">
-        <div class="modal-box glass">
-            <button class="modal-close" onclick="closeModal('roomSetupModal')"><i class="fa-solid fa-xmark"></i></button>
-            <h2>ساخت اتاق مشترک</h2>
-            <form onsubmit="createRoomSubmit(event)">
-                <div class="form-group">
-                    <label>نام اتاق (انگلیسی)</label>
-                    <input type="text" class="form-control" id="roomNameInput" required placeholder="cinema-room">
-                </div>
-                <div class="form-group">
-                    <label>رمز عبور اتاق</label>
-                    <input type="password" class="form-control" id="roomPassInput" required placeholder="رمز عبور">
-                </div>
-                <button type="submit" class="btn-action" style="width: 100%;">ایجاد اتاق</button>
-            </form>
+    <div id="adminModal" class="modal">
+        <div class="modal-content">
+            <h3 style="margin-top:0; color: #ffd700;">ورود به پنل مدیریت</h3>
+            <input type="password" id="adminPasswordInput" placeholder="رمز ادمین...">
+            <button class="glass-btn" style="width:100%; justify-content:center; margin-top:10px;" onclick="verifyAdminPassword()">ورود به پنل</button>
+            <button class="glass-btn" style="width:100%; justify-content:center; margin-top:6px; background:transparent;" onclick="closeModal('adminModal')">انصراف</button>
         </div>
     </div>
 
-    <div class="modal-overlay" id="activeRoomModal">
-        <div class="modal-box glass" style="max-width: 1100px; width: 95%;">
-            <button class="modal-close" onclick="leaveRoom()"><i class="fa-solid fa-xmark"></i></button>
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                <h2 id="activeRoomTitle" style="margin: 0;">اتاق: نام اتاق</h2>
-                <div style="display: flex; gap: 10px;">
-                    <button class="btn-glass" onclick="toggleMicrophone()" id="micBtn"><i class="fa-solid fa-microphone"></i> میکروفون: خاموش</button>
-                    <button class="btn-action btn-danger" onclick="leaveRoom()">خروج از اتاق</button>
-                </div>
-            </div>
-            <div class="room-container">
-                <div class="media-player-box" id="mediaPlayerBox">
-                    <div style="text-align: center; color: #fff;">
-                        <i class="fa-solid fa-play fa-3x" style="margin-bottom: 15px; color: var(--accent-primary);"></i>
-                        <h3>پخش زنده همزمان</h3>
-                    </div>
-                </div>
-                <div class="room-chat-box">
-                    <div class="room-members-list" id="roomMembersList"><i class="fa-solid fa-users"></i> اعضا: 1 نفر</div>
-                    <div class="chat-messages" id="roomChatMessages"></div>
-                    <div class="chat-input-row">
-                        <input type="text" class="form-control" id="roomChatInput" placeholder="پیام..." style="padding: 8px 12px;">
-                        <button type="button" class="btn-action" onclick="sendRoomMessage()" style="padding: 8px 14px;"><i class="fa-solid fa-paper-plane"></i></button>
-                    </div>
-                </div>
-            </div>
+    <div id="shareModal" class="modal">
+        <div class="modal-content">
+            <h3 style="margin-top:0;">اشتراک‌گذاری پست دائمی</h3>
+            <select id="postType" style="background: rgba(30, 15, 50, 0.9);">
+                <option value="music">موزیک</option>
+                <option value="movie">فیلم و سریال</option>
+            </select>
+            <input type="text" id="postTitle" placeholder="نام اثر">
+            <input type="text" id="postGenre" placeholder="سبک / ژانر">
+            <input type="text" id="postLink" placeholder="لینک دانلود / پخش آنلاین (موزیک/ویدیو)">
+            
+            <div style="text-align: right; font-size: 11px; margin-top: 6px; opacity: 0.8;">انتخاب کاور پست (عکس):</div>
+            <input type="file" id="postCoverFile" accept="image/*" style="padding: 10px;">
+
+            <textarea id="postDesc" placeholder="توضیحات..." rows="3"></textarea>
+            <button class="glass-btn" style="width:100%; justify-content:center;" onclick="submitPost()">اشتراک‌گذاری با کاور</button>
+            <button class="glass-btn" style="width:100%; justify-content:center; margin-top:6px; background:transparent;" onclick="closeModal('shareModal')">بستن</button>
         </div>
     </div>
 
-    <div class="modal-overlay" id="adminLoginModal">
-        <div class="modal-box glass" style="max-width: 400px;">
-            <button class="modal-close" onclick="closeModal('adminLoginModal')"><i class="fa-solid fa-xmark"></i></button>
-            <h2>ورود به پنل ادمین</h2>
-            <form onsubmit="adminLoginSubmit(event)">
-                <div class="form-group">
-                    <label>رمز عبور مدیریت</label>
-                    <input type="password" class="form-control" id="adminPassInput" required placeholder="رمز عبور را وارد کنید">
-                </div>
-                <button type="submit" class="btn-action" style="width: 100%;">ورود</button>
-            </form>
-        </div>
-    </div>
+    <audio id="globalAudio" style="display:none;"></audio>
 
-    <div class="modal-overlay" id="adminPanelModal">
-        <div class="modal-box glass" style="max-width: 1000px;">
-            <button class="modal-close" onclick="closeModal('adminPanelModal')"><i class="fa-solid fa-xmark"></i></button>
-            <h2>پنل مدیریت کامل‌تر ادمین</h2>
-            <div class="admin-tabs">
-                <button class="admin-tab-btn active" onclick="switchAdminTab('posts', this)">مدیریت پست‌ها</button>
-                <button class="admin-tab-btn" onclick="switchAdminTab('directSub', this)">اعطای اشتراک با آیدی</button>
-                <button class="admin-tab-btn" onclick="switchAdminTab('pendingChats', this)">چت‌های در انتظار تایید</button>
-                <button class="admin-tab-btn" onclick="switchAdminTab('approvedChats', this)">چت‌های تایید شده</button>
-                <button class="admin-tab-btn" onclick="switchAdminTab('users', this)">مدیریت اعضا</button>
-            </div>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, set, push, onValue, update, remove, get, child } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-            <div class="admin-section active" id="admin-section-posts">
-                <h3>حذف پست‌ها</h3>
-                <div style="max-height: 350px; overflow-y: auto; margin-top: 15px;">
-                    <table class="admin-table">
-                        <thead>
-                            <tr>
-                                <th>عنوان</th>
-                                <th>دسته</th>
-                                <th>ژانر</th>
-                                <th>عملیات</th>
-                            </tr>
-                        </thead>
-                        <tbody id="adminPostsTableBody"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div class="admin-section" id="admin-section-directSub">
-                <h3>اعطای اشتراک مستقیم از طریق آیدی کاربر</h3>
-                <form onsubmit="handleDirectSubSubmit(event)" style="margin-top: 15px;">
-                    <div class="form-group">
-                        <label>آیدی کاربری (Username)</label>
-                        <input type="text" class="form-control" id="directSubUsername" required placeholder="آیدی دقیق کاربر">
-                    </div>
-                    <div class="form-group">
-                        <label>تعداد روزهای اشتراک</label>
-                        <input type="number" class="form-control" id="directSubDays" required value="30" min="1" placeholder="مثلا 30">
-                    </div>
-                    <button type="submit" class="btn-action" style="width: 100%;">اعطای اشتراک و آپدیت کاربر</button>
-                </form>
-            </div>
-
-            <div class="admin-section" id="admin-section-pendingChats">
-                <h3>درخواست‌های چت و اشتراک نیازمند بررسی</h3>
-                <div style="max-height: 350px; overflow-y: auto;" id="adminPendingChatsList"></div>
-            </div>
-
-            <div class="admin-section" id="admin-section-approvedChats">
-                <h3>چت‌های فعال و تایید شده کاربران</h3>
-                <div style="max-height: 350px; overflow-y: auto;" id="adminApprovedChatsList"></div>
-            </div>
-
-            <div class="admin-section" id="admin-section-users">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 10px;">
-                    <h3 style="margin: 0;">لیست اعضا و اعطای اشتراک</h3>
-                    <input type="text" id="adminUserSearchInput" class="form-control" placeholder="جستجوی نام یا آیدی کاربر..." oninput="filterAdminUsers()" style="max-width: 280px; padding: 8px 12px;">
-                </div>
-                <div style="max-height: 350px; overflow-y: auto;">
-                    <table class="admin-table">
-                        <thead>
-                            <tr>
-                                <th>نام</th>
-                                <th>آیدی</th>
-                                <th>اشتراک (روز)</th>
-                                <th>عملیات</th>
-                            </tr>
-                        </thead>
-                        <tbody id="adminUsersTableBody"></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="customSubModal">
-        <div class="modal-box glass" style="max-width: 420px;">
-            <button class="modal-close" onclick="closeModal('customSubModal')"><i class="fa-solid fa-xmark"></i></button>
-            <h2>مدیریت اشتراک و چت کاربر</h2>
-            <div class="form-group">
-                <label id="subModalUserLabel" style="font-weight: 700; color: var(--accent-primary);">کاربر:</label>
-            </div>
-            <div class="form-group">
-                <label>تعداد روزهای اشتراک:</label>
-                <input type="number" class="form-control" id="customDaysInput" value="30" min="1" placeholder="مثلا 30">
-            </div>
-            <div style="display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap;">
-                <button type="button" class="btn-action" style="flex: 1; background: #22c55e;" onclick="processApproval(true)"><i class="fa-solid fa-check"></i> تایید اشتراک</button>
-                <button type="button" class="btn-action btn-danger" style="flex: 1;" onclick="processApproval(false)"><i class="fa-solid fa-xmark"></i> لغو اشتراک</button>
-                <button type="button" class="btn-glass" style="width: 100%; justify-content: center; color: #ef4444; border-color: rgba(239,68,68,0.4);" onclick="deleteChatConversation()"><i class="fa-solid fa-trash"></i> حذف کامل این چت از دیتابیس</button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        const FIREBASE_URL = "https://netflix-sit-default-rtdb.asia-southeast1.firebasedatabase.app/";
-
-        let currentTheme = "night";
-        let currentCategory = "movie";
-        let currentSubFilter = "all";
-        let selectedPlanMonths = 1;
-        let selectedPlanPrice = 128000;
-        let selectedPlanNameText = "یک ماهه (۱۲۸,۰۰۰ تومان)";
-        let currentUser = null; 
-        let isAdminLoggedIn = false;
-        let micActive = false;
-        let activeRoomData = null;
-        let tempUploadedImage = "";
-        let targetSubUsername = null;
-
-        let posts = [];
-        let usersList = [];
-        let chatRequests = [];
-        let userDownloads = [];
-        let userSavedItems = []; 
-        let activeMediaElement = null;
-
-        window.onload = async function() {
-            loadSavedUserSession();
-            await loadFromFirebase();
-            setInterval(loadFromFirebase, 6000);
+        const firebaseConfig = {
+            databaseURL: "https://netflix-sit-default-rtdb.asia-southeast1.firebasedatabase.app"
         };
 
-        function showGlassAlert(title, message, type = 'info') {
-            document.getElementById("glassAlertTitle").innerText = title;
-            document.getElementById("glassAlertMessage").innerText = message;
-            
-            const iconEl = document.getElementById("glassAlertIcon");
-            if (type === 'success') {
-                iconEl.innerHTML = `<i class="fa-solid fa-circle-check" style="color: #22c55e;"></i>`;
-            } else if (type === 'error') {
-                iconEl.innerHTML = `<i class="fa-solid fa-circle-exclamation" style="color: #ef4444;"></i>`;
-            } else {
-                iconEl.innerHTML = `<i class="fa-solid fa-circle-info" style="color: var(--accent-primary);"></i>`;
-            }
-            openModal('glassAlertModal');
-        }
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
 
-        function closeGlassAlert() {
-            closeModal('glassAlertModal');
-        }
+        let currentUser = localStorage.getItem('net_user') || null;
+        let isAdmin = false;
+        let postsData = {};
+        let currentPlayingPostId = null;
+        const globalAudio = document.getElementById('globalAudio');
 
-        function saveUserSession() {
-            if (currentUser) {
-                localStorage.setItem("netflix_sit_user", JSON.stringify(currentUser));
-            } else {
-                localStorage.removeItem("netflix_sit_user");
-            }
-            localStorage.setItem("netflix_sit_admin", isAdminLoggedIn ? "true" : "false");
-            localStorage.setItem("netflix_sit_downloads", JSON.stringify(userDownloads));
-            localStorage.setItem("netflix_sit_saved", JSON.stringify(userSavedItems));
-        }
+        // تابع جامع برای ساخت پیام‌های شیشه‌ای سفارشی (جایگزین alert پیش‌فرض مرورگر)
+        window.showGlassAlert = function(message, callback) {
+            const oldOverlay = document.getElementById('glassAlertOverlay');
+            if(oldOverlay) oldOverlay.remove();
 
-        function loadSavedUserSession() {
-            const saved = localStorage.getItem("netflix_sit_user");
-            if (saved) {
-                try { currentUser = JSON.parse(saved); } catch(e) { currentUser = null; }
-            }
-            if (localStorage.getItem("netflix_sit_admin") === "true") {
-                isAdminLoggedIn = true;
-                document.getElementById("adminManagementTrigger").style.display = "block";
-            }
-            const savedDl = localStorage.getItem("netflix_sit_downloads");
-            if (savedDl) {
-                try { userDownloads = JSON.parse(savedDl); } catch(e) { userDownloads = []; }
-            }
-            const savedItems = localStorage.getItem("netflix_sit_saved");
-            if (savedItems) {
-                try { userSavedItems = JSON.parse(savedItems); } catch(e) { userSavedItems = []; }
-            }
-        }
-
-        function toggleTheme() {
-            const body = document.body;
-            const icon = document.getElementById("themeIcon");
-            if (currentTheme === "night") {
-                currentTheme = "day";
-                body.setAttribute("data-theme", "day");
-                icon.className = "fa-solid fa-sun";
-            } else {
-                currentTheme = "night";
-                body.removeAttribute("data-theme");
-                icon.className = "fa-solid fa-moon";
-            }
-        }
-
-        function selectCategory(cat) {
-            currentCategory = cat;
-            currentSubFilter = "all";
-            document.querySelectorAll(".bottom-nav-item").forEach(c => c.classList.remove("active"));
-            document.getElementById(`cat-${cat}`).classList.add("active");
-            
-            if (cat === 'downloads') {
-                document.getElementById("subFilterContainer").innerHTML = "";
-                document.getElementById("sectionTitle").innerHTML = `<i class="fa-solid fa-download" style="color: var(--accent-primary);"></i> مدیریت فایل‌های دانلود شده (Download / NETFLIX SIT)`;
-                renderDownloads();
-            } else if (cat === 'saved') {
-                document.getElementById("subFilterContainer").innerHTML = "";
-                document.getElementById("sectionTitle").innerHTML = `<i class="fa-solid fa-bookmark" style="color: var(--accent-secondary);"></i> فیلم و موزیک‌های ذخیره شده (کتابخانه شما)`;
-                renderSavedItems();
-            } else {
-                renderSubFilterTabs();
-                renderPosts();
-            }
-        }
-
-        function renderSubFilterTabs() {
-            const container = document.getElementById("subFilterContainer");
-            const catName = currentCategory === 'movie' ? 'فیلم' : 'موزیک';
-            
-            container.innerHTML = `
-                <div class="sub-filter-tabs">
-                    <button class="sub-filter-btn ${currentSubFilter === 'all' ? 'active' : ''}" onclick="selectSubFilter('all')">
-                        <i class="fa-solid fa-list"></i> همه ${catName}‌ها
-                    </button>
-                    <button class="sub-filter-btn ${currentSubFilter === 'best' ? 'active' : ''}" onclick="selectSubFilter('best')">
-                        <i class="fa-solid fa-fire" style="color: #f59e0b;"></i> بهترین ${catName}‌ها
-                    </button>
-                    <button class="sub-filter-btn ${currentSubFilter === 'latest' ? 'active' : ''}" onclick="selectSubFilter('latest')">
-                        <i class="fa-solid fa-bolt" style="color: #3b82f6;"></i> تازه‌ترین ${catName}‌ها
-                    </button>
+            const overlay = document.createElement('div');
+            overlay.id = 'glassAlertOverlay';
+            overlay.className = 'glass-toast-overlay';
+            overlay.innerHTML = `
+                <div class="glass-toast-box">
+                    <p>${message}</p>
+                    <button class="glass-btn" style="width:100%; justify-content:center; background: var(--primary-gradient);" id="glassAlertOkBtn">متوجه شدم</button>
                 </div>
             `;
+            document.body.appendChild(overlay);
+
+            document.getElementById('glassAlertOkBtn').onclick = function() {
+                overlay.remove();
+                if(callback) callback();
+            };
         }
 
-        function selectSubFilter(filter) {
-            currentSubFilter = filter;
-            renderSubFilterTabs();
-            renderPosts();
+        // تابع جامع برای ساخت دکمه تایید شیشه‌ای سفارشی (جایگزین confirm پیش‌فرض مرورگر)
+        window.showGlassConfirm = function(message, onConfirm) {
+            const oldOverlay = document.getElementById('glassConfirmOverlay');
+            if(oldOverlay) oldOverlay.remove();
+
+            const overlay = document.createElement('div');
+            overlay.id = 'glassConfirmOverlay';
+            overlay.className = 'glass-toast-overlay';
+            overlay.innerHTML = `
+                <div class="glass-toast-box">
+                    <p>${message}</p>
+                    <div class="glass-toast-actions">
+                        <button class="glass-btn" style="flex:1; justify-content:center; background: rgba(255,0,0,0.3);" id="glassConfirmNo">انصراف</button>
+                        <button class="glass-btn" style="flex:1; justify-content:center; background: var(--primary-gradient);" id="glassConfirmYes">تایید</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+
+            document.getElementById('glassConfirmYes').onclick = function() {
+                overlay.remove();
+                if(onConfirm) onConfirm();
+            };
+            document.getElementById('glassConfirmNo').onclick = function() {
+                overlay.remove();
+            };
         }
 
-        function renderPosts() {
-            const grid = document.getElementById("postsGrid");
-            grid.innerHTML = "";
-            
-            let filtered = posts.filter(p => p.category === currentCategory);
-
-            if (currentSubFilter === 'best') {
-                filtered.sort((a, b) => ((b.views || 0) + (b.downloads || 0)) - ((a.views || 0) + (a.downloads || 0)));
-                const titleText = currentCategory === 'movie' ? 'بهترین فیلم و سریال‌ها' : 'بهترین موزیک‌ها';
-                document.getElementById("sectionTitle").innerHTML = `<i class="fa-solid fa-fire" style="color: #f59e0b;"></i> ${titleText}`;
-            } else if (currentSubFilter === 'latest') {
-                filtered.sort((a, b) => b.id - a.id);
-                const titleText = currentCategory === 'movie' ? 'تازه‌ترین فیلم و سریال‌ها' : 'تازه‌ترین موزیک‌ها';
-                document.getElementById("sectionTitle").innerHTML = `<i class="fa-solid fa-bolt" style="color: #3b82f6;"></i> ${titleText}`;
+        window.onload = function() {
+            if(currentUser) {
+                document.getElementById('logoutBtn').style.display = 'flex';
+                document.getElementById('loginNavBtn').style.display = 'none';
+                document.getElementById('userInfoBadge').innerText = currentUser;
+                checkUserSubscription();
             } else {
-                const titleText = currentCategory === 'movie' ? 'فیلم و سریال‌های محبوب' : 'موزیک‌های برتر';
-                document.getElementById("sectionTitle").innerHTML = `<i class="fa-solid fa-fire" style="color: var(--accent-primary);"></i> ${titleText}`;
+                document.getElementById('userInfoBadge').innerText = 'مهمان';
             }
-            
-            if (filtered.length === 0) {
-                grid.innerHTML = `<p style="color: var(--text-muted); grid-column: span 3; text-align: center; padding: 40px;">موردی ثبت نشده است.</p>`;
-                return;
-            }
+            loadPosts();
 
-            if (currentUser && !isAdminLoggedIn) {
-                let foundU = usersList.find(u => u.username === currentUser.username);
-                if (foundU) {
-                    currentUser.subscriptionDaysLeft = foundU.subscriptionDaysLeft;
-                    saveUserSession();
-                }
-            }
-
-            const hasActiveSub = isAdminLoggedIn || (currentUser && currentUser.subscriptionDaysLeft > 0);
-            updateSubStatusBar();
-
-            filtered.forEach(p => {
-                const card = document.createElement("div");
-                card.className = "post-card glass";
+            globalAudio.ontimeupdate = function() {
+                const cur = formatTime(globalAudio.currentTime);
+                const dur = formatTime(globalAudio.duration || 0);
+                const timerStr = `${cur} / ${dur}`;
                 
-                let lockHtml = "";
-                if (!hasActiveSub) {
-                    lockHtml = `<div class="lock-overlay" onclick="event.stopPropagation(); checkAccessAndOpenPost(${JSON.stringify(p).replace(/"/g, '&quot;')})"><i class="fa-solid fa-lock fa-2x"></i><span>قفل اشتراک</span></div>`;
+                if(document.getElementById('audioTimer')) {
+                    document.getElementById('audioTimer').innerText = timerStr;
                 }
-
-                const isAlreadySaved = userSavedItems.some(s => s.id === p.id);
-                const bookmarkClass = isAlreadySaved ? "bookmark-btn saved" : "bookmark-btn";
-                const bookmarkIcon = isAlreadySaved ? "fa-solid fa-bookmark" : "fa-regular fa-bookmark";
-
-                const viewsCount = p.views || 0;
-                const downloadsCount = p.downloads || 0;
-
-                card.innerHTML = `
-                    ${lockHtml}
-                    <button class="${bookmarkClass}" onclick="event.stopPropagation(); toggleSaveItem(${JSON.stringify(p).replace(/"/g, '&quot;')})" title="ذخیره دائمی"><i class="${bookmarkIcon}"></i></button>
-                    <div onclick="incrementViewsAndOpen(${p.id})">
-                        <div class="post-poster-wrapper">
-                            <img src="${p.image || 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=500'}" class="post-poster" alt="${p.title}">
-                            <div class="poster-stats-overlay">
-                                <div class="poster-stat-item"><i class="fa-solid fa-eye" style="color: #a855f7;"></i> <span>${viewsCount.toLocaleString()}</span></div>
-                                <div class="poster-stat-item"><i class="fa-solid fa-download" style="color: #22c55e;"></i> <span>${downloadsCount.toLocaleString()}</span></div>
-                            </div>
-                        </div>
-                        <div class="post-info">
-                            <div class="post-title">${p.title}</div>
-                            <div class="post-genre">${p.genre}</div>
-                        </div>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-        }
-
-        async function incrementViewsAndOpen(postId) {
-            let p = posts.find(item => item.id === postId);
-            if (p) {
-                p.views = (p.views || 0) + 1;
-                await syncToFirebase();
-                checkAccessAndOpenPost(p);
-            }
-        }
-
-        function renderDownloads() {
-            const grid = document.getElementById("postsGrid");
-            grid.innerHTML = "";
-
-            if (userDownloads.length === 0) {
-                grid.innerHTML = `<p style="color: var(--text-muted); grid-column: span 3; text-align: center; padding: 40px;">هیچ فایلی در پوشه Download / NETFLIX SIT دانلود نشده است.</p>`;
-                return;
-            }
-
-            userDownloads.forEach((d, index) => {
-                const card = document.createElement("div");
-                card.className = "post-card glass";
-                card.innerHTML = `
-                    <div class="post-poster-wrapper">
-                        <img src="${d.image}" class="post-poster" alt="${d.title}">
-                    </div>
-                    <div class="post-info">
-                        <div class="post-title">${d.title}</div>
-                        <div class="post-genre" style="color: #22c55e;"><i class="fa-solid fa-circle-check"></i> دانلود شده در NETFLIX SIT</div>
-                        <div style="display: flex; gap: 8px; margin-top: 8px;">
-                            <button class="btn-action" style="flex: 1; padding: 6px;" onclick="playDownloadedMedia('${d.link}', '${d.title}', '${d.category}')"><i class="fa-solid fa-play"></i> پخش</button>
-                            <button class="btn-glass" style="color: #ef4444; padding: 6px;" onclick="removeDownload(${index})"><i class="fa-solid fa-trash"></i></button>
-                        </div>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-        }
-
-        function renderSavedItems() {
-            const grid = document.getElementById("postsGrid");
-            grid.innerHTML = "";
-
-            if (userSavedItems.length === 0) {
-                grid.innerHTML = `<p style="color: var(--text-muted); grid-column: span 3; text-align: center; padding: 40px;">هنوز فیلم یا موزیکی را ذخیره نکرده‌اید.</p>`;
-                return;
-            }
-
-            userSavedItems.forEach((p) => {
-                const card = document.createElement("div");
-                card.className = "post-card glass";
-                const viewsCount = p.views || 0;
-                const downloadsCount = p.downloads || 0;
-
-                card.innerHTML = `
-                    <button class="bookmark-btn saved" onclick="event.stopPropagation(); toggleSaveItem(${JSON.stringify(p).replace(/"/g, '&quot;')})" title="حذف از ذخیره‌ها"><i class="fa-solid fa-bookmark"></i></button>
-                    <div onclick="incrementViewsAndOpen(${p.id})">
-                        <div class="post-poster-wrapper">
-                            <img src="${p.image || 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=500'}" class="post-poster" alt="${p.title}">
-                            <div class="poster-stats-overlay">
-                                <div class="poster-stat-item"><i class="fa-solid fa-eye" style="color: #a855f7;"></i> <span>${viewsCount.toLocaleString()}</span></div>
-                                <div class="poster-stat-item"><i class="fa-solid fa-download" style="color: #22c55e;"></i> <span>${downloadsCount.toLocaleString()}</span></div>
-                            </div>
-                        </div>
-                        <div class="post-info">
-                            <div class="post-title">${p.title}</div>
-                            <div class="post-genre">${p.genre}</div>
-                        </div>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-        }
-
-        function toggleSaveItem(post) {
-            const index = userSavedItems.findIndex(s => s.id === post.id);
-            if (index !== -1) {
-                userSavedItems.splice(index, 1);
-                showGlassAlert("حذف از ذخیره‌ها", `"${post.title}" از لیست ذخیره‌های شما حذف شد.`, "info");
-            } else {
-                userSavedItems.push(post);
-                showGlassAlert("ذخیره دائمی", `"${post.title}" با موفقیت در لیست ذخیره‌های شما ثبت شد!`, "success");
-            }
-            saveUserSession();
-            
-            if (currentCategory === 'saved') {
-                renderSavedItems();
-            } else {
-                renderPosts();
-            }
-        }
-
-        function openModal(id) { document.getElementById(id).style.display = "flex"; }
-        function closeModal(id) { document.getElementById(id).style.display = "none"; }
-
-        function openAuthModal() { 
-            if(currentUser) { openUserChatModal(); } else { openModal('authModal'); }
-        }
-        function openLoginModal() { openModal('loginModal'); }
-        function openAdminLoginModal() { openModal('adminLoginModal'); }
-        function openShareModal() { openModal('shareModal'); }
-
-        function handleShareImageFile(input) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    tempUploadedImage = e.target.result;
-                    document.getElementById("shareImage").value = "[فایل عکس آپلود شد]";
-                };
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-
-        async function handleShareSubmit(e) {
-            e.preventDefault();
-            const category = document.getElementById("shareCategory").value;
-            const title = document.getElementById("shareTitle").value;
-            const downloadLink = document.getElementById("shareDownloadLink").value.trim();
-            let image = document.getElementById("shareImage").value;
-            if (tempUploadedImage) image = tempUploadedImage;
-            const desc = document.getElementById("shareDesc").value;
-
-            const checkboxes = document.querySelectorAll('input[name="genre"]:checked');
-            let selectedGenres = Array.from(checkboxes).map(cb => cb.value);
-            const genreStr = selectedGenres.length > 0 ? selectedGenres.join(" ، ") : "عمومی";
-
-            posts.unshift({
-                id: Date.now(),
-                category,
-                title,
-                downloadLink,
-                image: image || 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=500',
-                genre: genreStr,
-                desc,
-                views: 0,
-                downloads: 0
-            });
-
-            await syncToFirebase();
-            showGlassAlert("موفقیت", "پست شما به عنوان جدیدترین اثر در سایت منتشر شد و برای همه قابل مشاهده است!", "success");
-            closeModal('shareModal');
-            document.getElementById("shareTitle").value = "";
-            document.getElementById("shareDownloadLink").value = "";
-            document.getElementById("shareImage").value = "";
-            document.getElementById("shareDesc").value = "";
-            tempUploadedImage = "";
-            document.querySelectorAll('input[name="genre"]').forEach(cb => cb.checked = false);
-            
-            renderPosts();
-        }
-
-        function checkAccessAndOpenPost(post) {
-            if (isAdminLoggedIn) {
-                openPostModal(post);
-                return;
-            }
-
-            if (currentUser) {
-                let foundU = usersList.find(u => u.username === currentUser.username);
-                if (foundU) { currentUser.subscriptionDaysLeft = foundU.subscriptionDaysLeft; }
-            }
-
-            if (!currentUser || currentUser.subscriptionDaysLeft <= 0) {
-                showGlassAlert("خطای دسترسی", "اشتراک شما فعال نیست یا تایید نشده است!", "error");
-                openAuthModal();
-                return;
-            }
-            openPostModal(post);
-        }
-
-        function generateMediaPlayerHtml(url, isMusic = false, poster = "") {
-            url = url.trim();
-
-            if (url.includes('youtube.com') || url.includes('youtu.be')) {
-                let videoId = '';
-                if (url.includes('youtu.be/')) {
-                    videoId = url.split('youtu.be/')[1].split('?')[0];
-                } else if (url.includes('watch?v=')) {
-                    videoId = url.split('watch?v=')[1].split('&')[0];
-                } else if (url.includes('embed/')) {
-                    videoId = url.split('embed/')[1].split('?')[0];
+                if(document.getElementById('miniTime')) {
+                    document.getElementById('miniTime').innerText = cur;
                 }
-                if (videoId) {
-                    return `<iframe id="activePlayerMedia" src="https://www.youtube.com/embed/${videoId}?autoplay=1" allowfullscreen></iframe>`;
-                }
-            }
-            
-            if (url.includes('aparat.com')) {
-                let aparatId = '';
-                if (url.includes('/v/')) {
-                    aparatId = url.split('/v/')[1]?.split('/')[0]?.split('?')[0];
-                } else if (url.includes('v=')) {
-                    aparatId = url.split('v=')[1]?.split('&')[0];
-                }
-                if (aparatId) {
-                    return `<iframe id="activePlayerMedia" src="https://www.aparat.com/video/video/embed/videohash/${aparatId}/vt/frame" allowfullscreen="true"></iframe>`;
-                }
-            }
+            };
 
-            if (isMusic || url.endsWith('.mp3') || url.endsWith('.wav') || url.endsWith('.m4a')) {
-                return `<audio id="activePlayerMedia" controls autoplay src="${url}" style="width: 90%;"></audio>`;
-            } else {
-                return `<video id="activePlayerMedia" controls autoplay src="${url}" poster="${poster}"></video>`;
-            }
-        }
-
-        function openPostModal(post) {
-            const modalContent = document.getElementById("postModalContent");
-            const isMusic = post.category === 'music';
-            const isAlreadySaved = userSavedItems.some(s => s.id === post.id);
-            
-            modalContent.innerHTML = `
-                <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 20px;">
-                    <img src="${post.image}" style="width: 160px; height: 220px; object-fit: cover; border-radius: 12px;" alt="${post.title}">
-                    <div style="flex-grow: 1;">
-                        <h2 style="margin-bottom: 8px;">${post.title}</h2>
-                        <div style="display: flex; gap: 10px; margin-bottom: 8px;">
-                            <span class="badge-glass">ژانر: ${post.genre}</span>
-                            <span class="badge-glass" style="color: #a855f7;"><i class="fa-solid fa-eye"></i> ${post.views || 0} بازدید</span>
-                            <span class="badge-glass" style="color: #22c55e;"><i class="fa-solid fa-download"></i> ${post.downloads || 0} دانلود</span>
-                        </div>
-                        <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.5; margin-bottom: 10px;">${post.desc}</p>
-                    </div>
-                </div>
-                
-                <div class="glass-player-screen">
-                    ${generateMediaPlayerHtml(post.downloadLink, isMusic, post.image)}
-                </div>
-
-                <div style="display: flex; gap: 12px; justify-content: space-between; flex-wrap: wrap; margin-top: 15px;">
-                    <button class="btn-action" style="flex: 1;" onclick="startDownload(${post.id})"><i class="fa-solid fa-download"></i> دانلود</button>
-                    <button class="btn-glass" style="flex: 1; justify-content: center; color: ${isAlreadySaved ? '#ec4899' : 'inherit'};" onclick="toggleSaveItem(${JSON.stringify(post).replace(/"/g, '&quot;')}); openPostModal(${JSON.stringify(post).replace(/"/g, '&quot;')})">
-                        <i class="${isAlreadySaved ? 'fa-solid fa-bookmark' : 'fa-regular fa-bookmark'}"></i> ${isAlreadySaved ? 'ذخیره شده' : 'افزودن به ذخیره‌ها'}
-                    </button>
-                    <button class="btn-glass" style="flex: 1; justify-content: center;" onclick="openRoomSetupModal()"><i class="fa-solid fa-users"></i> ساخت اتاق لایو</button>
-                </div>
-            `;
-            openModal('postModal');
-            setupMediaListeners(post.title);
-        }
-
-        function playDownloadedMedia(link, title, category) {
-            const modalContent = document.getElementById("postModalContent");
-            const isMusic = category === 'music';
-            modalContent.innerHTML = `
-                <h2 style="margin-bottom: 15px;">پخش فایل دانلود شده: ${title}</h2>
-                <div class="glass-player-screen">
-                    ${generateMediaPlayerHtml(link, isMusic)}
-                </div>
-            `;
-            openModal('postModal');
-            setupMediaListeners(title);
-        }
-
-        function setupMediaListeners(title) {
-            const media = document.getElementById("activePlayerMedia");
-            if (!media || media.tagName === 'IFRAME') return;
-            activeMediaElement = media;
-
-            media.addEventListener('timeupdate', () => {
-                if (isNaN(media.duration)) return;
-                const percent = (media.currentTime / media.duration) * 100;
-                const seekBar = document.getElementById("floatingSeekBar");
-                if (seekBar) seekBar.value = percent;
-
-                const timeText = document.getElementById("floatingMediaTime");
-                if (timeText) {
-                    timeText.innerText = `${formatTime(media.currentTime)} / ${formatTime(media.duration)}`;
-                }
-            });
+            globalAudio.onended = function() {
+                document.getElementById('miniPlayerBar').style.display = 'none';
+                if(document.getElementById('modalPlayBtn')) document.getElementById('modalPlayBtn').innerText = '▶ پخش آنلاین';
+            };
         }
 
         function formatTime(seconds) {
             const m = Math.floor(seconds / 60);
             const s = Math.floor(seconds % 60);
-            return `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
+            return `${m < 10 ? '0':''}${m}:${s < 10 ? '0':''}${s}`;
         }
 
-        function closePostModalAndKeepPlaying() {
-            closeModal('postModal');
-            const media = document.getElementById("activePlayerMedia");
-            if (media && media.tagName !== 'IFRAME' && !media.paused) {
-                const bar = document.getElementById("floatingMediaBar");
-                bar.style.display = "flex";
+        window.toggleTheme = function() {
+            const body = document.body;
+            const iconSvg = document.getElementById('themeIcon');
+            if(body.getAttribute('data-theme') === 'night') {
+                body.setAttribute('data-theme', 'day');
+                iconSvg.innerHTML = '<path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5z"/>';
+            } else {
+                body.setAttribute('data-theme', 'night');
+                iconSvg.innerHTML = '<path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.4 5.4 0 0 1-3.14-9.83C12.92 3.04 12.46 3 12 3z"/>';
             }
         }
 
-        function toggleFloatingPlayPause() {
-            if (activeMediaElement && activeMediaElement.tagName !== 'IFRAME') {
-                if (activeMediaElement.paused) {
-                    activeMediaElement.play();
-                    document.getElementById("floatingPlayBtn").innerHTML = `<i class="fa-solid fa-pause"></i>`;
+        window.switchTab = function(tabId, el) {
+            document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.bottom-nav .nav-item').forEach(i => i.classList.remove('active'));
+            document.getElementById('tab-' + tabId).classList.add('active');
+            el.classList.add('active');
+        }
+
+        window.filterSubTab = function(el) {
+            el.parentElement.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
+        }
+
+        window.openModal = function(id) { document.getElementById(id).style.display = 'flex'; }
+        window.closeModal = function(id) { document.getElementById(id).style.display = 'none'; }
+        window.openSubModal = function() { openModal('subModal'); }
+        window.openShareModal = function() { openModal('shareModal'); }
+        window.openAdminModal = function() {
+            if(isAdmin) {
+                const panel = document.getElementById('adminPanel');
+                panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+            } else {
+                document.getElementById('adminPasswordInput').value = '';
+                openModal('adminModal');
+            }
+        }
+
+        window.verifyAdminPassword = function() {
+            if(document.getElementById('adminPasswordInput').value === '1398') {
+                isAdmin = true;
+                closeModal('adminModal');
+                document.getElementById('adminPanel').style.display = 'block';
+                showGlassAlert('دسترسی ادمین با موفقیت فعال شد!');
+                loadPosts();
+                loadAdminData();
+            } else { 
+                showGlassAlert('رمز اشتباه است!'); 
+            }
+        }
+
+        window.loginOrRegister = function() {
+            const u = document.getElementById('usernameInput').value.trim();
+            const p = document.getElementById('passwordInput').value.trim();
+            if(!u || !p) { showGlassAlert('لطفا آیدی و رمز را وارد کنید.'); return; }
+            const safeU = u.replace(/[.$#\[\]\/]/g, "_");
+
+            get(child(ref(db), 'users/' + safeU)).then((snapshot) => {
+                if (snapshot.exists()) {
+                    if(snapshot.val().password === p) {
+                        localStorage.setItem('net_user', u);
+                        currentUser = u;
+                        showGlassAlert('با موفقیت وارد شدید', () => { location.reload(); });
+                    } else { 
+                        showGlassAlert('رمز عبور اشتباه است.'); 
+                    }
                 } else {
-                    activeMediaElement.pause();
-                    document.getElementById("floatingPlayBtn").innerHTML = `<i class="fa-solid fa-play"></i>`;
+                    set(ref(db, 'users/' + safeU), { username: u, password: p, expireDate: Date.now() + (7 * 24 * 60 * 60 * 1000), banned: false }).then(() => {
+                        localStorage.setItem('net_user', u);
+                        currentUser = u;
+                        showGlassAlert('حساب کاربری ساخته شد و با موفقیت وارد شدید', () => { location.reload(); });
+                    });
                 }
-            }
+            });
         }
 
-        function seekFloatingMedia(val) {
-            if (activeMediaElement && activeMediaElement.tagName !== 'IFRAME' && !isNaN(activeMediaElement.duration)) {
-                const targetTime = (val / 100) * activeMediaElement.duration;
-                activeMediaElement.currentTime = targetTime;
-            }
+        window.logout = function() { 
+            localStorage.removeItem('net_user'); 
+            showGlassAlert('با موفقیت خارج شدید', () => { location.reload(); }); 
         }
 
-        function closeFloatingMedia() {
-            if (activeMediaElement && activeMediaElement.tagName !== 'IFRAME') {
-                activeMediaElement.pause();
-            }
-            activeMediaElement = null;
-            document.getElementById("floatingMediaBar").style.display = "none";
-        }
-
-        async function startDownload(postId) {
-            let post = posts.find(p => p.id === postId);
-            if (!post) return;
-
-            post.downloads = (post.downloads || 0) + 1;
-            await syncToFirebase();
-
-            const a = document.createElement('a');
-            a.href = post.downloadLink;
-            a.download = post.title;
-            a.target = '_blank';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-
-            if (!userDownloads.some(d => d.title === post.title)) {
-                userDownloads.push({ title: post.title, link: post.downloadLink, image: post.image, category: post.category });
-                saveUserSession();
-            }
-
-            showGlassAlert("دانلود موفق", `فایل "${post.title}" دانلود و به آمار افزوده شد.`, "success");
-            renderPosts();
-        }
-
-        function removeDownload(index) {
-            userDownloads.splice(index, 1);
-            saveUserSession();
-            renderDownloads();
-        }
-
-        function selectPlan(months, price, el) {
-            document.querySelectorAll(".plan-card").forEach(c => c.classList.remove("selected"));
-            el.classList.add("selected");
-            selectedPlanMonths = months;
-            selectedPlanPrice = price;
-            selectedPlanNameText = el.querySelector(".plan-title").innerText + " (" + el.querySelector(".plan-price").innerText + ")";
-        }
-
-        async function handleAuthSubmit(e) {
-            e.preventDefault();
-            const name = document.getElementById("regName").value.trim();
-            const username = document.getElementById("regUsername").value.trim();
-            const password = document.getElementById("regPassword").value.trim();
+        window.submitPost = function() {
+            if(!currentUser) { showGlassAlert('برای ارسال پست باید وارد حساب خود شوید.'); openModal('loginModal'); return; }
             
-            await loadFromFirebase();
+            const title = document.getElementById('postTitle').value.trim();
+            const type = document.getElementById('postType').value;
+            const genre = document.getElementById('postGenre').value.trim();
+            const link = document.getElementById('postLink').value.trim();
+            const desc = document.getElementById('postDesc').value.trim();
+            const fileInput = document.getElementById('postCoverFile');
+            
+            if(!title || !link) { showGlassAlert('وارد کردن نام اثر و لینک الزامی است.'); return; }
 
-            let existingUser = usersList.find(u => u.username === username);
-            if (existingUser) {
-                showGlassAlert("خطا", "این آیدی کاربری قبلا ثبت‌نام کرده است. لطفا از بخش ورود استفاده کنید.", "error");
-                return;
+            const reader = new FileReader();
+            if (fileInput.files && fileInput.files[0]) {
+                reader.readAsDataURL(fileInput.files[0]);
+                reader.onload = function(e) {
+                    savePostToFirebase(title, type, genre, link, desc, e.target.result);
+                };
+            } else {
+                savePostToFirebase(title, type, genre, link, desc, 'https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?w=300');
             }
+        }
 
-            currentUser = { name, username, password, subscriptionDaysLeft: 0, isBanned: false };
-            usersList.push(currentUser);
+        function savePostToFirebase(title, type, genre, link, desc, coverUrl) {
+            push(ref(db, 'posts'), { 
+                title, type, genre: genre || 'عمومی', link, desc, cover: coverUrl, author: currentUser, timestamp: Date.now()
+            }).then(() => {
+                showGlassAlert('پست با موفقیت ثبت شد!');
+                document.getElementById('postTitle').value = '';
+                document.getElementById('postGenre').value = '';
+                document.getElementById('postLink').value = '';
+                document.getElementById('postDesc').value = '';
+                document.getElementById('postCoverFile').value = '';
+                closeModal('shareModal');
+            });
+        }
 
-            const autoCardMessage = `سلام ${name} عزیز.\nجهت فعالسازی اشتراک "${selectedPlanNameText}"، مبلغ ${selectedPlanPrice.toLocaleString()} تومان را به شماره کارت زیر واریز نموده و رسید آن را ارسال کنید:\n\n💳 شماره کارت: 6219-8618-6551-7824\n👤 به نام: فرشاد حسنوند`;
+        function loadPosts() {
+            onValue(ref(db, 'posts'), (snapshot) => {
+                postsData = snapshot.val() || {};
+                const moviesContainer = document.getElementById('moviesContainer');
+                const musicContainer = document.getElementById('musicContainer');
+                moviesContainer.innerHTML = '';
+                musicContainer.innerHTML = '';
 
-            let existingChat = chatRequests.find(c => c.username === username);
-            if (!existingChat) {
-                chatRequests.push({
-                    username: username,
-                    name: name,
-                    plan: selectedPlanNameText,
-                    status: "pending",
-                    messages: [
-                        { sender: username, text: `سلام، درخواست خرید اشتراک (${selectedPlanNameText}) را دارم.` },
-                        { sender: "admin", text: autoCardMessage }
-                    ]
+                if(Object.keys(postsData).length === 0) {
+                    moviesContainer.innerHTML = 'موردی ثبت نشده است.';
+                    musicContainer.innerHTML = 'موردی ثبت نشده است.';
+                    return;
+                }
+
+                Object.keys(postsData).forEach(key => {
+                    const post = postsData[key];
+                    const adminButtons = isAdmin ? `
+                        <div style="display:flex; gap:4px; margin-right:auto;" onclick="event.stopPropagation()">
+                            <button class="glass-btn" style="background:rgba(255,215,0,0.2); padding:5px 8px; font-size:11px;" onclick="openEditPost('${key}')">✏️</button>
+                            <button class="glass-btn" style="background:rgba(255,0,0,0.3); padding:5px 8px; font-size:11px;" onclick="deletePost('${key}')">✕</button>
+                        </div>
+                    ` : '';
+
+                    const cardHTML = `
+                        <div class="post-card" onclick="openPostDetail('${key}')">
+                            <img src="${post.cover}" class="post-thumb">
+                            <div class="post-info">
+                                <h4>${post.title}</h4>
+                                <p>${post.genre} - ${post.desc || ''}</p>
+                                <span style="font-size: 10px; color: var(--primary);">مشاهده جزئیات و پخش ➔</span>
+                            </div>
+                            ${adminButtons}
+                        </div>
+                    `;
+                    if(post.type === 'music') {
+                        musicContainer.innerHTML += cardHTML;
+                    } else {
+                        moviesContainer.innerHTML += cardHTML;
+                    }
                 });
-            }
-
-            await syncToFirebase();
-            saveUserSession();
-
-            closeModal('authModal');
-            updateSubStatusBar();
-            renderPosts();
-            showGlassAlert("خوش آمدید", `ثبت‌نام با موفقیت انجام شد. سلام ${name} عزیز!`, "success");
-            openUserChatModal();
-        }
-
-        async function handleLoginSubmit(e) {
-            e.preventDefault();
-            const username = document.getElementById("loginUsername").value.trim();
-            const password = document.getElementById("loginPassword").value.trim();
-
-            await loadFromFirebase();
-
-            let foundUser = usersList.find(u => u.username === username && u.password === password);
-            if (foundUser) {
-                if(foundUser.isBanned) { 
-                    showGlassAlert("حساب مسدود", "حساب کاربری شما مسدود شده است.", "error");
-                    return; 
-                }
-                currentUser = foundUser;
-                isAdminLoggedIn = false;
-                saveUserSession();
-                document.getElementById("adminManagementTrigger").style.display = "none";
-                closeModal('loginModal');
-                updateSubStatusBar();
-                renderPosts();
-                showGlassAlert("ورود موفق", `خوش آمدید، ${currentUser.name} عزیز!`, "success");
-                openUserChatModal();
-            } else {
-                showGlassAlert("خطا در ورود", "آیدی یا رمز عبور اشتباه است.", "error");
-            }
-        }
-
-        async function handleDeleteAccount() {
-            const username = document.getElementById("loginUsername").value.trim();
-            const password = document.getElementById("loginPassword").value.trim();
-
-            if (!username || !password) {
-                showGlassAlert("خطا", "لطفا ابتدا آیدی و رمز عبور خود را در فرم ورود وارد کنید سپس روی حذف اکانت بزنید.", "error");
-                return;
-            }
-
-            await loadFromFirebase();
-
-            const userIndex = usersList.findIndex(u => u.username === username && u.password === password);
-            if (userIndex !== -1) {
-                usersList.splice(userIndex, 1);
-                chatRequests = chatRequests.filter(c => c.username !== username);
-                
-                if (currentUser && currentUser.username === username) {
-                    currentUser = null;
-                    saveUserSession();
-                }
-
-                await syncToFirebase();
-                closeModal('loginModal');
-                updateSubStatusBar();
-                renderPosts();
-                showGlassAlert("حذف موفق", "حساب کاربری شما با موفقیت از سیستم حذف شد.", "success");
-            } else {
-                showGlassAlert("خطا", "آیدی یا رمز عبور برای حذف اکانت مطابقت ندارد.", "error");
-            }
-        }
-
-        let activeChatUsername = null;
-        function openUserChatModal() {
-            if (!currentUser) return;
-            activeChatUsername = currentUser.username;
-            document.getElementById("chatModalHeaderTitle").innerText = `پشتیبانی و چت مستقیم با ادمین (${currentUser.username})`;
-            renderChatMessages();
-            openModal('chatModal');
-        }
-
-        function openAdminChatReply(username) {
-            activeChatUsername = username;
-            let targetChat = chatRequests.find(c => c.username === username);
-            let displayName = targetChat ? (targetChat.name || username) : username;
-            document.getElementById("chatModalHeaderTitle").innerText = `پاسخ به چت کاربر: ${displayName} (${username})`;
-            renderChatMessages();
-            openModal('chatModal');
-        }
-
-        function renderChatMessages() {
-            const container = document.getElementById("chatMessages");
-            container.innerHTML = "";
-            let chat = chatRequests.find(c => c.username === activeChatUsername);
-            if (!chat || !chat.messages) {
-                container.innerHTML = `<p style="color:var(--text-muted); text-align:center;">پیامی ثبت نشده است.</p>`;
-                return;
-            }
-
-            chat.messages.forEach(m => {
-                const bubble = document.createElement("div");
-                if (m.isSystemSuccess) {
-                    bubble.className = `chat-bubble system-success`;
-                } else if (m.isSystemDanger) {
-                    bubble.className = `chat-bubble system-danger`;
-                } else {
-                    const isUserMessage = (m.sender === activeChatUsername);
-                    bubble.className = `chat-bubble ${isUserMessage ? 'user' : 'admin'}`;
-                }
-
-                if (m.isImage) {
-                    bubble.innerHTML = `<img src="${m.text}" style="max-width: 100%; border-radius: 8px;">`;
-                } else {
-                    bubble.innerText = m.text;
-                }
-                container.appendChild(bubble);
             });
-            container.scrollTop = container.scrollHeight;
         }
 
-        async function sendChatMessage() {
-            const input = document.getElementById("chatTextInput");
-            const text = input.value.trim();
-            if (!text || !activeChatUsername) return;
-
-            let chat = chatRequests.find(c => c.username === activeChatUsername);
-            if (!chat) {
-                let userObj = usersList.find(u => u.username === activeChatUsername);
-                chat = { 
-                    username: activeChatUsername, 
-                    name: userObj ? userObj.name : activeChatUsername, 
-                    plan: "پشتیبانی مستقیم", 
-                    status: "pending", 
-                    messages: [] 
-                };
-                chatRequests.push(chat);
-            }
-
-            const sender = isAdminLoggedIn ? "admin" : activeChatUsername;
-            chat.messages.push({ sender: sender, text: text });
-            
-            if (!isAdminLoggedIn) {
-                chat.status = "pending";
-            }
-
-            input.value = "";
-            renderChatMessages();
-            await syncToFirebase();
+        window.deletePost = function(key) {
+            showGlassConfirm('آیا از حذف این پست اطمینان دارید؟', () => {
+                remove(ref(db, 'posts/' + key)).then(() => {
+                    showGlassAlert('پست با موفقیت حذف شد.');
+                });
+            });
         }
 
-        async function sendChatImage(input) {
-            if (input.files && input.files[0] && activeChatUsername) {
+        window.openEditPost = function(key) {
+            const post = postsData[key];
+            if(!post) return;
+
+            document.getElementById('editPostKey').value = key;
+            document.getElementById('editPostType').value = post.type || 'music';
+            document.getElementById('editPostTitle').value = post.title || '';
+            document.getElementById('editPostGenre').value = post.genre || '';
+            document.getElementById('editPostLink').value = post.link || '';
+            document.getElementById('editPostDesc').value = post.desc || '';
+            document.getElementById('editPostCoverFile').value = '';
+
+            openModal('editPostModal');
+        }
+
+        window.saveEditedPost = function() {
+            const key = document.getElementById('editPostKey').value;
+            const title = document.getElementById('editPostTitle').value.trim();
+            const type = document.getElementById('editPostType').value;
+            const genre = document.getElementById('editPostGenre').value.trim();
+            const link = document.getElementById('editPostLink').value.trim();
+            const desc = document.getElementById('editPostDesc').value.trim();
+            const fileInput = document.getElementById('editPostCoverFile');
+
+            if(!title || !link) { showGlassAlert('نام اثر و لینک نمی‌توانند خالی باشند.'); return; }
+
+            const updateData = { title, type, genre: genre || 'عمومی', link, desc };
+
+            if (fileInput.files && fileInput.files[0]) {
                 const reader = new FileReader();
-                reader.onload = async function(e) {
-                    let chat = chatRequests.find(c => c.username === activeChatUsername);
-                    if (!chat) {
-                        let userObj = usersList.find(u => u.username === activeChatUsername);
-                        chat = { 
-                            username: activeChatUsername, 
-                            name: userObj ? userObj.name : activeChatUsername, 
-                            plan: "پشتیبانی مستقیم", 
-                            status: "pending", 
-                            messages: [] 
-                        };
-                        chatRequests.push(chat);
-                    }
-                    const sender = isAdminLoggedIn ? "admin" : activeChatUsername;
-                    chat.messages.push({ sender: sender, text: e.target.result, isImage: true });
-                    
-                    if (!isAdminLoggedIn) {
-                        chat.status = "pending";
-                    }
-
-                    renderChatMessages();
-                    await syncToFirebase();
+                reader.readAsDataURL(fileInput.files[0]);
+                reader.onload = function(e) {
+                    updateData.cover = e.target.result;
+                    commitPostUpdate(key, updateData);
                 };
-                reader.readAsDataURL(input.files[0]);
+            } else {
+                commitPostUpdate(key, updateData);
             }
         }
 
-        function openRoomSetupModal() {
-            closeModal('postModal');
-            openModal('roomSetupModal');
-        }
-
-        function createRoomSubmit(e) {
-            e.preventDefault();
-            const name = document.getElementById("roomNameInput").value;
-            const pass = document.getElementById("roomPassInput").value;
-            
-            activeRoomData = {
-                name: name,
-                password: pass,
-                members: 1,
-                messages: [{ sender: "سیستم", text: `اتاق ${name} ساخته شد.` }]
-            };
-
-            closeModal('roomSetupModal');
-            openModal('activeRoomModal');
-            document.getElementById("activeRoomTitle").innerText = `اتاق: ${activeRoomData.name}`;
-            renderRoomChat();
-        }
-
-        function renderRoomChat() {
-            const container = document.getElementById("roomChatMessages");
-            container.innerHTML = "";
-            activeRoomData.messages.forEach(m => {
-                const bubble = document.createElement("div");
-                bubble.className = `chat-bubble user`;
-                bubble.innerHTML = `<strong>${m.sender}:</strong> ${m.text}`;
-                container.appendChild(bubble);
+        function commitPostUpdate(key, data) {
+            update(ref(db, 'posts/' + key), data).then(() => {
+                showGlassAlert('پست با موفقیت ویرایش شد!');
+                closeModal('editPostModal');
             });
-            container.scrollTop = container.scrollHeight;
         }
 
-        function sendRoomMessage() {
-            const input = document.getElementById("roomChatInput");
-            const text = input.value.trim();
-            if (!text) return;
-            const senderName = currentUser ? currentUser.name : "میهمان";
-            activeRoomData.messages.push({ sender: senderName, text: text });
-            input.value = "";
-            renderRoomChat();
-        }
+        window.openPostDetail = function(postId) {
+            const post = postsData[postId];
+            if(!post) return;
+            currentPlayingPostId = postId;
 
-        function toggleMicrophone() {
-            micActive = !micActive;
-            const btn = document.getElementById("micBtn");
-            if (micActive) {
-                btn.innerHTML = `<i class="fa-solid fa-microphone" style="color: #22c55e;"></i> میکروفون: روشن`;
-                btn.style.borderColor = "#22c55e";
+            document.getElementById('detailTitle').innerText = post.title;
+            document.getElementById('detailCover').src = post.cover;
+            document.getElementById('detailGenre').innerText = post.genre;
+            document.getElementById('detailDesc').innerText = post.desc || 'توضیحاتی ثبت نشده است.';
+            document.getElementById('detailExternalLink').setAttribute('onclick', `window.open('${post.link}', '_blank')`);
+
+            const audioSec = document.getElementById('audioPlayerSection');
+            if(post.type === 'music') {
+                audioSec.style.display = 'block';
+                if(globalAudio.src === post.link && !globalAudio.paused) {
+                    document.getElementById('modalPlayBtn').innerText = '⏸ توقف';
+                } else {
+                    document.getElementById('modalPlayBtn').innerText = '▶ پخش آنلاین';
+                }
             } else {
-                btn.innerHTML = `<i class="fa-solid fa-microphone"></i> میکروفون: خاموش`;
-                btn.style.borderColor = "var(--glass-border)";
+                audioSec.style.display = 'none';
+            }
+
+            openModal('postDetailModal');
+        }
+
+        window.togglePlayAudio = function() {
+            const post = postsData[currentPlayingPostId];
+            if(!post) return;
+
+            if(globalAudio.src !== post.link) {
+                globalAudio.src = post.link;
+                globalAudio.play();
+                document.getElementById('modalPlayBtn').innerText = '⏸ توقف';
+            } else {
+                if(globalAudio.paused) {
+                    globalAudio.play();
+                    document.getElementById('modalPlayBtn').innerText = '⏸ توقف';
+                } else {
+                    globalAudio.pause();
+                    document.getElementById('modalPlayBtn').innerText = '▶ پخش آنلاین';
+                }
+            }
+            updateMiniPlayerState(post.title);
+        }
+
+        window.toggleMiniPlayPause = function() {
+            if(globalAudio.paused) {
+                globalAudio.play();
+                document.getElementById('miniPlayBtn').innerText = '⏸';
+                if(document.getElementById('modalPlayBtn')) document.getElementById('modalPlayBtn').innerText = '⏸ توقف';
+            } else {
+                globalAudio.pause();
+                document.getElementById('miniPlayBtn').innerText = '▶';
+                if(document.getElementById('modalPlayBtn')) document.getElementById('modalPlayBtn').innerText = '▶ پخش آنلاین';
             }
         }
 
-        function leaveRoom() {
-            closeModal('activeRoomModal');
-            showGlassAlert("خروج", "از اتاق خارج شدید.", "info");
+        window.stopAudio = function() {
+            globalAudio.pause();
+            globalAudio.currentTime = 0;
+            document.getElementById('miniPlayerBar').style.display = 'none';
+            if(document.getElementById('modalPlayBtn')) document.getElementById('modalPlayBtn').innerText = '▶ پخش آنلاین';
         }
 
-        function adminLoginSubmit(e) {
-            e.preventDefault();
-            const pass = document.getElementById("adminPassInput").value;
-            if (pass === "1398") {
-                isAdminLoggedIn = true;
-                currentUser = null;
-                saveUserSession();
-                document.getElementById("adminManagementTrigger").style.display = "block";
-                closeModal('adminLoginModal');
-                showGlassAlert("مدیریت", "رمز ادمین تایید شد! دسترسی کامل فعال گردید.", "success");
-                updateSubStatusBar();
-                renderPosts();
-            } else {
-                showGlassAlert("خطا", "رمز عبور ادمین اشتباه است!", "error");
-            }
+        function updateMiniPlayerState(title) {
+            document.getElementById('miniTitle').innerText = title;
+            document.getElementById('miniPlayerBar').style.display = 'flex';
+            document.getElementById('miniPlayBtn').innerText = '⏸';
         }
 
-        function switchAdminTab(tabName, btn) {
-            document.querySelectorAll(".admin-tab-btn").forEach(b => b.classList.remove("active"));
-            document.querySelectorAll(".admin-section").forEach(s => s.classList.remove("active"));
-            btn.classList.add("active");
-            document.getElementById(`admin-section-${tabName}`).classList.add("active");
+        function checkUserSubscription() {
+            if(!currentUser) return;
+            const safeU = currentUser.replace(/[.$#\[\]\/]/g, "_");
+            onValue(ref(db, 'users/' + safeU), (snapshot) => {
+                const val = snapshot.val();
+                if(val) {
+                    if(val.banned) { logout(); return; }
+                    const daysLeft = Math.ceil(((val.expireDate || Date.now()) - Date.now()) / (1000 * 60 * 60 * 24));
+                    document.getElementById('subInfo').innerText = daysLeft > 0 ? `${daysLeft} روز اشتراک 👑` : 'بدون اشتراک 👑';
+                }
+            });
+        }
+
+        window.buyPlan = function(daysCount, planName, price) {
+            if(!currentUser) { openModal('loginModal'); return; }
+            const safeU = currentUser.replace(/[.$#\[\]\/]/g, "_");
+            get(child(ref(db), 'users/' + safeU)).then((snapshot) => {
+                if(snapshot.exists()) {
+                    const currentExpire = snapshot.val().expireDate > Date.now() ? snapshot.val().expireDate : Date.now();
+                    update(ref(db, 'users/' + safeU), { expireDate: currentExpire + (daysCount * 24 * 60 * 60 * 1000) }).then(() => {
+                        showGlassAlert(`اشتراک ${planName} با موفقیت فعال شد!`);
+                        closeModal('subModal');
+                    });
+                }
+            });
         }
 
         function loadAdminData() {
-            const postsBody = document.getElementById("adminPostsTableBody");
-            postsBody.innerHTML = "";
-            posts.forEach(p => {
-                postsBody.innerHTML += `
-                    <tr>
-                        <td>${p.title}</td>
-                        <td>${p.category}</td>
-                        <td>${p.genre}</td>
-                        <td>
-                            <button class="btn-glass" style="padding: 4px 8px; font-size: 0.8rem; color: #ef4444;" onclick="deletePost(${p.id})"><i class="fa-solid fa-trash"></i> حذف</button>
-                        </td>
-                    </tr>
-                `;
-            });
-
-            renderAdminUsersTable(usersList);
-
-            const pendingList = document.getElementById("adminPendingChatsList");
-            const approvedList = document.getElementById("adminApprovedChatsList");
-            pendingList.innerHTML = "";
-            approvedList.innerHTML = "";
-
-            if (chatRequests.length === 0) {
-                pendingList.innerHTML = `<p style="color:var(--text-muted); text-align:center;">چتی وجود ندارد.</p>`;
-                approvedList.innerHTML = `<p style="color:var(--text-muted); text-align:center;">چت تایید شده‌ای وجود ندارد.</p>`;
-                return;
-            }
-
-            let hasPending = false;
-            let hasApproved = false;
-
-            chatRequests.forEach((req) => {
-                let isApproved = req.status === "approved";
-                let lastMsg = (req.messages && req.messages.length > 0) ? req.messages[req.messages.length - 1].text : "بدون پیام";
-                if (req.messages && req.messages.length > 0 && req.messages[req.messages.length - 1].isImage) {
-                    lastMsg = "[تصویر]";
-                }
-                
-                let cardHtml = `
-                    <div class="glass" style="padding: 15px; border-radius: 14px; margin-bottom: 12px; border-color: ${isApproved ? '#22c55e' : 'var(--glass-border)'};">
-                        <div style="font-weight: 700; margin-bottom: 6px;">${req.name || req.username} (${req.username}) - طرح: ${req.plan || 'پشتیبانی'} [وضعیت: ${isApproved ? 'تایید شده ✅' : 'پیام جدید/در انتظار ⏳'}]</div>
-                        <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px;">آخرین پیام: ${lastMsg}</div>
-                        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                            <button class="btn-action" style="padding: 6px 12px; font-size: 0.85rem;" onclick="openCustomSubModal('${req.username}', '${req.name || req.username}')">مدیریت اشتراک و چت</button>
-                            <button class="btn-glass" style="padding: 6px 12px; font-size: 0.85rem;" onclick="openAdminChatReply('${req.username}')"><i class="fa-solid fa-comments"></i> ورود به چت</button>
-                        </div>
-                    </div>
-                `;
-
-                if (isApproved) {
-                    hasApproved = true;
-                    approvedList.innerHTML += cardHtml;
-                } else {
-                    hasPending = true;
-                    pendingList.innerHTML += cardHtml;
-                }
-            });
-
-            if (!hasPending) pendingList.innerHTML = `<p style="color:var(--text-muted); text-align:center;">مورد در انتظاری نیست.</p>`;
-            if (!hasApproved) approvedList.innerHTML = `<p style="color:var(--text-muted); text-align:center;">مورد تایید شده‌ای نیست.</p>`;
-        }
-
-        function renderAdminUsersTable(listToRender) {
-            const usersBody = document.getElementById("adminUsersTableBody");
-            usersBody.innerHTML = "";
-            if (listToRender.length === 0) {
-                usersBody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-muted);">کاربری یافت نشد.</td></tr>`;
-                return;
-            }
-            listToRender.forEach((u) => {
-                usersBody.innerHTML += `
-                    <tr>
-                        <td>${u.name}</td>
-                        <td>${u.username}</td>
-                        <td>${u.subscriptionDaysLeft} روز</td>
-                        <td>
-                            <div style="display: flex; gap: 6px;">
-                                <button class="btn-action" style="padding: 4px 10px; font-size: 0.75rem;" onclick="openCustomSubModal('${u.username}', '${u.name}')">مدیریت</button>
-                                <button class="btn-glass" style="padding: 4px 8px; font-size: 0.75rem; color: #ef4444;" onclick="banUserByUsername('${u.username}')">بن</button>
+            onValue(ref(db, 'users'), (snapshot) => {
+                const users = snapshot.val();
+                const list = document.getElementById('adminUsersList');
+                list.innerHTML = '';
+                if(users) {
+                    Object.keys(users).forEach(k => {
+                        const u = users[k];
+                        list.innerHTML += `
+                            <div style="background:rgba(255,255,255,0.04); padding:10px; margin:6px 0; border-radius:12px; font-size:12px; display:flex; justify-content:space-between; align-items:center;">
+                                <span><b>${u.username}</b></span>
+                                <button class="glass-btn" style="padding:4px 8px; font-size:11px;" onclick="update(ref(db, 'users/${k}'), { expireDate: Date.now() + (30*24*60*60*1000) }); showGlassAlert('۳۰ روز اشتراک اضافه شد');">+۳۰ روز</button>
                             </div>
-                        </td>
-                    </tr>
-                `;
+                        `;
+                    });
+                }
             });
         }
-
-        function filterAdminUsers() {
-            const query = document.getElementById("adminUserSearchInput").value.trim().toLowerCase();
-            const filtered = usersList.filter(u => u.name.toLowerCase().includes(query) || u.username.toLowerCase().includes(query));
-            renderAdminUsersTable(filtered);
-        }
-
-        function openCustomSubModal(username, name) {
-            targetSubUsername = username;
-            document.getElementById("subModalUserLabel").innerText = `کاربر: ${name} (${username})`;
-            document.getElementById("customDaysInput").value = 30;
-            openModal('customSubModal');
-        }
-
-        async function processApproval(isApproved) {
-            const days = parseInt(document.getElementById("customDaysInput").value) || 30;
-            
-            let user = usersList.find(u => u.username === targetSubUsername);
-            if (!user) {
-                let req = chatRequests.find(c => c.username === targetSubUsername);
-                user = { name: req ? req.name : targetSubUsername, username: targetSubUsername, subscriptionDaysLeft: 0, isBanned: false };
-                usersList.push(user);
-            }
-
-            let chat = chatRequests.find(c => c.username === targetSubUsername);
-            if (!chat) {
-                chat = { username: targetSubUsername, name: user.name, plan: "دلخواه", status: "pending", messages: [] };
-                chatRequests.push(chat);
-            }
-
-            if (isApproved) {
-                user.subscriptionDaysLeft = days; 
-                chat.status = "approved";
-                chat.messages.push({ sender: "admin", text: `✅ اشتراک ${days} روزه شما با موفقیت فعال شد!`, isSystemSuccess: true });
-                showGlassAlert("تایید موفق", `اشتراک ${days} روزه برای کاربر فعال شد.`, "success");
-            } else {
-                user.subscriptionDaysLeft = 0;
-                chat.status = "rejected";
-                chat.messages.push({ sender: "admin", text: `❌ اشتراک شما لغو گردید.`, isSystemDanger: true });
-                showGlassAlert("لغو", "اشتراک کاربر لغو شد.", "info");
-            }
-
-            if (currentUser && currentUser.username === targetSubUsername) {
-                currentUser.subscriptionDaysLeft = user.subscriptionDaysLeft;
-                saveUserSession();
-            }
-
-            closeModal('customSubModal');
-            closeModal('adminPanelModal');
-            await syncToFirebase();
-            loadAdminData();
-            renderPosts();
-        }
-
-        async function deleteChatConversation() {
-            if (!targetSubUsername) return;
-            chatRequests = chatRequests.filter(c => c.username !== targetSubUsername);
-            await syncToFirebase();
-            showGlassAlert("حذف چت", "مکالمه این کاربر به طور کامل از دیتابیس پاک شد.", "success");
-            closeModal('customSubModal');
-            closeModal('adminPanelModal');
-            loadAdminData();
-        }
-
-        async function handleDirectSubSubmit(e) {
-            e.preventDefault();
-            const username = document.getElementById("directSubUsername").value.trim();
-            const days = parseInt(document.getElementById("directSubDays").value) || 30;
-
-            let user = usersList.find(u => u.username === username);
-            if (!user) {
-                showGlassAlert("خطا", "کاربری با این آیدی در سایت ثبت‌نام نکرده است.", "error");
-                return;
-            }
-
-            user.subscriptionDaysLeft = (user.subscriptionDaysLeft || 0) + days;
-
-            let chat = chatRequests.find(c => c.username === username);
-            if (!chat) {
-                chat = { username: username, name: user.name, plan: `${days} روزه مستقیم`, status: "approved", messages: [] };
-                chatRequests.push(chat);
-            } else {
-                chat.status = "approved";
-            }
-            chat.messages.push({ sender: "admin", text: `🎁 اشتراک ${days} روزه به صورت مستقیم توسط ادمین به شما تعلق گرفت!`, isSystemSuccess: true });
-
-            if (currentUser && currentUser.username === username) {
-                currentUser.subscriptionDaysLeft = user.subscriptionDaysLeft;
-                saveUserSession();
-            }
-
-            document.getElementById("directSubUsername").value = "";
-            document.getElementById("directSubDays").value = "30";
-            closeModal('adminPanelModal');
-            await syncToFirebase();
-            updateSubStatusBar();
-            renderPosts();
-            showGlassAlert("موفقیت", `اشتراک ${days} روزه با موفقیت برای آیدی ${username} اعمال شد.`, "success");
-        }
-
-        async function deletePost(id) {
-            posts = posts.filter(p => p.id !== id);
-            await syncToFirebase();
-            loadAdminData();
-            renderPosts();
-            showGlassAlert("حذف", "پست از سایت و دیتابیس حذف شد.", "success");
-        }
-
-        async function banUserByUsername(username) {
-            let u = usersList.find(user => user.username === username);
-            if (u) {
-                u.isBanned = true;
-                await syncToFirebase();
-                showGlassAlert("مسدودسازی", `کاربر ${username} مسدود شد.`, "error");
-                loadAdminData();
-            }
-        }
-
-        function updateSubStatusBar() {
-            const textElem = document.getElementById("subStatusText");
-            const badgeElem = document.getElementById("userBadgeName");
-            const authBtn = document.getElementById("headerAuthBtn");
-            const loginBtn = document.getElementById("headerLoginBtn");
-            const profileChatNavBtn = document.getElementById("profileChatNavBtn");
-
-            if (isAdminLoggedIn) {
-                badgeElem.innerText = "مدیر کل (Admin)";
-                textElem.innerHTML = `وضعیت: <strong style="color: #4ade80;">دسترسی کامل ادمین فعال</strong>`;
-                authBtn.innerHTML = `<i class="fa-solid fa-user-shield"></i> ادمین`;
-                loginBtn.innerHTML = `<i class="fa-solid fa-right-from-bracket"></i> خروج`;
-                loginBtn.setAttribute("onclick", "logoutUser()");
-                profileChatNavBtn.style.display = "none";
-            } else if (currentUser) {
-                badgeElem.innerText = `${currentUser.name} (${currentUser.username})`;
-                authBtn.innerHTML = `<i class="fa-solid fa-user"></i> پروفایل`;
-                loginBtn.innerHTML = `<i class="fa-solid fa-right-from-bracket"></i> خروج`;
-                loginBtn.setAttribute("onclick", "logoutUser()");
-                profileChatNavBtn.style.display = "flex";
-
-                if (currentUser.subscriptionDaysLeft > 0) {
-                    textElem.innerHTML = `اشتراک فعال: <strong style="color: #4ade80;">${currentUser.subscriptionDaysLeft} روز</strong> باقی مانده`;
-                } else {
-                    textElem.innerHTML = `وضعیت: <span style="color: #f87171;">بدون اشتراک</span>`;
-                }
-            } else {
-                badgeElem.innerText = "مهمان";
-                textElem.innerText = "وضعیت: بدون اشتراک";
-                authBtn.innerHTML = `<i class="fa-solid fa-user-plus"></i> اشتراک`;
-                loginBtn.innerHTML = `<i class="fa-solid fa-right-to-bracket"></i> ورود`;
-                loginBtn.setAttribute("onclick", "openLoginModal()");
-                profileChatNavBtn.style.display = "none";
-            }
-        }
-
-        function logoutUser() {
-            currentUser = null;
-            isAdminLoggedIn = false;
-            localStorage.removeItem("netflix_sit_user");
-            localStorage.setItem("netflix_sit_admin", "false");
-            document.getElementById("adminManagementTrigger").style.display = "none";
-            updateSubStatusBar();
-            renderPosts();
-            showGlassAlert("خروج", "از حساب کاربری خارج شدید.", "info");
-        }
-
-        function goHome() { selectCategory('movie'); }
-
-        async function syncToFirebase() {
-            const payload = { posts, usersList, chatRequests };
-            try {
-                let response = await fetch(FIREBASE_URL + "data.json", {
-                    method: "PUT",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(payload)
-                });
-                if (!response.ok) {
-                    throw new Error('خطا در ارتباط با سرور فایربیس');
-                }
-                return await response.json();
-            } catch(err) {
-                console.log("Firebase sync error:", err);
-            }
-        }
-
-        async function loadFromFirebase() {
-            try {
-                let res = await fetch(FIREBASE_URL + "data.json");
-                let data = await res.json();
-                if (data) {
-                    if (data.posts) posts = data.posts;
-                    if (data.usersList) {
-                        usersList = data.usersList;
-                        if (currentUser) {
-                            let freshUser = usersList.find(u => u.username === currentUser.username);
-                            if (freshUser) {
-                                currentUser.subscriptionDaysLeft = freshUser.subscriptionDaysLeft;
-                                saveUserSession();
-                            }
-                        }
-                    }
-                    if (data.chatRequests) chatRequests = data.chatRequests;
-                    
-                    if (currentCategory === 'downloads') {
-                        renderDownloads();
-                    } else if (currentCategory === 'saved') {
-                        renderSavedItems();
-                    } else {
-                        renderPosts();
-                    }
-
-                    if (document.getElementById("adminPanelModal").style.display === "flex") {
-                        loadAdminData();
-                    }
-                    if (document.getElementById("chatModal").style.display === "flex" && activeChatUsername) {
-                        renderChatMessages();
-                    }
-                }
-            } catch(err) {
-                console.log("Firebase load error:", err);
-            }
-        }
-
-        renderSubFilterTabs();
     </script>
 </body>
 </html>
