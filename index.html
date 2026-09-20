@@ -1191,7 +1191,7 @@
         window.onload = async function() {
             loadSavedUserSession();
             await loadFromFirebase();
-            setInterval(loadFromFirebase, 5000);
+            setInterval(loadFromFirebase, 6000);
         };
 
         function showGlassAlert(title, message, type = 'info') {
@@ -1374,11 +1374,11 @@
             });
         }
 
-        function incrementViewsAndOpen(postId) {
+        async function incrementViewsAndOpen(postId) {
             let p = posts.find(item => item.id === postId);
             if (p) {
                 p.views = (p.views || 0) + 1;
-                syncToFirebase();
+                await syncToFirebase();
                 checkAccessAndOpenPost(p);
             }
         }
@@ -2296,7 +2296,16 @@
                 let data = await res.json();
                 if (data) {
                     if (data.posts) posts = data.posts;
-                    if (data.usersList) usersList = data.usersList;
+                    if (data.usersList) {
+                        usersList = data.usersList;
+                        if (currentUser) {
+                            let freshUser = usersList.find(u => u.username === currentUser.username);
+                            if (freshUser) {
+                                currentUser.subscriptionDaysLeft = freshUser.subscriptionDaysLeft;
+                                saveUserSession();
+                            }
+                        }
+                    }
                     if (data.chatRequests) chatRequests = data.chatRequests;
                     
                     if (currentCategory === 'downloads') {
