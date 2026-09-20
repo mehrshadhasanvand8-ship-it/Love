@@ -1166,7 +1166,6 @@
     </div>
 
     <script>
-        // آدرس دیتابیس جدید فایربیس (Netflix SIT Realtime Database)
         const FIREBASE_URL = "https://netflix-sit-default-rtdb.asia-southeast1.firebasedatabase.app/";
 
         let currentTheme = "night";
@@ -2246,7 +2245,7 @@
                 loginBtn.setAttribute("onclick", "logoutUser()");
                 profileChatNavBtn.style.display = "flex";
 
-,                if (currentUser.subscriptionDaysLeft > 0) {
+                if (currentUser.subscriptionDaysLeft > 0) {
                     textElem.innerHTML = `اشتراک فعال: <strong style="color: #4ade80;">${currentUser.subscriptionDaysLeft} روز</strong> باقی مانده`;
                 } else {
                     textElem.innerHTML = `وضعیت: <span style="color: #f87171;">بدون اشتراک</span>`;
