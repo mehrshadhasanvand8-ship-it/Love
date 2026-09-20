@@ -808,7 +808,12 @@
                 <i class="fa-solid fa-crown" style="color: var(--accent-primary);"></i>
                 <span id="subStatusText">وضعیت: بدون اشتراک</span>
             </div>
-            <div class="badge-glass" id="userBadgeName">مهمان</div>
+            <div style="display: flex; gap: 8px; align-items: center;">
+                <button class="btn-glass" id="profileChatNavBtn" style="display: none; padding: 4px 10px; font-size: 0.8rem; border-color: var(--accent-primary);" onclick="openUserChatModal()">
+                    <i class="fa-solid fa-headset" style="color: var(--accent-primary);"></i> چت پشتیبانی
+                </button>
+                <div class="badge-glass" id="userBadgeName">مهمان</div>
+            </div>
         </div>
 
         <div class="action-bar">
@@ -984,13 +989,13 @@
     <div class="modal-overlay" id="chatModal">
         <div class="modal-box glass">
             <button class="modal-close" onclick="closeModal('chatModal')"><i class="fa-solid fa-xmark"></i></button>
-            <h2>چت با ادمین و ارسال رسید</h2>
+            <h2 id="chatModalHeaderTitle">چت با ادمین و ارسال رسید</h2>
             <div class="chat-box-container">
                 <div class="chat-messages" id="chatMessages"></div>
                 <div class="chat-input-row">
                     <input type="file" id="chatImageInput" accept="image/*" style="display: none;" onchange="sendChatImage(this)">
                     <button type="button" class="btn-glass" onclick="document.getElementById('chatImageInput').click()" title="ارسال عکس رسید"><i class="fa-solid fa-image"></i></button>
-                    <input type="text" class="form-control" id="chatTextInput" placeholder="پیام خود را بنویسید..." style="flex-grow: 1; padding: 8px 12px;">
+                    <input type="text" class="form-control" id="chatTextInput" placeholder="پیام خود را بنویسید..." style="flex-grow: 1; padding: 8px 12px;" onkeydown="if(event.key==='Enter') sendChatMessage()">
                     <button type="button" class="btn-action" onclick="sendChatMessage()" style="padding: 8px 16px;"><i class="fa-solid fa-paper-plane"></i></button>
                 </div>
             </div>
@@ -1110,12 +1115,12 @@
             </div>
 
             <div class="admin-section" id="admin-section-pendingChats">
-                <h3>درخواست‌های نیازمند بررسی و تایید</h3>
+                <h3>درخواست‌های چت و اشتراک نیازمند بررسی</h3>
                 <div style="max-height: 350px; overflow-y: auto;" id="adminPendingChatsList"></div>
             </div>
 
             <div class="admin-section" id="admin-section-approvedChats">
-                <h3>کاربران دارای اشتراک تایید شده</h3>
+                <h3>چت‌های فعال و تایید شده کاربران</h3>
                 <div style="max-height: 350px; overflow-y: auto;" id="adminApprovedChatsList"></div>
             </div>
 
@@ -1144,7 +1149,7 @@
     <div class="modal-overlay" id="customSubModal">
         <div class="modal-box glass" style="max-width: 420px;">
             <button class="modal-close" onclick="closeModal('customSubModal')"><i class="fa-solid fa-xmark"></i></button>
-            <h2>مدیریت اشتراک کاربر</h2>
+            <h2>مدیریت اشتراک و چت کاربر</h2>
             <div class="form-group">
                 <label id="subModalUserLabel" style="font-weight: 700; color: var(--accent-primary);">کاربر:</label>
             </div>
@@ -1152,9 +1157,10 @@
                 <label>تعداد روزهای اشتراک:</label>
                 <input type="number" class="form-control" id="customDaysInput" value="30" min="1" placeholder="مثلا 30">
             </div>
-            <div style="display: flex; gap: 10px; margin-top: 20px;">
+            <div style="display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap;">
                 <button type="button" class="btn-action" style="flex: 1; background: #22c55e;" onclick="processApproval(true)"><i class="fa-solid fa-check"></i> تایید اشتراک</button>
-                <button type="button" class="btn-action btn-danger" style="flex: 1;" onclick="processApproval(false)"><i class="fa-solid fa-xmark"></i> عدم تایید (لغو)</button>
+                <button type="button" class="btn-action btn-danger" style="flex: 1;" onclick="processApproval(false)"><i class="fa-solid fa-xmark"></i> لغو اشتراک</button>
+                <button type="button" class="btn-glass" style="width: 100%; justify-content: center; color: #ef4444; border-color: rgba(239,68,68,0.4);" onclick="deleteChatConversation()"><i class="fa-solid fa-trash"></i> حذف کامل این چت از دیتابیس</button>
             </div>
         </div>
     </div>
@@ -1463,7 +1469,7 @@
         function closeModal(id) { document.getElementById(id).style.display = "none"; }
 
         function openAuthModal() { 
-            if(currentUser) { openChatModal(currentUser.username); } else { openModal('authModal'); }
+            if(currentUser) { openUserChatModal(); } else { openModal('authModal'); }
         }
         function openLoginModal() { openModal('loginModal'); }
         function openAdminLoginModal() { openModal('adminLoginModal'); }
@@ -1737,7 +1743,6 @@
 
             const autoCardMessage = `سلام ${name} عزیز.\nجهت فعالسازی اشتراک "${selectedPlanNameText}"، مبلغ ${selectedPlanPrice.toLocaleString()} تومان را به شماره کارت زیر واریز نموده و رسید آن را ارسال کنید:\n\n💳 شماره کارت: 6219-8618-6551-7824\n👤 به نام: فرشاد حسنوند`;
 
-            // بررسی و ثبت یکتا در درخواست‌های چت ادمین
             let existingChat = chatRequests.find(c => c.username === username);
             if (!existingChat) {
                 chatRequests.push({
@@ -1757,7 +1762,7 @@
             updateSubStatusBar();
             renderPosts();
             showGlassAlert("خوش آمدید", `ثبت‌نام با موفقیت انجام شد. سلام ${name} عزیز!`, "success");
-            openChatModal(username);
+            openUserChatModal();
         }
 
         function handleLoginSubmit(e) {
@@ -1779,7 +1784,7 @@
                 updateSubStatusBar();
                 renderPosts();
                 showGlassAlert("ورود موفق", `خوش آمدید، ${currentUser.name} عزیز!`, "success");
-                openChatModal(username);
+                openUserChatModal();
             } else {
                 showGlassAlert("خطا در ورود", "آیدی یا رمز عبور اشتباه است.", "error");
             }
@@ -1815,8 +1820,19 @@
         }
 
         let activeChatUsername = null;
-        function openChatModal(username) {
-            activeChatUsername = username || (currentUser ? currentUser.username : "guest");
+        function openUserChatModal() {
+            if (!currentUser) return;
+            activeChatUsername = currentUser.username;
+            document.getElementById("chatModalHeaderTitle").innerText = `پشتیبانی و چت مستقیم با ادمین (${currentUser.username})`;
+            renderChatMessages();
+            openModal('chatModal');
+        }
+
+        function openAdminChatReply(username) {
+            activeChatUsername = username;
+            let targetChat = chatRequests.find(c => c.username === username);
+            let displayName = targetChat ? (targetChat.name || username) : username;
+            document.getElementById("chatModalHeaderTitle").innerText = `پاسخ به چت کاربر: ${displayName} (${username})`;
             renderChatMessages();
             openModal('chatModal');
         }
@@ -1824,7 +1840,7 @@
         function renderChatMessages() {
             const container = document.getElementById("chatMessages");
             container.innerHTML = "";
-            const chat = chatRequests.find(c => c.username === activeChatUsername);
+            let chat = chatRequests.find(c => c.username === activeChatUsername);
             if (!chat || !chat.messages) {
                 container.innerHTML = `<p style="color:var(--text-muted); text-align:center;">پیامی ثبت نشده است.</p>`;
                 return;
@@ -1837,8 +1853,8 @@
                 } else if (m.isSystemDanger) {
                     bubble.className = `chat-bubble system-danger`;
                 } else {
-                    const isUser = (m.sender !== "admin");
-                    bubble.className = `chat-bubble ${isUser ? 'user' : 'admin'}`;
+                    const isUserMessage = (m.sender === activeChatUsername);
+                    bubble.className = `chat-bubble ${isUserMessage ? 'user' : 'admin'}`;
                 }
 
                 if (m.isImage) {
@@ -1854,44 +1870,56 @@
         function sendChatMessage() {
             const input = document.getElementById("chatTextInput");
             const text = input.value.trim();
-            if (!text) return;
+            if (!text || !activeChatUsername) return;
 
             let chat = chatRequests.find(c => c.username === activeChatUsername);
             if (!chat) {
+                let userObj = usersList.find(u => u.username === activeChatUsername);
                 chat = { 
                     username: activeChatUsername, 
-                    name: currentUser ? currentUser.name : activeChatUsername, 
-                    plan: selectedPlanNameText, 
+                    name: userObj ? userObj.name : activeChatUsername, 
+                    plan: "پشتیبانی مستقیم", 
                     status: "pending", 
                     messages: [] 
                 };
                 chatRequests.push(chat);
             }
 
-            const sender = (currentUser && activeChatUsername === currentUser.username) ? currentUser.username : "admin";
+            const sender = isAdminLoggedIn ? "admin" : activeChatUsername;
             chat.messages.push({ sender: sender, text: text });
+            
+            if (!isAdminLoggedIn) {
+                chat.status = "pending";
+            }
+
             input.value = "";
             renderChatMessages();
             syncToFirebase();
         }
 
         function sendChatImage(input) {
-            if (input.files && input.files[0]) {
+            if (input.files && input.files[0] && activeChatUsername) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     let chat = chatRequests.find(c => c.username === activeChatUsername);
                     if (!chat) {
+                        let userObj = usersList.find(u => u.username === activeChatUsername);
                         chat = { 
                             username: activeChatUsername, 
-                            name: currentUser ? currentUser.name : activeChatUsername, 
-                            plan: selectedPlanNameText, 
+                            name: userObj ? userObj.name : activeChatUsername, 
+                            plan: "پشتیبانی مستقیم", 
                             status: "pending", 
                             messages: [] 
                         };
                         chatRequests.push(chat);
                     }
-                    const sender = (currentUser && activeChatUsername === currentUser.username) ? currentUser.username : "admin";
+                    const sender = isAdminLoggedIn ? "admin" : activeChatUsername;
                     chat.messages.push({ sender: sender, text: e.target.result, isImage: true });
+                    
+                    if (!isAdminLoggedIn) {
+                        chat.status = "pending";
+                    }
+
                     renderChatMessages();
                     syncToFirebase();
                 };
@@ -2019,15 +2047,18 @@
 
             chatRequests.forEach((req) => {
                 let isApproved = req.status === "approved";
-                let msgsHtml = (req.messages || []).map(m => `<div style="font-size:0.85rem; margin:4px 0;"><strong>${m.sender}:</strong> ${m.isImage ? '<img src="'+m.text+'" style="max-height:80px; border-radius:4px;">' : m.text}</div>`).join('');
+                let lastMsg = (req.messages && req.messages.length > 0) ? req.messages[req.messages.length - 1].text : "بدون پیام";
+                if (req.messages && req.messages.length > 0 && req.messages[req.messages.length - 1].isImage) {
+                    lastMsg = "[تصویر]";
+                }
                 
                 let cardHtml = `
                     <div class="glass" style="padding: 15px; border-radius: 14px; margin-bottom: 12px; border-color: ${isApproved ? '#22c55e' : 'var(--glass-border)'};">
-                        <div style="font-weight: 700; margin-bottom: 6px;">${req.name || req.username} (${req.username}) - طرح: ${req.plan || 'نامشخص'} [وضعیت: ${isApproved ? 'تایید شده ✅' : 'در انتظار ⏳'}]</div>
-                        <div style="background: rgba(0,0,0,0.25); padding: 10px; border-radius: 8px; margin-bottom: 10px; max-height: 120px; overflow-y: auto;">${msgsHtml}</div>
+                        <div style="font-weight: 700; margin-bottom: 6px;">${req.name || req.username} (${req.username}) - طرح: ${req.plan || 'پشتیبانی'} [وضعیت: ${isApproved ? 'تایید شده ✅' : 'پیام جدید/در انتظار ⏳'}]</div>
+                        <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px;">آخرین پیام: ${lastMsg}</div>
                         <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                            <button class="btn-action" style="padding: 6px 12px; font-size: 0.85rem;" onclick="openCustomSubModal('${req.username}', '${req.name || req.username}')">بررسی و تایید/لغو اشتراک</button>
-                            <button class="btn-glass" style="padding: 6px 12px; font-size: 0.85rem;" onclick="openAdminChatReply('${req.username}')">پاسخ و مشاهده کامل چت</button>
+                            <button class="btn-action" style="padding: 6px 12px; font-size: 0.85rem;" onclick="openCustomSubModal('${req.username}', '${req.name || req.username}')">مدیریت اشتراک و چت</button>
+                            <button class="btn-glass" style="padding: 6px 12px; font-size: 0.85rem;" onclick="openAdminChatReply('${req.username}')"><i class="fa-solid fa-comments"></i> ورود به چت</button>
                         </div>
                     </div>
                 `;
@@ -2060,7 +2091,7 @@
                         <td>${u.subscriptionDaysLeft} روز</td>
                         <td>
                             <div style="display: flex; gap: 6px;">
-                                <button class="btn-action" style="padding: 4px 10px; font-size: 0.75rem;" onclick="openCustomSubModal('${u.username}', '${u.name}')">اعطای اشتراک</button>
+                                <button class="btn-action" style="padding: 4px 10px; font-size: 0.75rem;" onclick="openCustomSubModal('${u.username}', '${u.name}')">مدیریت</button>
                                 <button class="btn-glass" style="padding: 4px 8px; font-size: 0.75rem; color: #ef4444;" onclick="banUserByUsername('${u.username}')">بن</button>
                             </div>
                         </td>
@@ -2106,8 +2137,8 @@
             } else {
                 user.subscriptionDaysLeft = 0;
                 chat.status = "rejected";
-                chat.messages.push({ sender: "admin", text: `❌ درخواست اشتراک شما تایید نشد.`, isSystemDanger: true });
-                showGlassAlert("لغو", "درخواست لغو شد.", "info");
+                chat.messages.push({ sender: "admin", text: `❌ اشتراک شما لغو گردید.`, isSystemDanger: true });
+                showGlassAlert("لغو", "اشتراک کاربر لغو شد.", "info");
             }
 
             if (currentUser && currentUser.username === targetSubUsername) {
@@ -2120,6 +2151,16 @@
             loadAdminData();
             syncToFirebase();
             renderPosts();
+        }
+
+        function deleteChatConversation() {
+            if (!targetSubUsername) return;
+            chatRequests = chatRequests.filter(c => c.username !== targetSubUsername);
+            showGlassAlert("حذف چت", "مکالمه این کاربر به طور کامل از دیتابیس پاک شد.", "success");
+            closeModal('customSubModal');
+            closeModal('adminPanelModal');
+            loadAdminData();
+            syncToFirebase();
         }
 
         function handleDirectSubSubmit(e) {
@@ -2158,17 +2199,12 @@
             showGlassAlert("موفقیت", `اشتراک ${days} روزه با موفقیت برای آیدی ${username} اعمال شد.`, "success");
         }
 
-        function openAdminChatReply(username) {
-            closeModal('adminPanelModal');
-            openChatModal(username);
-        }
-
         function deletePost(id) {
             posts = posts.filter(p => p.id !== id);
             loadAdminData();
             renderPosts();
             syncToFirebase();
-            showGlassAlert("حذف", "پست حذف شد.", "success");
+            showGlassAlert("حذف", "پست از سایت و دیتابیس حذف شد.", "success");
         }
 
         function banUserByUsername(username) {
@@ -2186,6 +2222,7 @@
             const badgeElem = document.getElementById("userBadgeName");
             const authBtn = document.getElementById("headerAuthBtn");
             const loginBtn = document.getElementById("headerLoginBtn");
+            const profileChatNavBtn = document.getElementById("profileChatNavBtn");
 
             if (isAdminLoggedIn) {
                 badgeElem.innerText = "مدیر کل (Admin)";
@@ -2193,11 +2230,13 @@
                 authBtn.innerHTML = `<i class="fa-solid fa-user-shield"></i> ادمین`;
                 loginBtn.innerHTML = `<i class="fa-solid fa-right-from-bracket"></i> خروج`;
                 loginBtn.setAttribute("onclick", "logoutUser()");
+                profileChatNavBtn.style.display = "none";
             } else if (currentUser) {
                 badgeElem.innerText = `${currentUser.name} (${currentUser.username})`;
                 authBtn.innerHTML = `<i class="fa-solid fa-user"></i> پروفایل`;
                 loginBtn.innerHTML = `<i class="fa-solid fa-right-from-bracket"></i> خروج`;
                 loginBtn.setAttribute("onclick", "logoutUser()");
+                profileChatNavBtn.style.display = "flex";
 
                 if (currentUser.subscriptionDaysLeft > 0) {
                     textElem.innerHTML = `اشتراک فعال: <strong style="color: #4ade80;">${currentUser.subscriptionDaysLeft} روز</strong> باقی مانده`;
@@ -2210,6 +2249,7 @@
                 authBtn.innerHTML = `<i class="fa-solid fa-user-plus"></i> اشتراک`;
                 loginBtn.innerHTML = `<i class="fa-solid fa-right-to-bracket"></i> ورود`;
                 loginBtn.setAttribute("onclick", "openLoginModal()");
+                profileChatNavBtn.style.display = "none";
             }
         }
 
