@@ -509,7 +509,13 @@
             border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        /* دکمه شیشه‌ای ساخت اتاق داخل جزئیات پست */
+        /* دکمه‌های تفکیک شده ساخت و ورود به اتاق */
+        .glass-room-btn-group {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
         .glass-room-trigger-btn {
             background: linear-gradient(135deg, rgba(236, 72, 153, 0.25), rgba(139, 92, 246, 0.25));
             backdrop-filter: blur(20px);
@@ -517,41 +523,43 @@
             border: 1px solid rgba(255, 255, 255, 0.3);
             border-top: 1px solid rgba(255, 255, 255, 0.6);
             color: #fff;
-            padding: 12px 16px;
+            padding: 10px 12px;
             border-radius: 16px;
-            width: 100%;
+            flex: 1;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 6px;
             font-weight: 700;
-            font-size: 13px;
+            font-size: 12px;
             cursor: pointer;
             box-shadow: 0 10px 25px rgba(0,0,0,0.3), inset 0 1px 3px rgba(255,255,255,0.4);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            margin-bottom: 10px;
         }
         .glass-room-trigger-btn:hover {
             background: var(--primary-gradient);
             box-shadow: 0 0 25px var(--glow-color), inset 0 1px 3px rgba(255,255,255,0.5);
             transform: translateY(-2px);
         }
-        .glass-room-icon {
-            width: 22px;
-            height: 22px;
-            background: rgba(255, 255, 255, 0.15);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            box-shadow: 0 2px 6px rgba(0,0,0,0.2), inset 0 1px 2px rgba(255,255,255,0.5);
+
+        /* ویدیو پلیر امبد آنلاین */
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 Ratio */
+            height: 0;
+            overflow: hidden;
+            border-radius: 16px;
+            border: 1px solid var(--glass-border);
+            margin-bottom: 12px;
+            background: #000;
         }
-        .glass-room-icon svg {
-            width: 13px;
-            height: 13px;
-            fill: #fff;
-            filter: drop-shadow(0 0 4px #fff);
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
         }
 
         /* استایل‌های اتاق تماشا (Watch Party) */
@@ -780,16 +788,25 @@
                 <h3 id="detailTitle" style="margin:0; font-size:16px;">جزئیات اثر</h3>
                 <button class="glass-btn" style="padding:4px 10px;" onclick="closeModal('postDetailModal')">✕</button>
             </div>
+            
+            <!-- پلیر ویدیو یوتیوب/آپارات -->
+            <div id="videoEmbedSection" class="video-container" style="display:none;">
+                <iframe id="videoEmbedFrame" src="" allowfullscreen></iframe>
+            </div>
+
             <img id="detailCover" src="" style="width:100%; height:220px; object-fit:cover; border-radius:18px; border:1px solid var(--glass-border); margin-bottom:12px;">
             <div style="font-size: 12px; opacity: 0.8; margin-bottom: 6px;"><b>سبک:</b> <span id="detailGenre"></span></div>
             <div style="font-size: 12px; opacity: 0.8; margin-bottom: 12px;"><b>توضیحات:</b> <span id="detailDesc"></span></div>
 
-            <button class="glass-room-trigger-btn" onclick="openRoomModalFromDetail()">
-                <div class="glass-room-icon">
-                    <svg viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
-                </div>
-                <span>ساخت اتاق تماشای گروهی (Watch Party)</span>
-            </button>
+            <!-- دکمه‌های تفکیک شده ساخت و ورود به اتاق -->
+            <div class="glass-room-btn-group">
+                <button class="glass-room-trigger-btn" onclick="openRoomModalFromDetail('create')">
+                    <span>➕ ساخت اتاق</span>
+                </button>
+                <button class="glass-room-trigger-btn" style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(147, 51, 234, 0.3));" onclick="openRoomModalFromDetail('join')">
+                    <span>🚪 ورود به اتاق</span>
+                </button>
+            </div>
 
             <div id="audioPlayerSection" style="display:none; background:rgba(255,255,255,0.05); padding:14px; border-radius:18px; border:1px solid var(--glass-border); margin-bottom:12px; text-align:center;">
                 <div id="audioTimer" style="font-size: 14px; font-weight: 700; margin-bottom: 8px;">00:00 / 00:00</div>
@@ -799,7 +816,7 @@
             </div>
 
             <button class="glass-btn" style="width:100%; justify-content:center; background: var(--primary-gradient); margin-bottom:8px;" id="detailDownloadBtn" onclick="">📥 دانلود درون‌برنامه‌ای</button>
-            <button class="glass-btn" style="width:100%; justify-content:center; background:transparent;" onclick="window.open(document.getElementById('detailDownloadBtn').getAttribute('data-link'), '_blank')">ورود به لینک اصلی</button>
+            <button class="glass-btn" style="width:100%; justify-content:center; background:transparent;" id="externalLinkBtn" onclick="">ورود به لینک اصلی</button>
         </div>
     </div>
 
@@ -807,16 +824,17 @@
     <div id="roomModal" class="modal">
         <div class="modal-content" style="text-align: right;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px;">
-                <h3 style="margin:0;">🎬 اتاق تماشای گروهی</h3>
+                <h3 id="roomModalHeaderTitle" style="margin:0;">🎬 اتاق تماشای گروهی</h3>
                 <button class="glass-btn" style="padding:4px 10px;" onclick="closeRoomModal()">✕</button>
             </div>
 
             <div id="room-form">
+                <input type="hidden" id="roomActionType" value="create">
                 <div style="font-size: 11px; opacity: 0.8; margin-bottom: 4px;">نام اتاق (فقط انگلیسی):</div>
                 <input type="text" id="roomNameInput" placeholder="e.g. mymovieroom">
                 <div style="font-size: 11px; opacity: 0.8; margin-bottom: 4px;">رمز عبور اتاق:</div>
                 <input type="password" id="roomPassInput" placeholder="رمز عبور...">
-                <button class="glass-btn" style="width:100%; justify-content:center; background: var(--primary-gradient); margin-top: 10px;" onclick="connectToRoom()">ورود / ساخت اتاق</button>
+                <button class="glass-btn" id="roomSubmitBtn" style="width:100%; justify-content:center; background: var(--primary-gradient); margin-top: 10px;" onclick="connectToRoom()">تایید</button>
             </div>
 
             <div id="room-active-space" style="display: none;">
@@ -854,7 +872,7 @@
             </select>
             <input type="text" id="editPostTitle" placeholder="نام اثر">
             <input type="text" id="editPostGenre" placeholder="سبک / ژانر">
-            <input type="text" id="editPostLink" placeholder="لینک دانلود / پخش آنلاین">
+            <input type="text" id="editPostLink" placeholder="لینک دانلود / پخش یا یوتیوب/آپارات">
             
             <div style="font-size: 11px; margin-top: 6px; opacity: 0.8;">تغییر کاور پست (اختیاری):</div>
             <input type="file" id="editPostCoverFile" accept="image/*" style="padding: 10px;">
@@ -903,13 +921,13 @@
             </select>
             <input type="text" id="postTitle" placeholder="نام اثر">
             <input type="text" id="postGenre" placeholder="سبک / ژانر">
-            <input type="text" id="postLink" placeholder="لینک دانلود / پخش آنلاین">
+            <input type="text" id="postLink" placeholder="لینک مستقیم دانلود یا لینک یوتیوب/آپارات">
             
             <div style="font-size: 11px; margin-top: 6px; opacity: 0.8;">انتخاب کاور پست (عکس):</div>
             <input type="file" id="postCoverFile" accept="image/*" style="padding: 10px;">
 
             <textarea id="postDesc" placeholder="توضیحات..." rows="3"></textarea>
-            <button class="glass-btn" style="width:100%; justify-content:center;" onclick="submitPost()">اشتراک‌گذاری با کاور</button>
+            <button class="glass-btn" style="width:100%; justify-content:center;" onclick="submitPost()">اشتراک‌گذاری پست</button>
             <button class="glass-btn" style="width:100%; justify-content:center; margin-top:6px; background:transparent;" onclick="closeModal('shareModal')">بستن</button>
         </div>
     </div>
@@ -926,6 +944,11 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
+
+        // رفع باگ دسترسی دکمه‌های ادمین در HTML با انضمام به متغیرهای global
+        window.db = db;
+        window.ref = ref;
+        window.update = update;
 
         let currentUser = localStorage.getItem('net_user') || null;
         let isAdmin = false;
@@ -1097,6 +1120,27 @@
             showGlassAlert('با موفقیت خارج شدید', () => { location.reload(); }); 
         }
 
+        // تابع کمکی تبدیل لینک‌های یوتیوب و آپارات به لینک قابل جاگذاری (Embed)
+        function parseVideoEmbedUrl(url) {
+            if (!url) return null;
+            
+            // یوتیوب
+            const ytRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+            const ytMatch = url.match(ytRegex);
+            if (ytMatch && ytMatch[1]) {
+                return `https://www.youtube.com/embed/${ytMatch[1]}?autoplay=1`;
+            }
+
+            // آپارات
+            const aparattRegex = /aparat\.com\/v\/([a-zA-Z0-9]+)/;
+            const aparatMatch = url.match(aparattRegex);
+            if (aparatMatch && aparatMatch[1]) {
+                return `https://www.aparat.com/video/video/embed/videohash/${aparatMatch[1]}/vt/frame`;
+            }
+
+            return null;
+        }
+
         window.submitPost = function() {
             if(!currentUser) { showGlassAlert('برای ارسال پست باید وارد حساب خود شوید.'); openModal('loginModal'); return; }
             
@@ -1245,8 +1289,25 @@
             document.getElementById('detailDesc').innerText = post.desc || 'توضیحاتی ثبت نشده است.';
             
             const dlBtn = document.getElementById('detailDownloadBtn');
-            dlBtn.setAttribute('data-link', post.link);
+            const extLinkBtn = document.getElementById('externalLinkBtn');
+            
             dlBtn.setAttribute('onclick', `downloadInApp('${post.title}', '${post.link}')`);
+            extLinkBtn.setAttribute('onclick', `window.open('${post.link}', '_blank')`);
+
+            // بررسی ویدیوهای یوتیوب و آپارات
+            const embedUrl = parseVideoEmbedUrl(post.link);
+            const videoSec = document.getElementById('videoEmbedSection');
+            const videoFrame = document.getElementById('videoEmbedFrame');
+
+            if (embedUrl) {
+                videoFrame.src = embedUrl;
+                videoSec.style.display = 'block';
+                document.getElementById('detailCover').style.display = 'none'; // مخفی کردن کاور ثابت
+            } else {
+                videoFrame.src = '';
+                videoSec.style.display = 'none';
+                document.getElementById('detailCover').style.display = 'block';
+            }
 
             const audioSec = document.getElementById('audioPlayerSection');
             if(post.type === 'music') {
@@ -1280,16 +1341,31 @@
             closeModal('postDetailModal');
         }
 
-        window.openRoomModalFromDetail = function() {
+        // تفکیک ورود و ساخت اتاق
+        window.openRoomModalFromDetail = function(actionType) {
             document.getElementById('room-form').style.display = 'block';
             document.getElementById('room-active-space').style.display = 'none';
             document.getElementById('roomNameInput').value = '';
             document.getElementById('roomPassInput').value = '';
+            document.getElementById('roomActionType').value = actionType;
+
+            if (actionType === 'create') {
+                document.getElementById('roomModalHeaderTitle').innerText = '➕ ساخت اتاق تماشای جدید';
+                document.getElementById('roomSubmitBtn').innerText = 'ساخت و ورود به اتاق';
+            } else {
+                document.getElementById('roomModalHeaderTitle').innerText = '🚪 ورود به اتاق تماشا';
+                document.getElementById('roomSubmitBtn').innerText = 'ورود به اتاق';
+            }
+
             openModal('roomModal');
         }
 
         window.closeRoomModal = function() {
             closeModal('roomModal');
+            // متوقف کردن فریم ویدیو در صورت بستن
+            const videoFrame = document.getElementById('videoEmbedFrame');
+            if(videoFrame) videoFrame.src = videoFrame.src;
+
             if (localMicrophoneStream) {
                 localMicrophoneStream.getTracks().forEach(track => track.stop());
                 localMicrophoneStream = null;
@@ -1299,6 +1375,7 @@
         window.connectToRoom = async function() {
             const roomName = document.getElementById('roomNameInput').value.trim();
             const roomPass = document.getElementById('roomPassInput').value.trim();
+            const actionType = document.getElementById('roomActionType').value;
 
             if (!roomName || !roomPass) {
                 showGlassAlert('لطفا نام انگلیسی و رمز اتاق را وارد کنید.');
@@ -1324,15 +1401,20 @@
             const usersList = document.getElementById('roomUsersList');
             usersList.innerHTML = `<span class="user-chip" id="myUserChip">${myId} (شما)</span>`;
             
-            setTimeout(() => {
-                const fakePeer = "User_Online_" + Math.floor(Math.random() * 90 + 10);
-                usersList.innerHTML += `<span class="user-chip">${fakePeer}</span>`;
-                document.getElementById('roomUserCount').innerText = "2";
-                
-                const chatMsgBox = document.getElementById('roomChatMessages');
-                chatMsgBox.innerHTML += `<div class="system-msg">${fakePeer} به اتاق پیوست و میکروفون او فعال شد.</div>`;
-                chatMsgBox.scrollTop = chatMsgBox.scrollHeight;
-            }, 1500);
+            const chatMsgBox = document.getElementById('roomChatMessages');
+
+            if (actionType === 'create') {
+                chatMsgBox.innerHTML = `<div class="system-msg">اتاق "${roomName}" با موفقیت ایجاد شد! منتظر ورود سایرین بمانید.</div>`;
+            } else {
+                chatMsgBox.innerHTML = `<div class="system-msg">با موفقیت به اتاق "${roomName}" متصل شدید!</div>`;
+                setTimeout(() => {
+                    const fakePeer = "User_Online_" + Math.floor(Math.random() * 90 + 10);
+                    usersList.innerHTML += `<span class="user-chip">${fakePeer}</span>`;
+                    document.getElementById('roomUserCount').innerText = "2";
+                    chatMsgBox.innerHTML += `<div class="system-msg">${fakePeer} هم‌اکنون در این اتاق حضور دارد.</div>`;
+                    chatMsgBox.scrollTop = chatMsgBox.scrollHeight;
+                }, 1000);
+            }
 
             document.getElementById('roomUserCount').innerText = "1";
         }
@@ -1431,7 +1513,7 @@
                         list.innerHTML += `
                             <div style="background:rgba(255,255,255,0.04); padding:10px; margin:6px 0; border-radius:12px; font-size:12px; display:flex; justify-content:space-between; align-items:center;">
                                 <span><b>${u.username}</b></span>
-                                <button class="glass-btn" style="padding:4px 8px; font-size:11px;" onclick="update(ref(db, 'users/${k}'), { expireDate: Date.now() + (30*24*60*60*1000) }); showGlassAlert('۳۰ روز اشتراک اضافه شد');">+۳۰ روز</button>
+                                <button class="glass-btn" style="padding:4px 8px; font-size:11px;" onclick="window.update(window.ref(window.db, 'users/${k}'), { expireDate: Date.now() + (30*24*60*60*1000) }); showGlassAlert('۳۰ روز اشتراک اضافه شد');">+۳۰ روز</button>
                             </div>
                         `;
                     });
