@@ -60,7 +60,6 @@
             box-shadow: var(--card-shadow);
         }
 
-        /* Top Header Bar */
         header {
             position: fixed;
             top: 0;
@@ -140,7 +139,6 @@
             box-shadow: 0 0 15px var(--accent-glow);
         }
 
-        /* Main Container */
         .main-container {
             padding: 100px 5% 50px 5%;
             max-width: 1400px;
@@ -156,7 +154,6 @@
             justify-content: space-between;
             background: linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(236, 72, 153, 0.15));
             border: 1px solid var(--accent-primary);
-            display: none;
         }
 
         .action-bar {
@@ -168,7 +165,6 @@
             gap: 10px;
         }
 
-        /* Sub-Filter Tabs inside Category (Movie/Music) */
         .sub-filter-tabs {
             display: flex;
             gap: 10px;
@@ -202,7 +198,6 @@
             border-color: transparent;
         }
 
-        /* Floating Media Progress Bar */
         .floating-media-bar {
             position: fixed;
             bottom: 85px;
@@ -243,7 +238,6 @@
             cursor: pointer;
         }
 
-        /* Bottom Fixed Glass Navigation Bar */
         .bottom-nav-bar {
             position: fixed;
             bottom: 15px;
@@ -390,7 +384,6 @@
             z-index: 5;
         }
 
-        /* Modals */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -596,7 +589,6 @@
             font-weight: 600;
         }
 
-        /* Chat */
         .chat-box-container {
             display: flex;
             flex-direction: column;
@@ -788,7 +780,6 @@
 </head>
 <body>
 
-    <!-- Header -->
     <header class="glass">
         <div class="logo-area" onclick="goHome()">
             <i class="fa-solid fa-play-circle"></i>
@@ -810,10 +801,8 @@
         </div>
     </header>
 
-    <!-- Main Container -->
     <div class="main-container">
         
-        <!-- Subscription Status Bar -->
         <div class="sub-status-bar glass" id="subStatusBar" style="display: flex;">
             <div>
                 <i class="fa-solid fa-crown" style="color: var(--accent-primary);"></i>
@@ -822,7 +811,6 @@
             <div class="badge-glass" id="userBadgeName">مهمان</div>
         </div>
 
-        <!-- Action Bar -->
         <div class="action-bar">
             <div id="adminManagementTrigger" style="display: none;">
                 <button class="btn-action" style="background: linear-gradient(135deg, #22c55e, #16a34a);" onclick="openModal('adminPanelModal'); loadAdminData();">
@@ -834,10 +822,8 @@
             </button>
         </div>
 
-        <!-- Sub Filter Tabs Container -->
         <div id="subFilterContainer"></div>
 
-        <!-- Posts Grid / Downloads / Saved Grid -->
         <div class="section-title" id="sectionTitle">
             <i class="fa-solid fa-fire" style="color: var(--accent-primary);"></i> فیلم و سریال‌های محبوب
         </div>
@@ -845,7 +831,6 @@
 
     </div>
 
-    <!-- Floating Active Media Progress Bar -->
     <div class="glass floating-media-bar" id="floatingMediaBar">
         <div class="floating-media-info">
             <span id="floatingMediaTitle" style="color: var(--accent-primary);"><i class="fa-solid fa-play"></i> در حال پخش...</span>
@@ -858,7 +843,6 @@
         </div>
     </div>
 
-    <!-- Bottom Fixed Glass Navigation Bar -->
     <div class="bottom-nav-bar glass">
         <div class="bottom-nav-item active" onclick="selectCategory('movie')" id="cat-movie">
             <i class="fa-solid fa-film"></i> فیلم
@@ -874,9 +858,6 @@
         </div>
     </div>
 
-    <!-- ================= MODALS & GLASS ALERTS ================= -->
-
-    <!-- Custom Glass Alert Modal -->
     <div class="modal-overlay" id="glassAlertModal" style="z-index: 3000;">
         <div class="modal-box glass" style="max-width: 400px; text-align: center;">
             <div id="glassAlertIcon" style="font-size: 2.5rem; color: var(--accent-primary); margin-bottom: 15px;">
@@ -888,7 +869,6 @@
         </div>
     </div>
 
-    <!-- 1. Share Modal -->
     <div class="modal-overlay" id="shareModal">
         <div class="modal-box glass">
             <button class="modal-close" onclick="closeModal('shareModal')"><i class="fa-solid fa-xmark"></i></button>
@@ -937,7 +917,6 @@
         </div>
     </div>
 
-    <!-- 2. Auth Modal -->
     <div class="modal-overlay" id="authModal">
         <div class="modal-box glass">
             <button class="modal-close" onclick="closeModal('authModal')"><i class="fa-solid fa-xmark"></i></button>
@@ -981,7 +960,6 @@
         </div>
     </div>
 
-    <!-- 3. Login Modal (Updated with Delete Account Option) -->
     <div class="modal-overlay" id="loginModal">
         <div class="modal-box glass" style="max-width: 420px;">
             <button class="modal-close" onclick="closeModal('loginModal')"><i class="fa-solid fa-xmark"></i></button>
@@ -1003,7 +981,6 @@
         </div>
     </div>
 
-    <!-- 4. Chat Modal -->
     <div class="modal-overlay" id="chatModal">
         <div class="modal-box glass">
             <button class="modal-close" onclick="closeModal('chatModal')"><i class="fa-solid fa-xmark"></i></button>
@@ -1020,7 +997,6 @@
         </div>
     </div>
 
-    <!-- 5. Glass Media Player Modal -->
     <div class="modal-overlay" id="postModal">
         <div class="modal-box glass" style="max-width: 750px;">
             <button class="modal-close" onclick="closePostModalAndKeepPlaying()"><i class="fa-solid fa-xmark"></i></button>
@@ -1028,7 +1004,6 @@
         </div>
     </div>
 
-    <!-- 6. Watch Party Room Setup Modal -->
     <div class="modal-overlay" id="roomSetupModal">
         <div class="modal-box glass">
             <button class="modal-close" onclick="closeModal('roomSetupModal')"><i class="fa-solid fa-xmark"></i></button>
@@ -1047,7 +1022,6 @@
         </div>
     </div>
 
-    <!-- 7. Active Room Modal -->
     <div class="modal-overlay" id="activeRoomModal">
         <div class="modal-box glass" style="max-width: 1100px; width: 95%;">
             <button class="modal-close" onclick="leaveRoom()"><i class="fa-solid fa-xmark"></i></button>
@@ -1077,7 +1051,6 @@
         </div>
     </div>
 
-    <!-- 8. Admin Login Modal -->
     <div class="modal-overlay" id="adminLoginModal">
         <div class="modal-box glass" style="max-width: 400px;">
             <button class="modal-close" onclick="closeModal('adminLoginModal')"><i class="fa-solid fa-xmark"></i></button>
@@ -1092,7 +1065,6 @@
         </div>
     </div>
 
-    <!-- 9. Admin Panel Dashboard Modal (Added Direct Subscription by Username Option) -->
     <div class="modal-overlay" id="adminPanelModal">
         <div class="modal-box glass" style="max-width: 950px;">
             <button class="modal-close" onclick="closeModal('adminPanelModal')"><i class="fa-solid fa-xmark"></i></button>
@@ -1166,7 +1138,6 @@
         </div>
     </div>
 
-    <!-- 10. Custom Subscription Approval Menu -->
     <div class="modal-overlay" id="customSubModal">
         <div class="modal-box glass" style="max-width: 420px;">
             <button class="modal-close" onclick="closeModal('customSubModal')"><i class="fa-solid fa-xmark"></i></button>
@@ -1185,7 +1156,6 @@
         </div>
     </div>
 
-    <!-- Script & Firebase -->
     <script>
         const FIREBASE_URL = "https://crazyapp-9663a-default-rtdb.firebaseio.com/";
 
@@ -1227,7 +1197,6 @@
             } else {
                 iconEl.innerHTML = `<i class="fa-solid fa-circle-info" style="color: var(--accent-primary);"></i>`;
             }
-
             openModal('glassAlertModal');
         }
 
@@ -1533,7 +1502,7 @@
                 downloads: 0
             });
 
-            showGlassAlert("موفقیت", "پست شما به عنوان جدیدترین اثر در سایت منتشر شد!", "success");
+            showGlassAlert("موفقیت", "پست شما به عنوان جدیدترین اثر در سایت منتشر شد و برای همه قابل مشاهده است!", "success");
             closeModal('shareModal');
             document.getElementById("shareTitle").value = "";
             document.getElementById("shareDownloadLink").value = "";
@@ -1729,7 +1698,6 @@
                 saveUserSession();
             }
 
-            // پیغام تایید دانلود شیشه‌ای و هماهنگ با سیستم
             showGlassAlert("دانلود موفق", `فایل "${post.title}" دانلود و به آمار افزوده شد.`, "success");
             renderPosts();
         }
@@ -1750,35 +1718,32 @@
 
         function handleAuthSubmit(e) {
             e.preventDefault();
-            const name = document.getElementById("regName").value;
-            const username = document.getElementById("regUsername").value;
-            const password = document.getElementById("regPassword").value;
+            const name = document.getElementById("regName").value.trim();
+            const username = document.getElementById("regUsername").value.trim();
+            const password = document.getElementById("regPassword").value.trim();
             
+            let existingUser = usersList.find(u => u.username === username);
+            if (existingUser) {
+                showGlassAlert("خطا", "این آیدی کاربری قبلا ثبت‌نام کرده است. لطفا از بخش ورود استفاده کنید.", "error");
+                return;
+            }
+
             currentUser = { name, username, password, subscriptionDaysLeft: 0, isBanned: false };
+            usersList.push(currentUser);
             saveUserSession();
 
-            let existingUser = usersList.find(u => u.username === username);
-            if (!existingUser) {
-                usersList.push(currentUser);
-            } else {
-                currentUser.subscriptionDaysLeft = existingUser.subscriptionDaysLeft;
-            }
+            const autoCardMessage = `سلام ${name} عزیز.\nجهت فعالسازی اشتراک "${selectedPlanNameText}"، مبلغ ${selectedPlanPrice.toLocaleString()} تومان را به شماره کارت زیر واریز نموده و رسید آن را ارسال کنید:\n\n💳 شماره کارت: 6219-8618-6551-7824\n👤 به نام: فرشاد حسنوند`;
 
-            let existingChat = chatRequests.find(c => c.username === username);
-            if (!existingChat) {
-                const autoCardMessage = `سلام ${name} عزیز.\nجهت فعالسازی اشتراک "${selectedPlanNameText}"، مبلغ ${selectedPlanPrice.toLocaleString()} تومان را به شماره کارت زیر واریز نموده و رسید آن را ارسال کنید:\n\n💳 شماره کارت: 6219-8618-6551-7824\n👤 به نام: فرشاد حسنوند`;
-
-                chatRequests.push({
-                    username: username,
-                    name: name,
-                    plan: selectedPlanNameText,
-                    status: "pending",
-                    messages: [
-                        { sender: username, text: `سلام، درخواست خرید اشتراک (${selectedPlanNameText}) را دارم.` },
-                        { sender: "admin", text: autoCardMessage }
-                    ]
-                });
-            }
+            chatRequests.push({
+                username: username,
+                name: name,
+                plan: selectedPlanNameText,
+                status: "pending",
+                messages: [
+                    { sender: username, text: `سلام، درخواست خرید اشتراک (${selectedPlanNameText}) را دارم.` },
+                    { sender: "admin", text: autoCardMessage }
+                ]
+            });
 
             closeModal('authModal');
             syncToFirebase();
@@ -1790,8 +1755,8 @@
 
         function handleLoginSubmit(e) {
             e.preventDefault();
-            const username = document.getElementById("loginUsername").value;
-            const password = document.getElementById("loginPassword").value;
+            const username = document.getElementById("loginUsername").value.trim();
+            const password = document.getElementById("loginPassword").value.trim();
 
             let foundUser = usersList.find(u => u.username === username && u.password === password);
             if (foundUser) {
@@ -1813,7 +1778,6 @@
             }
         }
 
-        // قابلیت حذف اکانت با وارد کردن آیدی و رمز عبور در مودال ورود
         function handleDeleteAccount() {
             const username = document.getElementById("loginUsername").value.trim();
             const password = document.getElementById("loginPassword").value.trim();
@@ -2122,7 +2086,6 @@
             renderPosts();
         }
 
-        // قابلیت جدید: اعطای اشتراک مستقیم از طریق آیدی کاربر در پنل ادمین
         function handleDirectSubSubmit(e) {
             e.preventDefault();
             const username = document.getElementById("directSubUsername").value.trim();
