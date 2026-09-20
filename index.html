@@ -53,7 +53,6 @@
             transition: background 0.6s ease, color 0.6s ease;
         }
 
-        /* هدر شیشه‌ای یکپارچه */
         header {
             background: var(--glass-bg);
             backdrop-filter: blur(30px);
@@ -321,7 +320,6 @@
         }
         input::placeholder, textarea::placeholder { color: inherit; opacity: 0.5; font-family: 'Vazirmatn', sans-serif; }
 
-        /* منوی پایین شیشه‌ای با ۴ دکمه */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -366,7 +364,6 @@
             transform: translateY(-3px);
         }
 
-        /* مودال‌های شیشه‌ای */
         .modal {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
@@ -397,7 +394,6 @@
             font-weight: 700;
         }
 
-        /* سیستم پیام‌های شیشه‌ای سفارشی */
         .glass-toast-overlay {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
@@ -433,7 +429,6 @@
             justify-content: center;
         }
 
-        /* --- استایل جدید شبکه‌ای افقی/پوستری طرح فیلیمو --- */
         .posts-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -509,7 +504,6 @@
             border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        /* دکمه‌های تفکیک شده ساخت و ورود به اتاق */
         .glass-room-btn-group {
             display: flex;
             gap: 8px;
@@ -542,7 +536,6 @@
             transform: translateY(-2px);
         }
 
-        /* ویدیو پلیر امبد آنلاین */
         .video-container {
             position: relative;
             padding-bottom: 56.25%; /* 16:9 Ratio */
@@ -562,7 +555,6 @@
             border: 0;
         }
 
-        /* استایل‌های اتاق تماشا (Watch Party) */
         .room-info-bar {
             display: flex;
             justify-content: space-between;
@@ -601,7 +593,7 @@
             padding: 10px;
             display: flex;
             flex-direction: column;
-            height: 160px;
+            height: 180px;
         }
         .chat-messages {
             flex: 1;
@@ -638,6 +630,29 @@
             font-size: 12px;
         }
 
+        .auth-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 8px;
+        }
+        .auth-tab-btn {
+            flex: 1;
+            padding: 8px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid transparent;
+            color: var(--text-color);
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .auth-tab-btn.active {
+            background: var(--primary-gradient);
+            color: #fff;
+        }
+
         .footer-credit {
             text-align: center;
             font-size: 11px;
@@ -670,7 +685,7 @@
                 <button class="glass-btn" id="themeToggle" onclick="toggleTheme()">
                     <svg id="themeIcon" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.4 5.4 0 0 1-3.14-9.83C12.92 3.04 12.46 3 12 3z"/></svg>
                 </button>
-                <button class="glass-btn" id="loginNavBtn" onclick="openModal('loginModal')">
+                <button class="glass-btn" id="loginNavBtn" onclick="openModal('authModal')">
                     <svg viewBox="0 0 24 24"><path d="M11 7L9.6 8.4l2.6 2.6H2v2h10.2l-2.6 2.6L11 17l5-5-5-5zm9 12h-8v2h8c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-8v2h8v14z"/></svg>
                     ورود / ثبت‌نام
                 </button>
@@ -789,16 +804,15 @@
                 <button class="glass-btn" style="padding:4px 10px;" onclick="closeModal('postDetailModal')">✕</button>
             </div>
             
-            <!-- پلیر ویدیو یوتیوب/آپارات -->
+            <!-- پلیر امبد آنلاین (یوتیوب / آپارات / اسپاتیفای / ساندکلاود) -->
             <div id="videoEmbedSection" class="video-container" style="display:none;">
-                <iframe id="videoEmbedFrame" src="" allowfullscreen></iframe>
+                <iframe id="videoEmbedFrame" src="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" allowfullscreen></iframe>
             </div>
 
             <img id="detailCover" src="" style="width:100%; height:220px; object-fit:cover; border-radius:18px; border:1px solid var(--glass-border); margin-bottom:12px;">
             <div style="font-size: 12px; opacity: 0.8; margin-bottom: 6px;"><b>سبک:</b> <span id="detailGenre"></span></div>
             <div style="font-size: 12px; opacity: 0.8; margin-bottom: 12px;"><b>توضیحات:</b> <span id="detailDesc"></span></div>
 
-            <!-- دکمه‌های تفکیک شده ساخت و ورود به اتاق -->
             <div class="glass-room-btn-group">
                 <button class="glass-room-trigger-btn" onclick="openRoomModalFromDetail('create')">
                     <span>➕ ساخت اتاق</span>
@@ -844,14 +858,10 @@
                 </div>
 
                 <div style="font-size: 11px; opacity: 0.7; margin-bottom: 4px;">آیدی افراد حاضر در اتاق:</div>
-                <div class="active-users-list" id="roomUsersList">
-                    <span class="user-chip" id="myUserChip">شما</span>
-                </div>
+                <div class="active-users-list" id="roomUsersList"></div>
 
                 <div class="room-chat-box">
-                    <div class="chat-messages" id="roomChatMessages">
-                        <div class="system-msg">شما با موفقیت وارد اتاق شدید. صحبت صوتی برقرار است!</div>
-                    </div>
+                    <div class="chat-messages" id="roomChatMessages"></div>
                     <div class="chat-input-area">
                         <input type="text" id="roomChatInput" placeholder="نوشتن پیام...">
                         <button onclick="sendRoomMessage()">ارسال</button>
@@ -872,9 +882,11 @@
             </select>
             <input type="text" id="editPostTitle" placeholder="نام اثر">
             <input type="text" id="editPostGenre" placeholder="سبک / ژانر">
-            <input type="text" id="editPostLink" placeholder="لینک دانلود / پخش یا یوتیوب/آپارات">
+            <input type="text" id="editPostLink" placeholder="لینک (مستقیم، اسپاتیفای، ساندکلاود، رادیو جوان و...)">
             
-            <div style="font-size: 11px; margin-top: 6px; opacity: 0.8;">تغییر کاور پست (اختیاری):</div>
+            <div style="font-size: 11px; margin-top: 6px; opacity: 0.8;">تغییر کاور پست:</div>
+            <input type="text" id="editPostCoverUrl" placeholder="لینک مستقیم عکس کاور (http://...)">
+            <div style="font-size: 10px; opacity: 0.6; text-align: center;">یا انتخاب فایل از دستگاه:</div>
             <input type="file" id="editPostCoverFile" accept="image/*" style="padding: 10px;">
 
             <textarea id="editPostDesc" placeholder="توضیحات..." rows="3"></textarea>
@@ -883,14 +895,27 @@
         </div>
     </div>
 
-    <!-- سایر مودال‌ها -->
-    <div id="loginModal" class="modal">
+    <!-- مودال تفکیک‌شده ورود و ثبت‌نام -->
+    <div id="authModal" class="modal">
         <div class="modal-content" style="text-align: right;">
-            <h3 style="margin-top:0;">ورود یا ثبت‌نام</h3>
-            <input type="text" id="usernameInput" placeholder="آیدی (نام کاربری)">
-            <input type="password" id="passwordInput" placeholder="رمز عبور">
-            <button class="glass-btn" style="width:100%; justify-content:center; margin-top:10px;" onclick="loginOrRegister()">تایید و ورود</button>
-            <button class="glass-btn" style="width:100%; justify-content:center; margin-top:6px; background:transparent;" onclick="closeModal('loginModal')">بستن</button>
+            <div class="auth-tabs">
+                <button class="auth-tab-btn active" id="tabBtnLogin" onclick="switchAuthTab('login')">ورود به حساب</button>
+                <button class="auth-tab-btn" id="tabBtnRegister" onclick="switchAuthTab('register')">ثبت‌نام جدید</button>
+            </div>
+
+            <div id="loginFormSection">
+                <input type="text" id="loginUsername" placeholder="آیدی (نام کاربری)">
+                <input type="password" id="loginPassword" placeholder="رمز عبور">
+                <button class="glass-btn" style="width:100%; justify-content:center; margin-top:10px; background: var(--primary-gradient);" onclick="loginUser()">ورود</button>
+            </div>
+
+            <div id="registerFormSection" style="display: none;">
+                <input type="text" id="regUsername" placeholder="آیدی جدید (نام کاربری)">
+                <input type="password" id="regPassword" placeholder="رمز عبور">
+                <button class="glass-btn" style="width:100%; justify-content:center; margin-top:10px; background: var(--primary-gradient);" onclick="registerUser()">ایجاد حساب کاربری</button>
+            </div>
+
+            <button class="glass-btn" style="width:100%; justify-content:center; margin-top:10px; background:transparent;" onclick="closeModal('authModal')">بستن</button>
         </div>
     </div>
 
@@ -912,6 +937,7 @@
         </div>
     </div>
 
+    <!-- مودال ارسال پست -->
     <div id="shareModal" class="modal">
         <div class="modal-content" style="text-align: right;">
             <h3 style="margin-top:0;">اشتراک‌گذاری پست دائمی</h3>
@@ -921,9 +947,11 @@
             </select>
             <input type="text" id="postTitle" placeholder="نام اثر">
             <input type="text" id="postGenre" placeholder="سبک / ژانر">
-            <input type="text" id="postLink" placeholder="لینک مستقیم دانلود یا لینک یوتیوب/آپارات">
+            <input type="text" id="postLink" placeholder="لینک (مستقیم MP3/MP4، اسپاتیفای، ساندکلاود، رادیوجوان یا یوتیوب)">
             
-            <div style="font-size: 11px; margin-top: 6px; opacity: 0.8;">انتخاب کاور پست (عکس):</div>
+            <div style="font-size: 11px; margin-top: 6px; opacity: 0.8;">کاور پست (عکس):</div>
+            <input type="text" id="postCoverUrl" placeholder="لینک مستقیم عکس کاور (http://...)">
+            <div style="font-size: 10px; opacity: 0.6; text-align: center;">یا انتخاب فایل از دستگاه:</div>
             <input type="file" id="postCoverFile" accept="image/*" style="padding: 10px;">
 
             <textarea id="postDesc" placeholder="توضیحات..." rows="3"></textarea>
@@ -936,7 +964,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, set, push, onValue, update, remove, get, child } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getDatabase, ref, set, push, onValue, update, remove, get, child, onDisconnect } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
         const firebaseConfig = {
             databaseURL: "https://netflix-sit-default-rtdb.asia-southeast1.firebasedatabase.app"
@@ -945,7 +973,6 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // رفع باگ دسترسی دکمه‌های ادمین در HTML با انضمام به متغیرهای global
         window.db = db;
         window.ref = ref;
         window.update = update;
@@ -955,6 +982,8 @@
         let postsData = {};
         let currentPlayingPostId = null;
         let localMicrophoneStream = null;
+        let currentActiveRoomName = null;
+
         const globalAudio = document.getElementById('globalAudio');
 
         window.showGlassAlert = function(message, callback) {
@@ -1090,10 +1119,29 @@
             }
         }
 
-        window.loginOrRegister = function() {
-            const u = document.getElementById('usernameInput').value.trim();
-            const p = document.getElementById('passwordInput').value.trim();
-            if(!u || !p) { showGlassAlert('لطفا آیدی و رمز را وارد کنید.'); return; }
+        window.switchAuthTab = function(type) {
+            const loginSec = document.getElementById('loginFormSection');
+            const regSec = document.getElementById('registerFormSection');
+            const tabLogin = document.getElementById('tabBtnLogin');
+            const tabReg = document.getElementById('tabBtnRegister');
+
+            if(type === 'login') {
+                loginSec.style.display = 'block';
+                regSec.style.display = 'none';
+                tabLogin.classList.add('active');
+                tabReg.classList.remove('active');
+            } else {
+                loginSec.style.display = 'none';
+                regSec.style.display = 'block';
+                tabReg.classList.add('active');
+                tabLogin.classList.remove('active');
+            }
+        }
+
+        window.loginUser = function() {
+            const u = document.getElementById('loginUsername').value.trim();
+            const p = document.getElementById('loginPassword').value.trim();
+            if(!u || !p) { showGlassAlert('لطفاً آیدی و رمز عبور را وارد کنید.'); return; }
             const safeU = u.replace(/[.$#\[\]\/]/g, "_");
 
             get(child(ref(db), 'users/' + safeU)).then((snapshot) => {
@@ -1106,10 +1154,25 @@
                         showGlassAlert('رمز عبور اشتباه است.'); 
                     }
                 } else {
+                    showGlassAlert('حساب کاربری یافت نشد. لطفاً ابتدا ثبت‌نام کنید.');
+                }
+            });
+        }
+
+        window.registerUser = function() {
+            const u = document.getElementById('regUsername').value.trim();
+            const p = document.getElementById('regPassword').value.trim();
+            if(!u || !p) { showGlassAlert('لطفاً آیدی و رمز عبور را وارد کنید.'); return; }
+            const safeU = u.replace(/[.$#\[\]\/]/g, "_");
+
+            get(child(ref(db), 'users/' + safeU)).then((snapshot) => {
+                if (snapshot.exists()) {
+                    showGlassAlert('این نام کاربری قبلاً ثبت شده است. نام دیگری انتخاب کنید.');
+                } else {
                     set(ref(db, 'users/' + safeU), { username: u, password: p, expireDate: Date.now() + (7 * 24 * 60 * 60 * 1000), banned: false }).then(() => {
                         localStorage.setItem('net_user', u);
                         currentUser = u;
-                        showGlassAlert('حساب کاربری ساخته شد و با موفقیت وارد شدید', () => { location.reload(); });
+                        showGlassAlert('حساب کاربری جدید شما با موفقیت ساخته شد!', () => { location.reload(); });
                     });
                 }
             });
@@ -1120,41 +1183,71 @@
             showGlassAlert('با موفقیت خارج شدید', () => { location.reload(); }); 
         }
 
-        // تابع کمکی تبدیل لینک‌های یوتیوب و آپارات به لینک قابل جاگذاری (Embed)
+        // پردازش هوشمند لینک‌های آنلاین (یوتیوب، آپارات، اسپاتیفای، ساندکلاود)
         function parseVideoEmbedUrl(url) {
             if (!url) return null;
             
-            // یوتیوب
+            // 1. یوتیوب
             const ytRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
             const ytMatch = url.match(ytRegex);
             if (ytMatch && ytMatch[1]) {
                 return `https://www.youtube.com/embed/${ytMatch[1]}?autoplay=1`;
             }
 
-            // آپارات
+            // 2. آپارات
             const aparattRegex = /aparat\.com\/v\/([a-zA-Z0-9]+)/;
             const aparatMatch = url.match(aparattRegex);
             if (aparatMatch && aparatMatch[1]) {
                 return `https://www.aparat.com/video/video/embed/videohash/${aparatMatch[1]}/vt/frame`;
             }
 
+            // 3. اسپاتیفای
+            if (url.includes('spotify.com/track/') || url.includes('spotify.com/album/') || url.includes('spotify.com/playlist/')) {
+                const cleanUrl = url.split('?')[0];
+                return cleanUrl.replace('spotify.com/', 'spotify.com/embed/');
+            }
+
+            // 4. ساندکلاود
+            if (url.includes('soundcloud.com/')) {
+                return `https://w.soundcloud.com/player/?url=${encodeURIComponent(url)}&color=%23ff5500&auto_play=true&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true`;
+            }
+
+            return null;
+        }
+
+        // بررسی هوشمند لینک رادیوجوان برای استخراج لینک صوتی مستقیم
+        function parseRadioJavanUrl(url) {
+            if (!url) return null;
+            if (url.includes('radiojavan.com/mp3s/mp3/') || url.includes('radiojavan.com/podcasts/podcast/')) {
+                const parts = url.split('/');
+                const songName = parts[parts.length - 1] || parts[parts.length - 2];
+                if (songName) {
+                    if (url.includes('/podcasts/')) {
+                        return `https://host2.rjmusicmedia.com/media/podcast/mp3-128/${songName}.mp3`;
+                    }
+                    return `https://host2.rjmusicmedia.com/media/mp3/mp3-128/${songName}.mp3`;
+                }
+            }
             return null;
         }
 
         window.submitPost = function() {
-            if(!currentUser) { showGlassAlert('برای ارسال پست باید وارد حساب خود شوید.'); openModal('loginModal'); return; }
+            if(!currentUser) { showGlassAlert('برای ارسال پست باید وارد حساب خود شوید.'); openModal('authModal'); return; }
             
             const title = document.getElementById('postTitle').value.trim();
             const type = document.getElementById('postType').value;
             const genre = document.getElementById('postGenre').value.trim();
             const link = document.getElementById('postLink').value.trim();
             const desc = document.getElementById('postDesc').value.trim();
+            const coverUrl = document.getElementById('postCoverUrl').value.trim();
             const fileInput = document.getElementById('postCoverFile');
             
             if(!title || !link) { showGlassAlert('وارد کردن نام اثر و لینک الزامی است.'); return; }
 
-            const reader = new FileReader();
-            if (fileInput.files && fileInput.files[0]) {
+            if (coverUrl) {
+                savePostToFirebase(title, type, genre, link, desc, coverUrl);
+            } else if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
                 reader.readAsDataURL(fileInput.files[0]);
                 reader.onload = function(e) {
                     savePostToFirebase(title, type, genre, link, desc, e.target.result);
@@ -1164,15 +1257,16 @@
             }
         }
 
-        function savePostToFirebase(title, type, genre, link, desc, coverUrl) {
+        function savePostToFirebase(title, type, genre, link, desc, cover) {
             push(ref(db, 'posts'), { 
-                title, type, genre: genre || 'عمومی', link, desc, cover: coverUrl, author: currentUser, timestamp: Date.now()
+                title, type, genre: genre || 'عمومی', link, desc, cover: cover, author: currentUser, timestamp: Date.now()
             }).then(() => {
                 showGlassAlert('پست با موفقیت ثبت شد!');
                 document.getElementById('postTitle').value = '';
                 document.getElementById('postGenre').value = '';
                 document.getElementById('postLink').value = '';
                 document.getElementById('postDesc').value = '';
+                document.getElementById('postCoverUrl').value = '';
                 document.getElementById('postCoverFile').value = '';
                 closeModal('shareModal');
             });
@@ -1241,6 +1335,7 @@
             document.getElementById('editPostGenre').value = post.genre || '';
             document.getElementById('editPostLink').value = post.link || '';
             document.getElementById('editPostDesc').value = post.desc || '';
+            document.getElementById('editPostCoverUrl').value = post.cover.startsWith('data:') ? '' : post.cover;
             document.getElementById('editPostCoverFile').value = '';
 
             openModal('editPostModal');
@@ -1253,13 +1348,17 @@
             const genre = document.getElementById('editPostGenre').value.trim();
             const link = document.getElementById('editPostLink').value.trim();
             const desc = document.getElementById('editPostDesc').value.trim();
+            const coverUrl = document.getElementById('editPostCoverUrl').value.trim();
             const fileInput = document.getElementById('editPostCoverFile');
 
             if(!title || !link) { showGlassAlert('نام اثر و لینک نمی‌توانند خالی باشند.'); return; }
 
             const updateData = { title, type, genre: genre || 'عمومی', link, desc };
 
-            if (fileInput.files && fileInput.files[0]) {
+            if (coverUrl) {
+                updateData.cover = coverUrl;
+                commitPostUpdate(key, updateData);
+            } else if (fileInput.files && fileInput.files[0]) {
                 const reader = new FileReader();
                 reader.readAsDataURL(fileInput.files[0]);
                 reader.onload = function(e) {
@@ -1291,41 +1390,50 @@
             const dlBtn = document.getElementById('detailDownloadBtn');
             const extLinkBtn = document.getElementById('externalLinkBtn');
             
-            dlBtn.setAttribute('onclick', `downloadInApp('${post.title}', '${post.link}')`);
+            let audioDirectUrl = parseRadioJavanUrl(post.link) || post.link;
+
+            dlBtn.setAttribute('onclick', `downloadInApp('${post.title}', '${audioDirectUrl}')`);
             extLinkBtn.setAttribute('onclick', `window.open('${post.link}', '_blank')`);
 
-            // بررسی ویدیوهای یوتیوب و آپارات
             const embedUrl = parseVideoEmbedUrl(post.link);
             const videoSec = document.getElementById('videoEmbedSection');
             const videoFrame = document.getElementById('videoEmbedFrame');
+            const audioSec = document.getElementById('audioPlayerSection');
 
             if (embedUrl) {
                 videoFrame.src = embedUrl;
                 videoSec.style.display = 'block';
-                document.getElementById('detailCover').style.display = 'none'; // مخفی کردن کاور ثابت
+                document.getElementById('detailCover').style.display = 'none';
+                audioSec.style.display = 'none';
             } else {
                 videoFrame.src = '';
                 videoSec.style.display = 'none';
                 document.getElementById('detailCover').style.display = 'block';
-            }
 
-            const audioSec = document.getElementById('audioPlayerSection');
-            if(post.type === 'music') {
-                audioSec.style.display = 'block';
-                if(globalAudio.src === post.link && !globalAudio.paused) {
-                    document.getElementById('modalPlayBtn').innerText = '⏸ توقف';
+                if(post.type === 'music') {
+                    audioSec.style.display = 'block';
+                    if(globalAudio.src === audioDirectUrl && !globalAudio.paused) {
+                        document.getElementById('modalPlayBtn').innerText = '⏸ توقف';
+                    } else {
+                        document.getElementById('modalPlayBtn').innerText = '▶ پخش آنلاین';
+                    }
                 } else {
-                    document.getElementById('modalPlayBtn').innerText = '▶ پخش آنلاین';
+                    audioSec.style.display = 'none';
                 }
-            } else {
-                audioSec.style.display = 'none';
             }
 
             openModal('postDetailModal');
         }
 
         window.downloadInApp = function(title, link) {
-            showGlassAlert(`فایل "${title}" به لیست دانلودهای درون‌برنامه‌ای اضافه شد و در حال دریافت است.`);
+            if(link.includes('spotify.com') || link.includes('soundcloud.com')) {
+                showGlassAlert('لینک‌های اسپاتیفای و ساندکلاود به‌صورت مستقیم توسط پلتفرم مربوطه دانلود داده نمی‌شوند. جهت دانلود موزیک به سرویس اصلی یا ربات دانلود هدایت می‌شوید.', () => {
+                    window.open(link, '_blank');
+                });
+                return;
+            }
+
+            showGlassAlert(`فایل "${title}" به لیست دانلودهای درون‌برنامه‌ای اضافه شد.`);
             const downloadsContainer = document.getElementById('downloadsContainer');
             if(downloadsContainer.innerHTML.includes('هیچ فایلی')) downloadsContainer.innerHTML = '';
             
@@ -1335,13 +1443,12 @@
                         <div style="font-weight:700; font-size:12px;">${title}</div>
                         <div style="font-size:10px; opacity:0.7; color:#10b981;">✓ ذخیره شده در حافظه داخلی اپ</div>
                     </div>
-                    <button class="glass-btn" style="padding:4px 10px; font-size:11px;" onclick="window.open('${link}', '_blank')">پخش/اجرا</button>
+                    <button class="glass-btn" style="padding:4px 10px; font-size:11px;" onclick="window.open('${link}', '_blank')">پخش/دانلود</button>
                 </div>
             `;
             closeModal('postDetailModal');
         }
 
-        // تفکیک ورود و ساخت اتاق
         window.openRoomModalFromDetail = function(actionType) {
             document.getElementById('room-form').style.display = 'block';
             document.getElementById('room-active-space').style.display = 'none';
@@ -1362,9 +1469,14 @@
 
         window.closeRoomModal = function() {
             closeModal('roomModal');
-            // متوقف کردن فریم ویدیو در صورت بستن
             const videoFrame = document.getElementById('videoEmbedFrame');
             if(videoFrame) videoFrame.src = videoFrame.src;
+
+            if(currentActiveRoomName && currentUser) {
+                const safeUser = currentUser.replace(/[.$#\[\]\/]/g, "_");
+                remove(ref(db, `rooms/${currentActiveRoomName}/users/${safeUser}`));
+                currentActiveRoomName = null;
+            }
 
             if (localMicrophoneStream) {
                 localMicrophoneStream.getTracks().forEach(track => track.stop());
@@ -1373,13 +1485,46 @@
         }
 
         window.connectToRoom = async function() {
-            const roomName = document.getElementById('roomNameInput').value.trim();
+            const roomName = document.getElementById('roomNameInput').value.trim().toLowerCase();
             const roomPass = document.getElementById('roomPassInput').value.trim();
             const actionType = document.getElementById('roomActionType').value;
 
             if (!roomName || !roomPass) {
-                showGlassAlert('لطفا نام انگلیسی و رمز اتاق را وارد کنید.');
+                showGlassAlert('لطفاً نام و رمز عبور اتاق را وارد کنید.');
                 return;
+            }
+            if(!currentUser) {
+                showGlassAlert('برای استفاده از سیستم اتاق، ابتدا وارد حساب کاربری خود شوید.');
+                openModal('authModal');
+                return;
+            }
+
+            const safeRoom = roomName.replace(/[.$#\[\]\/]/g, "_");
+            const safeUser = currentUser.replace(/[.$#\[\]\/]/g, "_");
+            const roomRef = ref(db, 'rooms/' + safeRoom);
+
+            const snapshot = await get(roomRef);
+
+            if (actionType === 'create') {
+                if(snapshot.exists()) {
+                    showGlassAlert('اتاقی با این نام قبلاً ساخته شده است. نام دیگری انتخاب کنید یا وارد آن شوید.');
+                    return;
+                }
+                await set(roomRef, {
+                    name: roomName,
+                    password: roomPass,
+                    creator: currentUser,
+                    createdAt: Date.now()
+                });
+            } else {
+                if(!snapshot.exists()) {
+                    showGlassAlert('اتاقی با این نام پیدا نشد.');
+                    return;
+                }
+                if(snapshot.val().password !== roomPass) {
+                    showGlassAlert('رمز عبور اتاق اشتباه است.');
+                    return;
+                }
             }
 
             try {
@@ -1387,56 +1532,66 @@
                 document.getElementById('roomMicStatus').innerText = "🎙️ میکروفون: متصل و فعال";
                 document.getElementById('roomMicStatus').className = "mic-on";
             } catch (err) {
-                console.warn("خطا یا عدم دسترسی به میکروفون:", err);
                 document.getElementById('roomMicStatus').innerText = "❌ میکروفون: قطع";
                 document.getElementById('roomMicStatus').className = "mic-off";
             }
 
+            currentActiveRoomName = safeRoom;
             document.getElementById('room-form').style.display = 'none';
             document.getElementById('room-active-space').style.display = 'block';
 
-            const myId = currentUser || ("Guest_" + Math.floor(Math.random() * 900 + 100));
-            document.getElementById('myUserChip').innerText = myId + " (شما)";
-            
-            const usersList = document.getElementById('roomUsersList');
-            usersList.innerHTML = `<span class="user-chip" id="myUserChip">${myId} (شما)</span>`;
-            
-            const chatMsgBox = document.getElementById('roomChatMessages');
+            const userRoomRef = ref(db, `rooms/${safeRoom}/users/${safeUser}`);
+            await set(userRoomRef, { username: currentUser, joinedAt: Date.now() });
+            onDisconnect(userRoomRef).remove();
 
-            if (actionType === 'create') {
-                chatMsgBox.innerHTML = `<div class="system-msg">اتاق "${roomName}" با موفقیت ایجاد شد! منتظر ورود سایرین بمانید.</div>`;
-            } else {
-                chatMsgBox.innerHTML = `<div class="system-msg">با موفقیت به اتاق "${roomName}" متصل شدید!</div>`;
-                setTimeout(() => {
-                    const fakePeer = "User_Online_" + Math.floor(Math.random() * 90 + 10);
-                    usersList.innerHTML += `<span class="user-chip">${fakePeer}</span>`;
-                    document.getElementById('roomUserCount').innerText = "2";
-                    chatMsgBox.innerHTML += `<div class="system-msg">${fakePeer} هم‌اکنون در این اتاق حضور دارد.</div>`;
-                    chatMsgBox.scrollTop = chatMsgBox.scrollHeight;
-                }, 1000);
-            }
+            onValue(ref(db, `rooms/${safeRoom}/users`), (usersSnap) => {
+                const users = usersSnap.val() || {};
+                const usersList = document.getElementById('roomUsersList');
+                usersList.innerHTML = '';
+                const userKeys = Object.keys(users);
+                document.getElementById('roomUserCount').innerText = userKeys.length;
 
-            document.getElementById('roomUserCount').innerText = "1";
+                userKeys.forEach(uKey => {
+                    const isMe = users[uKey].username === currentUser ? " (شما)" : "";
+                    usersList.innerHTML += `<span class="user-chip">${users[uKey].username}${isMe}</span>`;
+                });
+            });
+
+            onValue(ref(db, `rooms/${safeRoom}/messages`), (msgSnap) => {
+                const msgs = msgSnap.val() || {};
+                const chatMsgBox = document.getElementById('roomChatMessages');
+                chatMsgBox.innerHTML = `<div class="system-msg">به اتاق "${roomName}" خوش آمدید.</div>`;
+
+                Object.keys(msgs).forEach(mKey => {
+                    const m = msgs[mKey];
+                    chatMsgBox.innerHTML += `<div style="font-size:12px;"><b>${m.sender}:</b> ${m.text}</div>`;
+                });
+                chatMsgBox.scrollTop = chatMsgBox.scrollHeight;
+            });
         }
 
         window.sendRoomMessage = function() {
             const input = document.getElementById('roomChatInput');
             const text = input.value.trim();
-            if(!text) return;
+            if(!text || !currentActiveRoomName) return;
 
-            const chatMessages = document.getElementById('roomChatMessages');
-            const senderName = currentUser || "شما";
-            chatMessages.innerHTML += `<div style="font-size:12px;"><b>${senderName}:</b> ${text}</div>`;
-            input.value = '';
-            chatMessages.scrollTop = chatMessages.scrollHeight;
+            push(ref(db, `rooms/${currentActiveRoomName}/messages`), {
+                sender: currentUser,
+                text: text,
+                timestamp: Date.now()
+            }).then(() => {
+                input.value = '';
+            });
         }
 
         window.togglePlayAudio = function() {
             const post = postsData[currentPlayingPostId];
             if(!post) return;
 
-            if(globalAudio.src !== post.link) {
-                globalAudio.src = post.link;
+            let audioDirectUrl = parseRadioJavanUrl(post.link) || post.link;
+
+            if(globalAudio.src !== audioDirectUrl) {
+                globalAudio.src = audioDirectUrl;
                 globalAudio.play();
                 document.getElementById('modalPlayBtn').innerText = '⏸ توقف';
             } else {
@@ -1490,7 +1645,7 @@
         }
 
         window.buyPlan = function(daysCount, planName, price) {
-            if(!currentUser) { openModal('loginModal'); return; }
+            if(!currentUser) { openModal('authModal'); return; }
             const safeU = currentUser.replace(/[.$#\[\]\/]/g, "_");
             get(child(ref(db), 'users/' + safeU)).then((snapshot) => {
                 if(snapshot.exists()) {
