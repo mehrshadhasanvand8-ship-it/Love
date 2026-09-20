@@ -168,7 +168,7 @@
             gap: 10px;
         }
 
-        /* Floating Media Progress Bar (Above Bottom Nav) */
+        /* Floating Media Progress Bar */
         .floating-media-bar {
             position: fixed;
             bottom: 85px;
@@ -675,7 +675,6 @@
             color: #fff;
         }
 
-        /* Glass Media Player Screen */
         .glass-player-screen {
             width: 100%;
             max-height: 400px;
@@ -751,7 +750,7 @@
 
     </div>
 
-    <!-- Floating Active Media Progress Bar (Above Bottom Nav) -->
+    <!-- Floating Active Media Progress Bar -->
     <div class="glass floating-media-bar" id="floatingMediaBar">
         <div class="floating-media-info">
             <span id="floatingMediaTitle" style="color: var(--accent-primary);"><i class="fa-solid fa-play"></i> در حال پخش...</span>
@@ -777,7 +776,19 @@
         </div>
     </div>
 
-    <!-- ================= MODALS ================= -->
+    <!-- ================= MODALS & GLASS ALERTS ================= -->
+
+    <!-- Custom Glass Alert Modal -->
+    <div class="modal-overlay" id="glassAlertModal" style="z-index: 3000;">
+        <div class="modal-box glass" style="max-width: 400px; text-align: center;">
+            <div id="glassAlertIcon" style="font-size: 2.5rem; color: var(--accent-primary); margin-bottom: 15px;">
+                <i class="fa-solid fa-circle-info"></i>
+            </div>
+            <h3 id="glassAlertTitle" style="margin-bottom: 10px; font-size: 1.2rem;">پیام سیستم</h3>
+            <p id="glassAlertMessage" style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; margin-bottom: 20px;"></p>
+            <button class="btn-action" style="width: 100%;" onclick="closeGlassAlert()">تایید</button>
+        </div>
+    </div>
 
     <!-- 1. Share Modal -->
     <div class="modal-overlay" id="shareModal">
@@ -910,7 +921,7 @@
 
     <!-- 5. Glass Media Player Modal -->
     <div class="modal-overlay" id="postModal">
-        <div class="modal-box glass" style="max-width: 750px;" onanimationend="" onclose="">
+        <div class="modal-box glass" style="max-width: 750px;">
             <button class="modal-close" onclick="closePostModalAndKeepPlaying()"><i class="fa-solid fa-xmark"></i></button>
             <div id="postModalContent"></div>
         </div>
@@ -1077,8 +1088,6 @@
         let usersList = [];
         let chatRequests = [];
         let userDownloads = [];
-
-        // Active floating media reference
         let activeMediaElement = null;
 
         window.onload = function() {
@@ -1086,6 +1095,27 @@
             loadFromFirebase();
             setInterval(loadFromFirebase, 3000);
         };
+
+        // Custom Glass Alert Replacement for standard alert()
+        function showGlassAlert(title, message, type = 'info') {
+            document.getElementById("glassAlertTitle").innerText = title;
+            document.getElementById("glassAlertMessage").innerText = message;
+            
+            const iconEl = document.getElementById("glassAlertIcon");
+            if (type === 'success') {
+                iconEl.innerHTML = `<i class="fa-solid fa-circle-check" style="color: #22c55e;"></i>`;
+            } else if (type === 'error') {
+                iconEl.innerHTML = `<i class="fa-solid fa-circle-exclamation" style="color: #ef4444;"></i>`;
+            } else {
+                iconEl.innerHTML = `<i class="fa-solid fa-circle-info" style="color: var(--accent-primary);"></i>`;
+            }
+
+            openModal('glassAlertModal');
+        }
+
+        function closeGlassAlert() {
+            closeModal('glassAlertModal');
+        }
 
         function saveUserSession() {
             if (currentUser) {
@@ -1255,7 +1285,7 @@
                 desc
             });
 
-            alert("پست با موفقیت به اشتراک گذاشته شد!");
+            showGlassAlert("موفقیت", "پست با موفقیت به اشتراک گذاشته شد!", "success");
             closeModal('shareModal');
             document.getElementById("shareTitle").value = "";
             document.getElementById("shareDownloadLink").value = "";
@@ -1280,7 +1310,7 @@
             }
 
             if (!currentUser || currentUser.subscriptionDaysLeft <= 0) {
-                alert("اشتراک شما فعال نیست یا تایید نشده است!");
+                showGlassAlert("خطای دسترسی", "اشتراک شما فعال نیست یا تایید نشده است!", "error");
                 openAuthModal();
                 return;
             }
@@ -1358,7 +1388,6 @@
             closeModal('postModal');
             const media = document.getElementById("activePlayerMedia");
             if (media && !media.paused) {
-                // Show floating bar above bottom nav
                 const bar = document.getElementById("floatingMediaBar");
                 bar.style.display = "flex";
             }
@@ -1405,7 +1434,7 @@
                 saveUserSession();
             }
 
-            alert(`فایل "${title}" با موفقیت برای دانلود ارسال شد و در پوشه Download / NETFLIX SIT دستگاه شما ذخیره می‌گردد.`);
+            showGlassAlert("دانلود موفق", `فایل "${title}" برای دانلود ارسال شد و در پوشه Download / NETFLIX SIT دستگاه شما ذخیره می‌گردد.`, "success");
         }
 
         function removeDownload(index) {
@@ -1458,6 +1487,7 @@
             syncToFirebase();
             updateSubStatusBar();
             renderPosts();
+            showGlassAlert("خوش آمدید", `ثبت‌نام با موفقیت انجام شد. سلام ${name} عزیز!`, "success");
             openChatModal(username);
         }
 
@@ -1468,18 +1498,21 @@
 
             let foundUser = usersList.find(u => u.username === username && u.password === password);
             if (foundUser) {
-                if(foundUser.isBanned) { alert("حساب کاربری شما مسدود شده است."); return; }
+                if(foundUser.isBanned) { 
+                    showGlassAlert("حساب مسدود", "حساب کاربری شما مسدود شده است.", "error");
+                    return; 
+                }
                 currentUser = foundUser;
                 isAdminLoggedIn = false;
                 saveUserSession();
                 document.getElementById("adminManagementTrigger").style.display = "none";
-                alert(`خوش آمدید، ${currentUser.name}`);
                 closeModal('loginModal');
                 updateSubStatusBar();
                 renderPosts();
+                showGlassAlert("ورود موفق", `خوش آمدید، ${currentUser.name} عزیز!`, "success");
                 openChatModal(username);
             } else {
-                alert("آیدی یا رمز عبور اشتباه است یا حسابی با این مشخصات ثبت نشده.");
+                showGlassAlert("خطا در ورود", "آیدی یا رمز عبور اشتباه است یا حسابی با این مشخصات ثبت نشده.", "error");
             }
         }
 
@@ -1615,7 +1648,7 @@
 
         function leaveRoom() {
             closeModal('activeRoomModal');
-            alert("از اتاق خارج شدید.");
+            showGlassAlert("خروج", "از اتاق خارج شدید.", "info");
         }
 
         function adminLoginSubmit(e) {
@@ -1627,11 +1660,11 @@
                 saveUserSession();
                 document.getElementById("adminManagementTrigger").style.display = "block";
                 closeModal('adminLoginModal');
-                alert("رمز ادمین تایید شد!");
+                showGlassAlert("مدیریت", "رمز ادمین تایید شد! دسترسی کامل فعال گردید.", "success");
                 updateSubStatusBar();
                 renderPosts();
             } else {
-                alert("رمز عبور اشتباه است! (رمز: 1398)");
+                showGlassAlert("خطا", "رمز عبور ادمین اشتباه است! (رمز: 1398)", "error");
             }
         }
 
@@ -1742,12 +1775,12 @@
                 user.subscriptionDaysLeft = days; 
                 chat.status = "approved";
                 chat.messages.push({ sender: "admin", text: `✅ اشتراک ${days} روزه فعال شد!`, isSystemSuccess: true });
-                alert(`اشتراک ${days} روزه تایید شد.`);
+                showGlassAlert("تایید موفق", `اشتراک ${days} روزه تایید شد.`, "success");
             } else {
                 user.subscriptionDaysLeft = 0;
                 chat.status = "rejected";
                 chat.messages.push({ sender: "admin", text: `❌ درخواست اشتراک لغو شد.`, isSystemDanger: true });
-                alert(`درخواست لغو شد.`);
+                showGlassAlert("لغو", "درخواست لغو شد.", "info");
             }
 
             if (currentUser && currentUser.username === targetSubUsername) {
@@ -1772,12 +1805,12 @@
             loadAdminData();
             renderPosts();
             syncToFirebase();
-            alert("پست حذف شد.");
+            showGlassAlert("حذف", "پست حذف شد.", "success");
         }
 
         function banUser(idx) {
             usersList[idx].isBanned = true;
-            alert(`کاربر ${usersList[idx].username} بن شد.`);
+            showGlassAlert("مسدودسازی", `کاربر ${usersList[idx].username} بن شد.`, "error");
             loadAdminData();
             syncToFirebase();
         }
@@ -1822,7 +1855,7 @@
             document.getElementById("adminManagementTrigger").style.display = "none";
             updateSubStatusBar();
             renderPosts();
-            alert("از حساب کاربری خارج شدید.");
+            showGlassAlert("خروج", "از حساب کاربری خارج شدید.", "info");
         }
 
         function goHome() { selectCategory('movie'); }
