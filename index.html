@@ -3,888 +3,1675 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LOVE ROOM - Ultimate Watch Party</title>
+    <title>نتفلیکس سایت | NETFLIX SIT</title>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg-main: #09070f;
-            --card-bg: #130f26;
-            --accent: #8b5cf6;
-            --accent-hover: #7c3aed;
-            --text-light: #f3f4f6;
+            --bg-gradient: radial-gradient(circle at 20% 20%, #2e1065 0%, #09090b 70%, #020617 100%);
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.12);
+            --glass-hover: rgba(255, 255, 255, 0.1);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-primary: #a855f7;
+            --accent-secondary: #ec4899;
+            --accent-glow: rgba(168, 85, 247, 0.4);
+            --card-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            --modal-bg: rgba(15, 23, 42, 0.9);
+        }
+
+        [data-theme="day"] {
+            --bg-gradient: radial-gradient(circle at 80% 20%, #fbcfe8 0%, #f8fafc 70%, #f1f5f9 100%);
+            --glass-bg: rgba(255, 255, 255, 0.65);
+            --glass-border: rgba(236, 72, 153, 0.2);
+            --glass-hover: rgba(255, 255, 255, 0.85);
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --accent-primary: #db2777;
+            --accent-secondary: #f43f5e;
+            --accent-glow: rgba(219, 39, 119, 0.25);
+            --card-shadow: 0 8px 32px 0 rgba(219, 39, 119, 0.1);
+            --modal-bg: rgba(255, 255, 255, 0.95);
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: system-ui, -apple-system, sans-serif;
+            font-family: 'Vazirmatn', sans-serif;
+            transition: background 0.3s ease, color 0.3s ease, border 0.3s ease, box-shadow 0.3s ease;
         }
 
         body {
-            background-color: var(--bg-main);
-            color: var(--text-light);
+            background: var(--bg-gradient);
+            color: var(--text-main);
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 10px;
-            padding-bottom: 130px;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 800px;
-            background: var(--card-bg);
-            border: 1px solid #2e2352;
-            border-radius: 20px;
-            padding: 15px;
-            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.15);
-        }
-
-        .online-badge {
-            background: #10b981;
-            color: #fff;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            display: inline-block;
-            margin-bottom: 10px;
-        }
-
-        h2, h3 {
-            color: var(--accent);
-            text-align: center;
-            margin-bottom: 12px;
-            font-size: 16px;
-        }
-
-        input, select, button {
-            width: 100%;
-            padding: 10px;
-            margin-top: 6px;
-            margin-bottom: 10px;
-            border-radius: 10px;
-            border: 1px solid #3b2d6b;
-            background: #0f0a21;
-            color: #fff;
-            outline: none;
-            font-size: 13px;
-        }
-
-        button {
-            background: var(--accent);
-            border: none;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        button:hover { background: var(--accent-hover); }
-        .hidden { display: none !important; }
-
-        .nav-tabs {
-            display: flex;
-            gap: 6px;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-        }
-
-        .nav-tabs button { flex: 1; margin: 0; background: #1a1336; font-size: 11px; padding: 8px 4px; }
-        .nav-tabs button.active { background: var(--accent); }
-
-        .movie-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-            gap: 12px;
-            margin-top: 10px;
-        }
-
-        .movie-card {
-            background: #0b0718;
-            border: 1px solid #2a1f4d;
-            border-radius: 12px;
-            overflow: hidden;
-            text-align: center;
-            cursor: pointer;
+            overflow-x: hidden;
             position: relative;
+            padding-bottom: 110px;
         }
 
-        .movie-card img { width: 100%; height: 140px; object-fit: cover; }
-        .movie-card p { padding: 6px; font-size: 12px; }
-
-        .viewer-count {
-            position: absolute;
-            top: 6px;
-            right: 6px;
-            background: rgba(0, 0, 0, 0.75);
-            color: #10b981;
-            padding: 2px 6px;
-            border-radius: 10px;
-            font-size: 10px;
-            font-weight: bold;
+        .glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--card-shadow);
         }
 
-        .player-wrapper {
-            width: 100%;
-            height: 40vh;
-            background: #000;
-            border-radius: 12px;
-            overflow: hidden;
-            margin-bottom: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid var(--accent);
-        }
-
-        video#mainVideo {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            display: block;
-        }
-
-        .chat-box {
-            background: #0b0718;
-            border: 1px solid #2a1f4d;
-            border-radius: 12px;
-            padding: 10px;
-            height: 120px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .chat-messages {
-            flex: 1;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .chat-msg {
-            background: #181135;
-            padding: 5px 8px;
-            border-radius: 8px;
-            max-width: 80%;
-            font-size: 11px;
-        }
-
-        .chat-msg.me { align-self: flex-end; background: var(--accent); }
-        .chat-msg span { font-size: 8px; opacity: 0.7; display: block; cursor: pointer; color: #34d399; }
-
-        .chat-input-group { display: flex; gap: 6px; margin-top: 6px; }
-        .chat-input-group input { margin: 0; }
-        .chat-input-group button { width: auto; padding: 0 12px; margin: 0; }
-
-        .bottom-cams-container {
+        /* Top Header Bar */
+        header {
             position: fixed;
-            bottom: 10px;
+            top: 0;
             left: 0;
             right: 0;
-            padding: 0 15px;
+            height: 75px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 3%;
+            z-index: 1000;
+            border-bottom: 1px solid var(--glass-border);
+            gap: 10px;
+            flex-wrap: nowrap;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.05rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: nowrap;
+        }
+
+        .btn-glass {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            color: var(--text-main);
+            padding: 6px 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            backdrop-filter: blur(10px);
+            font-size: 0.82rem;
+            white-space: nowrap;
+        }
+
+        .btn-glass:hover {
+            background: var(--glass-hover);
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 15px var(--accent-glow);
+            transform: translateY(-1px);
+        }
+
+        .theme-toggle {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1rem;
+            color: var(--accent-primary);
+            border: 1px solid var(--glass-border);
+            background: var(--glass-bg);
+            flex-shrink: 0;
+        }
+
+        .theme-toggle:hover {
+            background: var(--glass-hover);
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        /* Main Container */
+        .main-container {
+            padding: 100px 5% 50px 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .sub-status-bar {
+            margin-bottom: 25px;
+            padding: 12px 20px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(236, 72, 153, 0.15));
+            border: 1px solid var(--accent-primary);
+            display: none;
+        }
+
+        .action-bar {
             display: flex;
             justify-content: space-between;
-            align-items: flex-end;
-            pointer-events: none;
-            z-index: 9999;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
-        .cam-box {
-            width: 90px;
-            height: 120px;
-            background: #000;
-            border: 2px solid var(--accent);
-            border-radius: 12px;
+        /* Bottom Fixed Glass Navigation Bar */
+        .bottom-nav-bar {
+            position: fixed;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 550px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            padding: 0 10px;
+            border-radius: 30px;
+            z-index: 998;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--card-shadow);
+        }
+
+        .bottom-nav-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 18px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            transition: all 0.3s ease;
+        }
+
+        .bottom-nav-item:hover {
+            color: var(--text-main);
+            background: var(--glass-hover);
+        }
+
+        .bottom-nav-item.active {
+            color: #fff;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .posts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 25px;
+        }
+
+        .post-card {
+            border-radius: 18px;
             overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: flex;
+            flex-direction: column;
             position: relative;
-            pointer-events: auto;
         }
 
-        .cam-box video {
+        .post-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 35px var(--accent-glow);
+            border-color: var(--accent-primary);
+        }
+
+        .post-poster {
             width: 100%;
-            height: 100%;
+            height: 300px;
             object-fit: cover;
         }
 
-        .cam-label {
-            position: absolute;
-            bottom: 2px;
-            left: 0;
-            right: 0;
-            background: rgba(0,0,0,0.6);
-            font-size: 9px;
-            text-align: center;
-            color: #fff;
+        .post-info {
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex-grow: 1;
         }
 
+        .post-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+        }
+
+        .post-genre {
+            font-size: 0.85rem;
+            color: var(--accent-primary);
+            font-weight: 600;
+        }
+
+        .lock-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 600;
+            z-index: 5;
+        }
+
+        /* Modals */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.8);
-            display: flex;
-            justify-content: center;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            display: none;
             align-items: center;
-            z-index: 10000;
-        }
-        .modal-content {
-            background: #130f26;
-            border: 1px solid var(--accent);
+            justify-content: center;
+            z-index: 2000;
             padding: 20px;
-            border-radius: 15px;
-            width: 90%;
-            max-width: 350px;
-            text-align: center;
         }
-        .user-select-btn {
-            background: #1a1336;
-            margin: 6px 0;
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid #3b2d6b;
-            color: #fff;
-            cursor: pointer;
+
+        .modal-box {
+            background: var(--modal-bg);
+            backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
             width: 100%;
-            text-align: right;
+            max-width: 550px;
+            padding: 30px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
         }
-        .user-select-btn:hover { background: var(--accent); }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .modal-close:hover {
+            color: var(--text-main);
+        }
+
+        .modal-box h2 {
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            color: var(--text-main);
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .form-control:focus {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        .genres-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 5px;
+        }
+
+        .genre-checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            background: var(--glass-bg);
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .genre-checkbox-label:hover {
+            border-color: var(--accent-primary);
+        }
+
+        .plan-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .plan-card {
+            padding: 15px;
+            border-radius: 14px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+        }
+
+        .plan-card:hover, .plan-card.selected {
+            border-color: var(--accent-primary);
+            background: rgba(168, 85, 247, 0.1);
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        .plan-title {
+            font-weight: 700;
+            font-size: 0.95rem;
+            margin-bottom: 5px;
+        }
+
+        .plan-price {
+            font-size: 0.9rem;
+            color: var(--accent-primary);
+            font-weight: 600;
+        }
+
+        .admin-btn {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            color: var(--text-main);
+            padding: 6px 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            backdrop-filter: blur(10px);
+            font-size: 0.82rem;
+            white-space: nowrap;
+        }
+
+        .admin-btn:hover {
+            border-color: var(--accent-primary);
+            background: var(--glass-hover);
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        .admin-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 10px;
+            flex-wrap: wrap;
+        }
+
+        .admin-tab-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            padding: 8px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .admin-tab-btn.active {
+            background: var(--accent-primary);
+            color: #fff;
+        }
+
+        .admin-section {
+            display: none;
+        }
+
+        .admin-section.active {
+            display: block;
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+
+        .admin-table th, .admin-table td {
+            padding: 10px;
+            text-align: right;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .admin-table th {
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        /* Chat */
+        .chat-box-container {
+            display: flex;
+            flex-direction: column;
+            height: 350px;
+            border: 1px solid var(--glass-border);
+            border-radius: 14px;
+            background: var(--glass-bg);
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        .chat-messages {
+            flex-grow: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .chat-bubble {
+            max-width: 85%;
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            word-break: break-word;
+            line-height: 1.5;
+        }
+
+        .chat-bubble.user {
+            background: var(--accent-primary);
+            color: #fff;
+            align-self: flex-start;
+            border-bottom-right-radius: 2px;
+        }
+
+        .chat-bubble.admin {
+            background: rgba(236, 72, 153, 0.2);
+            border: 1px solid var(--accent-secondary);
+            color: var(--text-main);
+            align-self: flex-end;
+            border-bottom-left-radius: 2px;
+        }
+
+        .chat-bubble.system-success {
+            background: rgba(34, 197, 94, 0.2);
+            border: 1px solid #22c55e;
+            color: #4ade80;
+            align-self: center;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .chat-bubble.system-danger {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid #ef4444;
+            color: #f87171;
+            align-self: center;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .chat-input-row {
+            display: flex;
+            padding: 10px;
+            background: rgba(0,0,0,0.2);
+            gap: 8px;
+            align-items: center;
+        }
+
+        .room-container {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 20px;
+            height: 75vh;
+        }
+
+        @media(max-width: 900px) {
+            .room-container {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+        }
+
+        .media-player-box {
+            background: #000;
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            min-height: 350px;
+        }
+
+        .room-chat-box {
+            display: flex;
+            flex-direction: column;
+            border-radius: 16px;
+            border: 1px solid var(--glass-border);
+            background: var(--glass-bg);
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .room-members-list {
+            padding: 10px 15px;
+            font-size: 0.85rem;
+            border-bottom: 1px solid var(--glass-border);
+            color: var(--accent-primary);
+            font-weight: 600;
+        }
+
+        .badge-glass {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+        }
+
+        .btn-action {
+            padding: 10px 20px;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: #fff;
+            box-shadow: 0 4px 15px var(--accent-glow);
+        }
+        .btn-action:hover {
+            opacity: 0.9;
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: #fff;
+        }
     </style>
 </head>
 <body>
 
-<div class="container">
+    <!-- Header -->
+    <header class="glass">
+        <div class="logo-area" onclick="goHome()">
+            <i class="fa-solid fa-play-circle"></i>
+            <span>NETFLIX SIT</span>
+        </div>
+        <div class="header-controls">
+            <button class="admin-btn" onclick="openAdminLoginModal()">
+                <i class="fa-solid fa-user-shield"></i> ادمین
+            </button>
+            <button class="btn-glass" onclick="openAuthModal()" id="headerAuthBtn">
+                <i class="fa-solid fa-user-plus"></i> اشتراک
+            </button>
+            <button class="btn-glass" onclick="openLoginModal()" id="headerLoginBtn" style="border-color: var(--accent-primary);">
+                <i class="fa-solid fa-right-to-bracket"></i> ورود
+            </button>
+            <div class="theme-toggle" id="themeToggleBtn" onclick="toggleTheme()" title="تغییر تم شب و روز">
+                <i class="fa-solid fa-moon" id="themeIcon"></i>
+            </div>
+        </div>
+    </header>
 
-    <div id="authSection">
-        <h2>💜 ورود به LOVE ROOM</h2>
-        <input type="text" id="authId" placeholder="آیدی کاربری...">
-        <input type="password" id="authPass" placeholder="رمز عبور...">
-        <button onclick="login()">ورود</button>
-        <button onclick="register()" style="background: transparent; border: 1px solid var(--accent);">ثبت‌نام جدید</button>
+    <!-- Main Container -->
+    <div class="main-container">
+        
+        <!-- Subscription Status Bar -->
+        <div class="sub-status-bar glass" id="subStatusBar" style="display: flex;">
+            <div>
+                <i class="fa-solid fa-crown" style="color: var(--accent-primary);"></i>
+                <span id="subStatusText">وضعیت: بدون اشتراک</span>
+            </div>
+            <div class="badge-glass" id="userBadgeName">مهمان</div>
+        </div>
+
+        <!-- Action Bar (Share Post & Admin Full Management Button) -->
+        <div class="action-bar">
+            <div id="adminManagementTrigger" style="display: none;">
+                <button class="btn-action" style="background: linear-gradient(135deg, #22c55e, #16a34a);" onclick="openModal('adminPanelModal'); loadAdminData();">
+                    <i class="fa-solid fa-sliders"></i> مدیریت کامل‌تر
+                </button>
+            </div>
+            <button class="btn-glass" style="padding: 12px 22px; border-radius: 16px; font-size: 1rem; background: var(--glass-bg); border-color: var(--accent-primary);" onclick="openShareModal()">
+                <i class="fa-solid fa-share-nodes" style="color: var(--accent-primary);"></i> اشتراک‌گذاری پست
+            </button>
+        </div>
+
+        <!-- Posts Grid -->
+        <div class="section-title" id="sectionTitle">
+            <i class="fa-solid fa-fire" style="color: var(--accent-primary);"></i> فیلم و سریال‌های محبوب
+        </div>
+        <div class="posts-grid" id="postsGrid"></div>
+
     </div>
 
-    <div id="appSection" class="hidden">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <div class="online-badge">🟢 کاربران آنلاین: <span id="totalOnlineCount">0</span> نفر</div>
-            <div id="userInfo" style="font-size: 12px; opacity: 0.8;"></div>
+    <!-- Bottom Fixed Glass Navigation Bar -->
+    <div class="bottom-nav-bar glass">
+        <div class="bottom-nav-item active" onclick="selectCategory('movie')" id="cat-movie">
+            <i class="fa-solid fa-film"></i> فیلم و سریال
         </div>
-
-        <div class="nav-tabs">
-            <button onclick="switchTab('movies')" class="active" id="tabMovies">🎬 فیلم‌ها</button>
-            <button onclick="switchTab('globalChat')" id="tabGlobalChat">💬 چت همگانی</button>
-            <button onclick="switchTab('friends')" id="tabFriends">👥 دوستان</button>
-            <button onclick="switchTab('addMovie')" id="tabAdd">➕ ثبت فیلم</button>
+        <div class="bottom-nav-item" onclick="selectCategory('music')" id="cat-music">
+            <i class="fa-solid fa-music"></i> موزیک
         </div>
-
-        <div id="moviesTab">
-            <h3>فیلم‌های موجود</h3>
-            <div class="movie-grid" id="movieList"></div>
+        <div class="bottom-nav-item" onclick="selectCategory('game')" id="cat-game">
+            <i class="fa-solid fa-gamepad"></i> بازی
         </div>
+    </div>
 
-        <div id="globalChatTab" class="hidden">
-            <h3>💬 چت عمومی سراسری</h3>
-            <div class="chat-box" style="height: 230px;">
-                <div class="chat-messages" id="globalChatMessages"></div>
-                <div class="chat-input-group">
-                    <input type="text" id="globalMsgInput" placeholder="پیام عمومی..." onkeypress="if(event.key==='Enter') sendGlobalChat()">
-                    <button onclick="sendGlobalChat()">ارسال</button>
+    <!-- ================= MODALS ================= -->
+
+    <!-- 1. Share Modal -->
+    <div class="modal-overlay" id="shareModal">
+        <div class="modal-box glass">
+            <button class="modal-close" onclick="closeModal('shareModal')"><i class="fa-solid fa-xmark"></i></button>
+            <h2>اشتراک‌گذاری پست جدید</h2>
+            <form onsubmit="handleShareSubmit(event)">
+                <div class="form-group">
+                    <label>دسته</label>
+                    <select class="form-control" id="shareCategory">
+                        <option value="movie">فیلم و سریال</option>
+                        <option value="music">موزیک</option>
+                        <option value="game">بازی</option>
+                    </select>
                 </div>
-            </div>
+                <div class="form-group">
+                    <label>نام اثر</label>
+                    <input type="text" class="form-control" id="shareTitle" required placeholder="نام فیلم یا موزیک">
+                </div>
+                <div class="form-group">
+                    <label>لینک دانلود</label>
+                    <input type="text" class="form-control" id="shareDownloadLink" required placeholder="https://...">
+                </div>
+                <div class="form-group">
+                    <label>عکس کاور (لینک URL یا فایل)</label>
+                    <div style="display: flex; gap: 10px; margin-bottom: 8px;">
+                        <input type="text" class="form-control" id="shareImage" placeholder="لینک تصویر">
+                        <input type="file" id="shareImageFile" accept="image/*" style="display: none;" onchange="handleShareImageFile(this)">
+                        <button type="button" class="btn-glass" onclick="document.getElementById('shareImageFile').click()"><i class="fa-solid fa-upload"></i> آپلود</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>ژانرها (چندژانری مجاز):</label>
+                    <div class="genres-grid">
+                        <label class="genre-checkbox-label"><input type="checkbox" name="genre" value="ترسناک"> ترسناک</label>
+                        <label class="genre-checkbox-label"><input type="checkbox" name="genre" value="کمدی"> کمدی</label>
+                        <label class="genre-checkbox-label"><input type="checkbox" name="genre" value="بزرگسالان"> بزرگسالان</label>
+                        <label class="genre-checkbox-label"><input type="checkbox" name="genre" value="ایرانی"> ایرانی</label>
+                        <label class="genre-checkbox-label"><input type="checkbox" name="genre" value="سانسور شده"> سانسور شده</label>
+                        <label class="genre-checkbox-label"><input type="checkbox" name="genre" value="دوبله"> دوبله</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>توضیحات</label>
+                    <textarea class="form-control" id="shareDesc" required placeholder="توضیحات..."></textarea>
+                </div>
+                <button type="submit" class="btn-action" style="width: 100%;">انتشار</button>
+            </form>
         </div>
+    </div>
 
-        <div id="friendsTab" class="hidden">
-            <h3>👥 مدیریت دوستان</h3>
-            <input type="text" id="searchFriendId" placeholder="جستجو و افزودن آیدی دوست...">
-            <button onclick="addFriend()">افزودن به لیست دوستان</button>
-            <h3 style="margin-top: 15px;">لیست دوستان شما</h3>
-            <ul id="friendsList" style="list-style: none;"></ul>
+    <!-- 2. Auth Modal (Register & Subscription) -->
+    <div class="modal-overlay" id="authModal">
+        <div class="modal-box glass">
+            <button class="modal-close" onclick="closeModal('authModal')"><i class="fa-solid fa-xmark"></i></button>
+            <h2>ثبت‌نام و خرید اشتراک</h2>
+            <form onsubmit="handleAuthSubmit(event)">
+                <div class="form-group">
+                    <label>نام و نام خانوادگی</label>
+                    <input type="text" class="form-control" id="regName" required placeholder="نام">
+                </div>
+                <div class="form-group">
+                    <label>آیدی کاربری اختصاصی (Username)</label>
+                    <input type="text" class="form-control" id="regUsername" required placeholder="آیدی یکتا">
+                </div>
+                <div class="form-group">
+                    <label>رمز عبور</label>
+                    <input type="password" class="form-control" id="regPassword" required placeholder="••••••••">
+                </div>
+                <div class="form-group">
+                    <label>انتخاب اشتراک:</label>
+                    <div class="plan-options">
+                        <div class="plan-card selected" onclick="selectPlan(1, 128000, this)">
+                            <div class="plan-title">یک ماهه</div>
+                            <div class="plan-price">۱۲۸,۰۰۰ تومان</div>
+                        </div>
+                        <div class="plan-card" onclick="selectPlan(3, 330000, this)">
+                            <div class="plan-title">سه ماهه</div>
+                            <div class="plan-price">۳۳۰,۰۰۰ تومان</div>
+                        </div>
+                        <div class="plan-card" onclick="selectPlan(6, 650000, this)">
+                            <div class="plan-title">شش ماهه</div>
+                            <div class="plan-price">۶۵۰,۰۰۰ تومان</div>
+                        </div>
+                        <div class="plan-card" onclick="selectPlan(12, 1000000, this)">
+                            <div class="plan-title">یک ساله</div>
+                            <div class="plan-price">۱,۰۰۰,۰۰۰ تومان</div>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="btn-action" style="width: 100%;">ثبت و ورود به چت با ادمین</button>
+            </form>
         </div>
+    </div>
 
-        <div id="addMovieTab" class="hidden">
-            <h3>ثبت فیلم جدید</h3>
-            <input type="text" id="movieTitle" placeholder="نام فیلم...">
-            <input type="text" id="movieCover" placeholder="لینک پوستر...">
-            <input type="text" id="movieUrl" placeholder="لینک مستقیم ویدیو (mp4)...">
-            <button onclick="saveMovie()">ثبت فیلم</button>
+    <!-- 3. Login Modal (For Existing Users) -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal-box glass" style="max-width: 420px;">
+            <button class="modal-close" onclick="closeModal('loginModal')"><i class="fa-solid fa-xmark"></i></button>
+            <h2>ورود به اکانت کاربری</h2>
+            <form onsubmit="handleLoginSubmit(event)">
+                <div class="form-group">
+                    <label>آیدی کاربری</label>
+                    <input type="text" class="form-control" id="loginUsername" required placeholder="آیدی شما">
+                </div>
+                <div class="form-group">
+                    <label>رمز عبور</label>
+                    <input type="password" class="form-control" id="loginPassword" required placeholder="رمز عبور">
+                </div>
+                <button type="submit" class="btn-action" style="width: 100%;">ورود به حساب</button>
+            </form>
         </div>
+    </div>
 
-        <div id="playerTab" class="hidden">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                <h3 id="playingTitle" style="margin:0; font-size: 14px;">در حال پخش...</h3>
-                <span style="font-size: 11px; color: #10b981;">👥 بینندگان این صفحه: <strong id="movieViewerCount">0</strong> نفر</span>
-            </div>
-            
-            <div class="player-wrapper">
-                <video id="mainVideo" controls playsinline preload="auto">
-                    <source id="videoSource" src="" type="video/mp4">
-                    مرورگر شما از پخش ویدیو پشتیبانی نمی‌کند.
-                </video>
-            </div>
-            <div id="videoErrorMsg" style="color: #ef4444; font-size: 10px; text-align: center; margin-bottom: 6px; min-height: 14px;"></div>
-
-            <div style="display: flex; gap: 6px; margin-bottom: 6px;">
-                <button id="camToggleBtn" onclick="toggleCameraAndShowUsers()" style="background: #10b981; margin: 0; font-size: 11px;">📹 روشن کردن دوربین</button>
-                <button onclick="openInviteModal()" style="background: #8b5cf6; margin: 0; font-size: 11px;">📩 دعوت از دوست</button>
-                <button onclick="closePlayer()" style="background: #ef4444; margin: 0; font-size: 11px;">خروج</button>
-            </div>
-
-            <div class="chat-box">
+    <!-- 4. Chat with Admin Modal -->
+    <div class="modal-overlay" id="chatModal">
+        <div class="modal-box glass">
+            <button class="modal-close" onclick="closeModal('chatModal')"><i class="fa-solid fa-xmark"></i></button>
+            <h2>چت با ادمین و ارسال رسید</h2>
+            <div class="chat-box-container">
                 <div class="chat-messages" id="chatMessages"></div>
-                <div class="chat-input-group">
-                    <input type="text" id="msgInput" placeholder="پیامی بنویسید..." onkeypress="if(event.key==='Enter') sendChat()">
-                    <button onclick="sendChat()">ارسال</button>
+                <div class="chat-input-row">
+                    <input type="file" id="chatImageInput" accept="image/*" style="display: none;" onchange="sendChatImage(this)">
+                    <button type="button" class="btn-glass" onclick="document.getElementById('chatImageInput').click()" title="ارسال عکس رسید"><i class="fa-solid fa-image"></i></button>
+                    <input type="text" class="form-control" id="chatTextInput" placeholder="پیام خود را بنویسید..." style="flex-grow: 1; padding: 8px 12px;">
+                    <button type="button" class="btn-action" onclick="sendChatMessage()" style="padding: 8px 16px;"><i class="fa-solid fa-paper-plane"></i></button>
+                </div>
+            </div>
+            <p style="font-size: 0.8rem; color: var(--text-muted); text-align: center;">شماره کارت جهت واریز در چت ارسال شده است. می‌توانید عکس رسید را بفرستید.</p>
+        </div>
+    </div>
+
+    <!-- 5. Post Details Modal -->
+    <div class="modal-overlay" id="postModal">
+        <div class="modal-box glass" style="max-width: 700px;">
+            <button class="modal-close" onclick="closeModal('postModal')"><i class="fa-solid fa-xmark"></i></button>
+            <div id="postModalContent" style="display: flex; gap: 20px; flex-wrap: wrap;"></div>
+        </div>
+    </div>
+
+    <!-- 6. Watch Party Room Setup Modal -->
+    <div class="modal-overlay" id="roomSetupModal">
+        <div class="modal-box glass">
+            <button class="modal-close" onclick="closeModal('roomSetupModal')"><i class="fa-solid fa-xmark"></i></button>
+            <h2>ساخت اتاق مشترک</h2>
+            <form onsubmit="createRoomSubmit(event)">
+                <div class="form-group">
+                    <label>نام اتاق (انگلیسی)</label>
+                    <input type="text" class="form-control" id="roomNameInput" required placeholder="cinema-room">
+                </div>
+                <div class="form-group">
+                    <label>رمز عبور اتاق</label>
+                    <input type="password" class="form-control" id="roomPassInput" required placeholder="رمز عبور">
+                </div>
+                <button type="submit" class="btn-action" style="width: 100%;">ایجاد اتاق</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 7. Active Room View Modal -->
+    <div class="modal-overlay" id="activeRoomModal">
+        <div class="modal-box glass" style="max-width: 1100px; width: 95%;">
+            <button class="modal-close" onclick="leaveRoom()"><i class="fa-solid fa-xmark"></i></button>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h2 id="activeRoomTitle" style="margin: 0;">اتاق: نام اتاق</h2>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn-glass" onclick="toggleMicrophone()" id="micBtn"><i class="fa-solid fa-microphone"></i> میکروفون: خاموش</button>
+                    <button class="btn-action btn-danger" onclick="leaveRoom()">خروج از اتاق</button>
+                </div>
+            </div>
+            <div class="room-container">
+                <div class="media-player-box" id="mediaPlayerBox">
+                    <div style="text-align: center; color: #fff;">
+                        <i class="fa-solid fa-play fa-3x" style="margin-bottom: 15px; color: var(--accent-primary);"></i>
+                        <h3>پخش زنده همزمان</h3>
+                    </div>
+                </div>
+                <div class="room-chat-box">
+                    <div class="room-members-list" id="roomMembersList"><i class="fa-solid fa-users"></i> اعضا: 1 نفر</div>
+                    <div class="chat-messages" id="roomChatMessages"></div>
+                    <div class="chat-input-row">
+                        <input type="text" class="form-control" id="roomChatInput" placeholder="پیام..." style="padding: 8px 12px;">
+                        <button type="button" class="btn-action" onclick="sendRoomMessage()" style="padding: 8px 14px;"><i class="fa-solid fa-paper-plane"></i></button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-</div>
-
-<!-- منوی پاپ‌آپ انتخاب کاربر برای اشتراک‌گذاری دوربین -->
-<div id="userSelectModal" class="modal-overlay hidden">
-    <div class="modal-content">
-        <h3>انتخاب شخص مورد نظر</h3>
-        <p style="font-size: 11px; opacity: 0.8; margin-bottom: 10px;">برای اشتراک‌گذاری دوربین، روی نام فرد کلیک کنید:</p>
-        <div id="modalUserList" style="max-height: 200px; overflow-y: auto;"></div>
-        <button onclick="closeUserModal()" style="background: #ef4444; margin-top: 10px;">انصراف</button>
-    </div>
-</div>
-
-<div id="bottomCams" class="bottom-cams-container hidden">
-    <div class="cam-box">
-        <video id="myCam" autoplay muted playsinline></video>
-        <div class="cam-label">شما</div>
+    <!-- 8. Admin Login Modal -->
+    <div class="modal-overlay" id="adminLoginModal">
+        <div class="modal-box glass" style="max-width: 400px;">
+            <button class="modal-close" onclick="closeModal('adminLoginModal')"><i class="fa-solid fa-xmark"></i></button>
+            <h2>ورود به پنل ادمین</h2>
+            <form onsubmit="adminLoginSubmit(event)">
+                <div class="form-group">
+                    <label>رمز عبور (1398)</label>
+                    <input type="password" class="form-control" id="adminPassInput" required placeholder="رمز عبور">
+                </div>
+                <button type="submit" class="btn-action" style="width: 100%;">ورود</button>
+            </form>
+        </div>
     </div>
 
-    <div class="cam-box">
-        <video id="partnerCam" autoplay playsinline></video>
-        <div class="cam-label" id="partnerLabel">پارتنر (در انتظار)</div>
+    <!-- 9. Admin Panel Dashboard Modal -->
+    <div class="modal-overlay" id="adminPanelModal">
+        <div class="modal-box glass" style="max-width: 950px;">
+            <button class="modal-close" onclick="closeModal('adminPanelModal')"><i class="fa-solid fa-xmark"></i></button>
+            <h2>پنل مدیریت کامل‌تر ادمین</h2>
+            <div class="admin-tabs">
+                <button class="admin-tab-btn active" onclick="switchAdminTab('posts', this)">مدیریت پست‌ها</button>
+                <button class="admin-tab-btn" onclick="switchAdminTab('pendingChats', this)">چت‌های در انتظار تایید</button>
+                <button class="admin-tab-btn" onclick="switchAdminTab('approvedChats', this)">چت‌های تایید شده</button>
+                <button class="admin-tab-btn" onclick="switchAdminTab('users', this)">مدیریت اعضا</button>
+            </div>
+
+            <!-- Tab 1: Posts -->
+            <div class="admin-section active" id="admin-section-posts">
+                <h3>حذف پست‌ها</h3>
+                <div style="max-height: 350px; overflow-y: auto; margin-top: 15px;">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>عنوان</th>
+                                <th>دسته</th>
+                                <th>ژانر</th>
+                                <th>عملیات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminPostsTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tab 2: Pending Chats -->
+            <div class="admin-section" id="admin-section-pendingChats">
+                <h3>درخواست‌های نیازمند بررسی و تایید</h3>
+                <div style="max-height: 350px; overflow-y: auto;" id="adminPendingChatsList"></div>
+            </div>
+
+            <!-- Tab 3: Approved Chats -->
+            <div class="admin-section" id="admin-section-approvedChats">
+                <h3>کاربران دارای اشتراک تایید شده</h3>
+                <div style="max-height: 350px; overflow-y: auto;" id="adminApprovedChatsList"></div>
+            </div>
+
+            <!-- Tab 4: Users -->
+            <div class="admin-section" id="admin-section-users">
+                <h3>لیست اعضا</h3>
+                <div style="max-height: 350px; overflow-y: auto;">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>نام</th>
+                                <th>آیدی</th>
+                                <th>اشتراک (روز)</th>
+                                <th>عملیات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminUsersTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
 
-<script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
-<script>
-    const DB_URL = "https://crazyapp-9663a-default-rtdb.firebaseio.com";
-    let currentUser = null;
-    let isSyncing = false;
-    let lastActionTime = 0;
-    let currentRoomId = null;
-    let currentMovieId = null;
-    let lastMsgCount = 0;
-    let lastGlobalMsgCount = 0;
-    let peer = null;
-    let localStream = null;
-    let partnerId = null;
-    let syncInterval = null;
-    let activeCall = null;
-    let presenceInterval = null;
+    <!-- 10. Glassmorphic Custom Subscription Approval Menu -->
+    <div class="modal-overlay" id="customSubModal">
+        <div class="modal-box glass" style="max-width: 420px;">
+            <button class="modal-close" onclick="closeModal('customSubModal')"><i class="fa-solid fa-xmark"></i></button>
+            <h2>مدیریت اشتراک کاربر</h2>
+            <div class="form-group">
+                <label id="subModalUserLabel" style="font-weight: 700; color: var(--accent-primary);">کاربر:</label>
+            </div>
+            <div class="form-group">
+                <label>تعداد روزهای اشتراک:</label>
+                <input type="number" class="form-control" id="customDaysInput" value="30" min="1" placeholder="مثلا 30">
+            </div>
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button type="button" class="btn-action" style="flex: 1; background: #22c55e;" onclick="processApproval(true)"><i class="fa-solid fa-check"></i> تایید اشتراک</button>
+                <button type="button" class="btn-action btn-danger" style="flex: 1;" onclick="processApproval(false)"><i class="fa-solid fa-xmark"></i> عدم تایید (لغو)</button>
+            </div>
+        </div>
+    </div>
 
-    async function fbGet(path) {
-        try { const res = await fetch(`${DB_URL}/${path}.json`); return await res.json(); } catch(e) { return null; }
-    }
+    <!-- Script & Firebase -->
+    <script>
+        const FIREBASE_URL = "https://crazyapp-9663a-default-rtdb.firebaseio.com/";
 
-    async function fbSet(path, data) {
-        await fetch(`${DB_URL}/${path}.json`, { method: 'PUT', body: JSON.stringify(data) });
-    }
+        let currentTheme = "night";
+        let currentCategory = "movie";
+        let selectedPlanMonths = 1;
+        let selectedPlanPrice = 128000;
+        let selectedPlanNameText = "یک ماهه (۱۲۸,۰۰۰ تومان)";
+        let currentUser = null; 
+        let isAdminLoggedIn = false;
+        let micActive = false;
+        let activeRoomData = null;
+        let tempUploadedImage = "";
+        let targetSubUsername = null;
 
-    async function fbPush(path, data) {
-        await fetch(`${DB_URL}/${path}.json`, { method: 'POST', body: JSON.stringify(data) });
-    }
+        let posts = [];
+        let usersList = [];
+        let chatRequests = [];
 
-    async function register() {
-        const id = document.getElementById('authId').value.trim();
-        const pass = document.getElementById('authPass').value.trim();
-        if(!id || !pass) return alert('آیدی و رمز را وارد کنید.');
-        const user = await fbGet(`users/${id}`);
-        if(user) return alert('این آیدی قبلاً ثبت شده است.');
-        await fbSet(`users/${id}`, { pass: pass, friends: {} });
-        alert('ثبت‌نام انجام شد!');
-    }
+        window.onload = function() {
+            loadSavedUserSession();
+            loadFromFirebase();
+            setInterval(loadFromFirebase, 3000); // Live sync polling every 3 seconds
+        };
 
-    async function login() {
-        const id = document.getElementById('authId').value.trim();
-        const pass = document.getElementById('authPass').value.trim();
-        const user = await fbGet(`users/${id}`);
-
-        if(user && user.pass === pass) {
-            currentUser = id;
-            document.getElementById('authSection').classList.add('hidden');
-            document.getElementById('appSection').classList.remove('hidden');
-            document.getElementById('userInfo').innerText = `👤 ${currentUser}`;
-            
-            initPeer();
-            startPresence();
-            loadMovies();
-            loadFriends();
-            listenToWatchRequests();
-            listenGlobalChat();
-        } else {
-            alert('اطلاعات ورود اشتباه است.');
-        }
-    }
-
-    function startPresence() {
-        if(presenceInterval) clearInterval(presenceInterval);
-        presenceInterval = setInterval(async () => {
-            if(currentUser) {
-                const now = Date.now();
-                await fbSet(`online/${currentUser}`, now);
-                if(currentMovieId) {
-                    await fbSet(`movie_viewers/${currentMovieId}/${currentUser}`, now);
-                }
-                updateOnlineCounts();
+        function saveUserSession() {
+            if (currentUser) {
+                localStorage.setItem("netflix_sit_user", JSON.stringify(currentUser));
+            } else {
+                localStorage.removeItem("netflix_sit_user");
             }
-        }, 3000);
-
-        window.addEventListener('beforeunload', () => {
-            if(currentUser) {
-                navigator.sendBeacon(`${DB_URL}/online/${currentUser}.json`, 'null');
-                if(currentMovieId) {
-                    navigator.sendBeacon(`${DB_URL}/movie_viewers/${currentMovieId}/${currentUser}.json`, 'null');
-                }
-            }
-        });
-    }
-
-    async function updateOnlineCounts() {
-        const onlineUsers = await fbGet('online') || {};
-        const now = Date.now();
-        let totalOnline = 0;
-        Object.keys(onlineUsers).forEach(user => {
-            if(now - onlineUsers[user] < 10000) totalOnline++;
-        });
-        document.getElementById('totalOnlineCount').innerText = totalOnline;
-
-        if(currentMovieId) {
-            const viewers = await fbGet(`movie_viewers/${currentMovieId}`) || {};
-            let activeViewers = 0;
-            Object.keys(viewers).forEach(user => {
-                if(now - viewers[user] < 10000) activeViewers++;
-            });
-            document.getElementById('movieViewerCount').innerText = activeViewers;
+            localStorage.setItem("netflix_sit_admin", isAdminLoggedIn ? "true" : "false");
         }
-    }
 
-    function initPeer() {
-        if(peer) peer.destroy();
-        peer = new Peer(currentUser);
-
-        peer.on('call', async (call) => {
-            partnerId = call.peer;
-            currentRoomId = [currentUser, partnerId].sort().join('_');
-            document.getElementById('partnerLabel').innerText = `پارتنر: ${partnerId}`;
-            
-            if (!localStream) {
+        function loadSavedUserSession() {
+            const saved = localStorage.getItem("netflix_sit_user");
+            if (saved) {
                 try {
-                    localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-                    document.getElementById('myCam').srcObject = localStream;
-                    document.getElementById('camToggleBtn').innerText = '🎥 خاموش کردن دوربین';
-                    document.getElementById('camToggleBtn').style.background = '#f59e0b';
-                    document.getElementById('bottomCams').classList.remove('hidden');
-                } catch(e) {}
+                    currentUser = JSON.parse(saved);
+                } catch(e) { currentUser = null; }
             }
-
-            call.answer(localStream);
-
-            call.on('stream', (remoteStream) => {
-                const partnerVid = document.getElementById('partnerCam');
-                partnerVid.srcObject = remoteStream;
-                partnerVid.play().catch(e => console.log(e));
-                document.getElementById('bottomCams').classList.remove('hidden');
-            });
-            activeCall = call;
-        });
-    }
-
-    async function toggleCameraAndShowUsers() {
-        const btn = document.getElementById('camToggleBtn');
-
-        if(localStream) {
-            localStream.getTracks().forEach(track => track.stop());
-            localStream = null;
-            document.getElementById('myCam').srcObject = null;
-            btn.innerText = '📹 روشن کردن دوربین';
-            btn.style.background = '#10b981';
-            document.getElementById('bottomCams').classList.add('hidden');
-            return;
+            if (localStorage.getItem("netflix_sit_admin") === "true") {
+                isAdminLoggedIn = true;
+                document.getElementById("adminManagementTrigger").style.display = "block";
+            }
         }
 
-        try {
-            localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-            document.getElementById('myCam').srcObject = localStream;
-            btn.innerText = '🎥 خاموش کردن دوربین';
-            btn.style.background = '#f59e0b';
-            document.getElementById('bottomCams').classList.remove('hidden');
+        function toggleTheme() {
+            const body = document.body;
+            const icon = document.getElementById("themeIcon");
+            if (currentTheme === "night") {
+                currentTheme = "day";
+                body.setAttribute("data-theme", "day");
+                icon.className = "fa-solid fa-sun";
+            } else {
+                currentTheme = "night";
+                body.removeAttribute("data-theme");
+                icon.className = "fa-solid fa-moon";
+            }
+        }
 
-            const viewers = currentMovieId ? (await fbGet(`movie_viewers/${currentMovieId}`) || {}) : (await fbGet('online') || {});
-            const now = Date.now();
-            const availableUsers = Object.keys(viewers).filter(u => u !== currentUser && (now - viewers[u] < 10000));
+        function selectCategory(cat) {
+            currentCategory = cat;
+            document.querySelectorAll(".bottom-nav-item").forEach(c => c.classList.remove("active"));
+            document.getElementById(`cat-${cat}`).classList.add("active");
+            
+            const titles = { movie: "فیلم و سریال‌های محبوب", music: "موزیک‌های برتر", game: "بازی‌های هیجان‌انگیز" };
+            document.getElementById("sectionTitle").innerHTML = `<i class="fa-solid fa-fire" style="color: var(--accent-primary);"></i> ${titles[cat]}`;
+            renderPosts();
+        }
 
-            if(availableUsers.length === 0) {
-                alert('دوربین روشن شد. در حال حاضر کاربر دیگری در این صفحه حضور ندارد.');
+        function renderPosts() {
+            const grid = document.getElementById("postsGrid");
+            grid.innerHTML = "";
+            const filtered = posts.filter(p => p.category === currentCategory);
+            
+            if (filtered.length === 0) {
+                grid.innerHTML = `<p style="color: var(--text-muted); grid-column: span 3; text-align: center; padding: 40px;">موردی ثبت نشده است.</p>`;
                 return;
             }
 
-            const modalList = document.getElementById('modalUserList');
-            modalList.innerHTML = '';
-            availableUsers.forEach(u => {
-                const item = document.createElement('button');
-                item.className = 'user-select-btn';
-                item.innerText = `👤 ${u}`;
-                item.onclick = () => selectUserAndConnect(u);
-                modalList.appendChild(item);
-            });
-            document.getElementById('userSelectModal').classList.remove('hidden');
-
-        } catch(e) {
-            alert('دسترسی به دوربین و میکروفون رد شد.');
-        }
-    }
-
-    function closeUserModal() {
-        document.getElementById('userSelectModal').classList.add('hidden');
-    }
-
-    async function selectUserAndConnect(targetId) {
-        closeUserModal();
-        partnerId = targetId;
-        currentRoomId = [currentUser, partnerId].sort().join('_');
-        document.getElementById('partnerLabel').innerText = `پارتنر: ${partnerId}`;
-
-        connectToPartner(partnerId);
-        await fbSet(`requests/${partnerId}`, { from: currentUser, roomId: currentRoomId, movie: currentMovieId });
-        alert(`تصویر و درخواست اتصال به ${partnerId} ارسال شد!`);
-    }
-
-    function connectToPartner(targetId) {
-        if(!peer || !localStream || !targetId) return;
-        try {
-            const call = peer.call(targetId, localStream);
-            if(call) {
-                call.on('stream', (remoteStream) => {
-                    const partnerVid = document.getElementById('partnerCam');
-                    partnerVid.srcObject = remoteStream;
-                    partnerVid.play().catch(e => console.log(e));
-                    document.getElementById('bottomCams').classList.remove('hidden');
-                });
-                activeCall = call;
-            }
-        } catch(e) {}
-    }
-
-    function switchTab(tab) {
-        document.getElementById('moviesTab').classList.add('hidden');
-        document.getElementById('globalChatTab').classList.add('hidden');
-        document.getElementById('friendsTab').classList.add('hidden');
-        document.getElementById('addMovieTab').classList.add('hidden');
-        document.getElementById('playerTab').classList.add('hidden');
-        document.getElementById('bottomCams').classList.add('hidden');
-
-        document.querySelectorAll('.nav-tabs button').forEach(btn => btn.classList.remove('active'));
-
-        if(tab === 'movies') {
-            document.getElementById('moviesTab').classList.remove('hidden');
-            document.getElementById('tabMovies').classList.add('active');
-            leaveMovieRoom();
-            loadMovies();
-        }
-        if(tab === 'globalChat') { document.getElementById('globalChatTab').classList.remove('hidden'); document.getElementById('tabGlobalChat').classList.add('active'); leaveMovieRoom(); }
-        if(tab === 'friends') { document.getElementById('friendsTab').classList.remove('hidden'); document.getElementById('tabFriends').classList.add('active'); leaveMovieRoom(); loadFriends(); }
-        if(tab === 'addMovie') { document.getElementById('addMovieTab').classList.remove('hidden'); document.getElementById('tabAdd').classList.add('active'); leaveMovieRoom(); }
-    }
-
-    async function leaveMovieRoom() {
-        if(currentMovieId && currentUser) {
-            await fbSet(`movie_viewers/${currentMovieId}/${currentUser}`, null);
-        }
-        currentMovieId = null;
-    }
-
-    async function saveMovie() {
-        const title = document.getElementById('movieTitle').value.trim();
-        const cover = document.getElementById('movieCover').value.trim();
-        const url = document.getElementById('movieUrl').value.trim();
-        if(!title || !url) return alert('اطلاعات ناقص است.');
-        const id = 'movie_' + Date.now();
-        await fbSet(`movies/${id}`, { id, title, cover, url });
-        alert('فیلم ذخیره شد.');
-        switchTab('movies');
-    }
-
-    async function loadMovies() {
-        const list = document.getElementById('movieList');
-        list.innerHTML = 'در حال دریافت...';
-        const movies = await fbGet('movies') || {};
-        const movieViewers = await fbGet('movie_viewers') || {};
-        const now = Date.now();
-        list.innerHTML = '';
-
-        Object.values(movies).forEach((m) => {
-            let activeCount = 0;
-            if(movieViewers[m.id]) {
-                Object.values(movieViewers[m.id]).forEach(time => {
-                    if(now - time < 10000) activeCount++;
-                });
-            }
-
-            const card = document.createElement('div');
-            card.className = 'movie-card';
-            card.innerHTML = `
-                <span class="viewer-count">👁️ ${activeCount}</span>
-                <img src="${m.cover || 'https://via.placeholder.com/150'}">
-                <p>${m.title}</p>
-            `;
-            card.onclick = () => startWatchingMovie(m);
-            list.appendChild(card);
-        });
-    }
-
-    async function sendGlobalChat() {
-        const input = document.getElementById('globalMsgInput');
-        const text = input.value.trim();
-        if(!text) return;
-        await fbPush(`global_chat`, {
-            sender: currentUser,
-            text: text,
-            time: new Date().toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' })
-        });
-        input.value = '';
-    }
-
-    function listenGlobalChat() {
-        setInterval(async () => {
-            const msgs = await fbGet(`global_chat`);
-            if(msgs) {
-                const msgList = Object.values(msgs);
-                if(msgList.length !== lastGlobalMsgCount) {
-                    lastGlobalMsgCount = msgList.length;
-                    const container = document.getElementById('globalChatMessages');
-                    container.innerHTML = '';
-                    msgList.slice(-40).forEach(m => {
-                        const div = document.createElement('div');
-                        div.className = `chat-msg ${m.sender === currentUser ? 'me' : ''}`;
-                        div.innerHTML = `<span onclick="addFriendQuick('${m.sender}')" title="افزودن به دوستان">👤 ${m.sender} (${m.time})</span>${m.text}`;
-                        container.appendChild(div);
-                    });
-                    container.scrollTop = container.scrollHeight;
+            if (currentUser && !isAdminLoggedIn) {
+                let foundU = usersList.find(u => u.username === currentUser.username);
+                if (foundU) {
+                    currentUser.subscriptionDaysLeft = foundU.subscriptionDaysLeft;
+                    saveUserSession();
                 }
             }
-        }, 2000);
-    }
 
-    async function addFriendQuick(friendId) {
-        if(friendId === currentUser) return;
-        await fbSet(`users/${currentUser}/friends/${friendId}`, true);
-        alert(`کاربر ${friendId} به لیست دوستان شما اضافه شد!`);
-        loadFriends();
-    }
+            // If admin is logged in, all locks are open automatically
+            const hasActiveSub = isAdminLoggedIn || (currentUser && currentUser.subscriptionDaysLeft > 0);
+            updateSubStatusBar();
 
-    async function addFriend() {
-        const friendId = document.getElementById('searchFriendId').value.trim();
-        if(!friendId || friendId === currentUser) return;
-        const user = await fbGet(`users/${friendId}`);
-        if(!user) return alert('کاربر پیدا نشد.');
-        await addFriendQuick(friendId);
-        document.getElementById('searchFriendId').value = '';
-    }
+            filtered.forEach(p => {
+                const card = document.createElement("div");
+                card.className = "post-card glass";
+                card.onclick = () => checkAccessAndOpenPost(p);
+                
+                let lockHtml = "";
+                if (!hasActiveSub) {
+                    lockHtml = `<div class="lock-overlay"><i class="fa-solid fa-lock fa-2x"></i><span>قفل اشتراک</span></div>`;
+                }
 
-    async function loadFriends() {
-        const list = document.getElementById('friendsList');
-        list.innerHTML = '';
-        const user = await fbGet(`users/${currentUser}`);
-        const friends = user?.friends || {};
-        const onlineUsers = await fbGet('online') || {};
-        const now = Date.now();
+                card.innerHTML = `
+                    ${lockHtml}
+                    <img src="${p.image || 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=500'}" class="post-poster" alt="${p.title}">
+                    <div class="post-info">
+                        <div class="post-title">${p.title}</div>
+                        <div class="post-genre">${p.genre}</div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
 
-        Object.keys(friends).forEach(f => {
-            const isOnline = onlineUsers[f] && (now - onlineUsers[f] < 10000);
-            const li = document.createElement('li');
-            li.style.cssText = 'padding:8px 0; border-bottom:1px solid #221a42; display:flex; justify-content:space-between; align-items:center; font-size: 13px;';
-            li.innerHTML = `<span>👤 ${f} ${isOnline ? '🟢' : '⚪'}</span> <button onclick="requestWatch('${f}')" style="width:auto; padding:4px 8px; margin:0; font-size:11px;">دعوت به تماشا</button>`;
-            list.appendChild(li);
-        });
-    }
+        function openModal(id) { document.getElementById(id).style.display = "flex"; }
+        function closeModal(id) { document.getElementById(id).style.display = "none"; }
 
-    async function requestWatch(fId) {
-        currentRoomId = [currentUser, fId].sort().join('_');
-        await fbSet(`requests/${fId}`, { from: currentUser, roomId: currentRoomId, movie: currentMovieId });
-        alert(`دعوت‌نامه برای ${fId} ارسال شد.`);
-    }
+        function openAuthModal() { 
+            if(currentUser) {
+                openChatModal(currentUser.username);
+            } else {
+                openModal('authModal'); 
+            }
+        }
+        function openLoginModal() { openModal('loginModal'); }
+        function openAdminLoginModal() { openModal('adminLoginModal'); }
+        function openShareModal() { openModal('shareModal'); }
 
-    function listenToWatchRequests() {
-        setInterval(async () => {
-            const req = await fbGet(`requests/${currentUser}`);
-            if(req) {
-                if(confirm(`کاربر ${req.from} شما را به تماشای فیلم دعوت کرده است. قبول می‌کنید؟`)) {
-                    currentRoomId = req.roomId;
-                    partnerId = req.from;
-                    await fbSet(`requests/${currentUser}`, null);
-                    
-                    if(req.movie) {
-                        const movieData = await fbGet(`movies/${req.movie}`);
-                        if(movieData) {
-                            startWatchingMovie(movieData, partnerId);
-                            return;
+        function handleShareImageFile(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    tempUploadedImage = e.target.result;
+                    document.getElementById("shareImage").value = "[فایل عکس آپلود شد]";
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function handleShareSubmit(e) {
+            e.preventDefault();
+            const category = document.getElementById("shareCategory").value;
+            const title = document.getElementById("shareTitle").value;
+            const downloadLink = document.getElementById("shareDownloadLink").value;
+            let image = document.getElementById("shareImage").value;
+            if (tempUploadedImage) image = tempUploadedImage;
+            const desc = document.getElementById("shareDesc").value;
+
+            const checkboxes = document.querySelectorAll('input[name="genre"]:checked');
+            let selectedGenres = Array.from(checkboxes).map(cb => cb.value);
+            const genreStr = selectedGenres.length > 0 ? selectedGenres.join(" ، ") : "عمومی";
+
+            posts.push({
+                id: Date.now(),
+                category,
+                title,
+                downloadLink,
+                image: image || 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=500',
+                genre: genreStr,
+                desc
+            });
+
+            alert("پست با موفقیت به اشتراک گذاشته شد!");
+            closeModal('shareModal');
+            document.getElementById("shareTitle").value = "";
+            document.getElementById("shareDownloadLink").value = "";
+            document.getElementById("shareImage").value = "";
+            document.getElementById("shareDesc").value = "";
+            tempUploadedImage = "";
+            document.querySelectorAll('input[name="genre"]').forEach(cb => cb.checked = false);
+            
+            renderPosts();
+            syncToFirebase();
+        }
+
+        function checkAccessAndOpenPost(post) {
+            if (isAdminLoggedIn) {
+                openPostModal(post);
+                return;
+            }
+
+            if (currentUser) {
+                let foundU = usersList.find(u => u.username === currentUser.username);
+                if (foundU) {
+                    currentUser.subscriptionDaysLeft = foundU.subscriptionDaysLeft;
+                }
+            }
+
+            if (!currentUser || currentUser.subscriptionDaysLeft <= 0) {
+                alert("اشتراک شما فعال نیست یا تایید نشده است!");
+                openAuthModal();
+                return;
+            }
+            openPostModal(post);
+        }
+
+        function selectPlan(months, price, el) {
+            document.querySelectorAll(".plan-card").forEach(c => c.classList.remove("selected"));
+            el.classList.add("selected");
+            selectedPlanMonths = months;
+            selectedPlanPrice = price;
+            selectedPlanNameText = el.querySelector(".plan-title").innerText + " (" + el.querySelector(".plan-price").innerText + ")";
+        }
+
+        function handleAuthSubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById("regName").value;
+            const username = document.getElementById("regUsername").value;
+            const password = document.getElementById("regPassword").value;
+            
+            currentUser = { name, username, password, subscriptionDaysLeft: 0, isBanned: false };
+            saveUserSession();
+
+            let existingUser = usersList.find(u => u.username === username);
+            if (!existingUser) {
+                usersList.push(currentUser);
+            } else {
+                currentUser.subscriptionDaysLeft = existingUser.subscriptionDaysLeft;
+            }
+
+            let existingChat = chatRequests.find(c => c.username === username);
+            if (!existingChat) {
+                const autoCardMessage = `سلام ${name} عزیز.\nجهت فعالسازی اشتراک "${selectedPlanNameText}"، مبلغ ${selectedPlanPrice.toLocaleString()} تومان را به شماره کارت زیر واریز نموده و رسید آن را ارسال کنید:\n\n💳 شماره کارت: 6219-8618-6551-7824\n👤 به نام: فرشاد حسنوند`;
+
+                chatRequests.push({
+                    username: username,
+                    name: name,
+                    plan: selectedPlanNameText,
+                    status: "pending",
+                    messages: [
+                        { sender: username, text: `سلام، درخواست خرید اشتراک (${selectedPlanNameText}) را دارم.` },
+                        { sender: "admin", text: autoCardMessage }
+                    ]
+                });
+            }
+
+            closeModal('authModal');
+            syncToFirebase();
+            updateSubStatusBar();
+            renderPosts();
+            openChatModal(username);
+        }
+
+        function handleLoginSubmit(e) {
+            e.preventDefault();
+            const username = document.getElementById("loginUsername").value;
+            const password = document.getElementById("loginPassword").value;
+
+            let foundUser = usersList.find(u => u.username === username && u.password === password);
+            if (foundUser) {
+                if(foundUser.isBanned) {
+                    alert("حساب کاربری شما مسدود شده است.");
+                    return;
+                }
+                currentUser = foundUser;
+                isAdminLoggedIn = false;
+                saveUserSession();
+                document.getElementById("adminManagementTrigger").style.display = "none";
+                alert(`خوش آمدید، ${currentUser.name}`);
+                closeModal('loginModal');
+                updateSubStatusBar();
+                renderPosts();
+                openChatModal(username);
+            } else {
+                alert("آیدی یا رمز عبور اشتباه است یا حسابی با این مشخصات ثبت نشده.");
+            }
+        }
+
+        let activeChatUsername = null;
+        function openChatModal(username) {
+            activeChatUsername = username || (currentUser ? currentUser.username : "guest");
+            renderChatMessages();
+            openModal('chatModal');
+        }
+
+        function renderChatMessages() {
+            const container = document.getElementById("chatMessages");
+            container.innerHTML = "";
+            const chat = chatRequests.find(c => c.username === activeChatUsername);
+            if (!chat || !chat.messages) {
+                container.innerHTML = `<p style="color:var(--text-muted); text-align:center;">پیامی ثبت نشده است.</p>`;
+                return;
+            }
+
+            chat.messages.forEach(m => {
+                const bubble = document.createElement("div");
+                if (m.isSystemSuccess) {
+                    bubble.className = `chat-bubble system-success`;
+                } else if (m.isSystemDanger) {
+                    bubble.className = `chat-bubble system-danger`;
+                } else {
+                    const isUser = (m.sender !== "admin");
+                    bubble.className = `chat-bubble ${isUser ? 'user' : 'admin'}`;
+                }
+
+                if (m.isImage) {
+                    bubble.innerHTML = `<img src="${m.text}" style="max-width: 100%; border-radius: 8px;">`;
+                } else {
+                    bubble.innerText = m.text;
+                }
+                container.appendChild(bubble);
+            });
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function sendChatMessage() {
+            const input = document.getElementById("chatTextInput");
+            const text = input.value.trim();
+            if (!text) return;
+
+            let chat = chatRequests.find(c => c.username === activeChatUsername);
+            if (!chat) {
+                chat = { username: activeChatUsername, name: currentUser ? currentUser.name : "کاربر", plan: selectedPlanNameText, status: "pending", messages: [] };
+                chatRequests.push(chat);
+            }
+
+            const sender = (currentUser && activeChatUsername === currentUser.username) ? currentUser.username : "admin";
+
+            chat.messages.push({ sender: sender, text: text });
+            input.value = "";
+            renderChatMessages();
+            syncToFirebase();
+        }
+
+        function sendChatImage(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    let chat = chatRequests.find(c => c.username === activeChatUsername);
+                    if (!chat) {
+                        chat = { username: activeChatUsername, name: currentUser ? currentUser.name : "کاربر", plan: selectedPlanNameText, status: "pending", messages: [] };
+                        chatRequests.push(chat);
+                    }
+                    const sender = (currentUser && activeChatUsername === currentUser.username) ? currentUser.username : "admin";
+                    chat.messages.push({ sender: sender, text: e.target.result, isImage: true });
+                    renderChatMessages();
+                    syncToFirebase();
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function openPostModal(post) {
+            const modalContent = document.getElementById("postModalContent");
+            modalContent.innerHTML = `
+                <img src="${post.image}" style="width: 220px; height: 310px; object-fit: cover; border-radius: 14px;" alt="${post.title}">
+                <div style="flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <h2 style="margin-bottom: 10px;">${post.title}</h2>
+                        <span class="badge-glass" style="display: inline-block; margin-bottom: 12px;">ژانر: ${post.genre}</span>
+                        <p style="color: var(--text-muted); line-height: 1.6; font-size: 0.95rem; margin-bottom: 15px;">${post.desc}</p>
+                        <a href="${post.downloadLink}" target="_blank" class="btn-action" style="display: inline-block; text-decoration: none; margin-bottom: 10px;"><i class="fa-solid fa-download"></i> دانلود / پخش</a>
+                    </div>
+                    <div style="display: flex; gap: 12px; margin-top: 15px;">
+                        <button class="btn-action" onclick="playForMyself('${post.title}')"><i class="fa-solid fa-play"></i> پخش شخصی</button>
+                        <button class="btn-glass" onclick="openRoomSetupModal()"><i class="fa-solid fa-users"></i> ساخت اتاق لایو</button>
+                    </div>
+                </div>
+            `;
+            openModal('postModal');
+        }
+
+        function playForMyself(title) {
+            closeModal('postModal');
+            alert(`بارگذاری مدیا: ${title}`);
+        }
+
+        function openRoomSetupModal() {
+            closeModal('postModal');
+            openModal('roomSetupModal');
+        }
+
+        function createRoomSubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById("roomNameInput").value;
+            const pass = document.getElementById("roomPassInput").value;
+            
+            activeRoomData = {
+                name: name,
+                password: pass,
+                members: 1,
+                messages: [{ sender: "سیستم", text: `اتاق ${name} ساخته شد.` }]
+            };
+
+            closeModal('roomSetupModal');
+            openActiveRoomModal();
+        }
+
+        function openActiveRoomModal() {
+            document.getElementById("activeRoomTitle").innerText = `اتاق: ${activeRoomData.name}`;
+            renderRoomChat();
+            openModal('activeRoomModal');
+        }
+
+        function renderRoomChat() {
+            const container = document.getElementById("roomChatMessages");
+            container.innerHTML = "";
+            activeRoomData.messages.forEach(m => {
+                const bubble = document.createElement("div");
+                bubble.className = `chat-bubble user`;
+                bubble.innerHTML = `<strong>${m.sender}:</strong> ${m.text}`;
+                container.appendChild(bubble);
+            });
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function sendRoomMessage() {
+            const input = document.getElementById("roomChatInput");
+            const text = input.value.trim();
+            if (!text) return;
+
+            const senderName = currentUser ? currentUser.name : "میهمان";
+            activeRoomData.messages.push({ sender: senderName, text: text });
+            input.value = "";
+            renderRoomChat();
+        }
+
+        function toggleMicrophone() {
+            micActive = !micActive;
+            const btn = document.getElementById("micBtn");
+            if (micActive) {
+                btn.innerHTML = `<i class="fa-solid fa-microphone" style="color: #22c55e;"></i> میکروفون: روشن`;
+                btn.style.borderColor = "#22c55e";
+            } else {
+                btn.innerHTML = `<i class="fa-solid fa-microphone"></i> میکروفون: خاموش`;
+                btn.style.borderColor = "var(--glass-border)";
+            }
+        }
+
+        function leaveRoom() {
+            closeModal('activeRoomModal');
+            alert("از اتاق خارج شدید.");
+        }
+
+        function adminLoginSubmit(e) {
+            e.preventDefault();
+            const pass = document.getElementById("adminPassInput").value;
+            if (pass === "1398") {
+                isAdminLoggedIn = true;
+                currentUser = null; // Clear normal user session if admin logs in
+                saveUserSession();
+                document.getElementById("adminManagementTrigger").style.display = "block";
+                closeModal('adminLoginModal');
+                alert("رمز ادمین تایید شد! تمامی قفل‌های سایت باز شدند و دکمه مدیریت کامل‌تر فعال گردید.");
+                updateSubStatusBar();
+                renderPosts();
+            } else {
+                alert("رمز عبور اشتباه است! (رمز: 1398)");
+            }
+        }
+
+        function switchAdminTab(tabName, btn) {
+            document.querySelectorAll(".admin-tab-btn").forEach(b => b.classList.remove("active"));
+            document.querySelectorAll(".admin-section").forEach(s => s.classList.remove("active"));
+            btn.classList.add("active");
+            document.getElementById(`admin-section-${tabName}`).classList.add("active");
+        }
+
+        function loadAdminData() {
+            const postsBody = document.getElementById("adminPostsTableBody");
+            postsBody.innerHTML = "";
+            posts.forEach(p => {
+                postsBody.innerHTML += `
+                    <tr>
+                        <td>${p.title}</td>
+                        <td>${p.category}</td>
+                        <td>${p.genre}</td>
+                        <td>
+                            <button class="btn-glass" style="padding: 4px 8px; font-size: 0.8rem; color: #ef4444;" onclick="deletePost(${p.id})"><i class="fa-solid fa-trash"></i> حذف</button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            const usersBody = document.getElementById("adminUsersTableBody");
+            usersBody.innerHTML = "";
+            usersList.forEach((u, idx) => {
+                usersBody.innerHTML += `
+                    <tr>
+                        <td>${u.name}</td>
+                        <td>${u.username}</td>
+                        <td>${u.subscriptionDaysLeft} روز</td>
+                        <td>
+                            <button class="btn-glass" style="padding: 4px 8px; font-size: 0.8rem; color: #ef4444;" onclick="banUser(${idx})">بن کردن</button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            const pendingList = document.getElementById("adminPendingChatsList");
+            const approvedList = document.getElementById("adminApprovedChatsList");
+            pendingList.innerHTML = "";
+            approvedList.innerHTML = "";
+
+            if (chatRequests.length === 0) {
+                pendingList.innerHTML = `<p style="color:var(--text-muted); text-align:center;">چتی وجود ندارد.</p>`;
+                approvedList.innerHTML = `<p style="color:var(--text-muted); text-align:center;">چت تایید شده‌ای وجود ندارد.</p>`;
+                return;
+            }
+
+            let hasPending = false;
+            let hasApproved = false;
+
+            chatRequests.forEach((req) => {
+                let isApproved = req.status === "approved";
+                let msgsHtml = req.messages.map(m => `<div style="font-size:0.85rem; margin:4px 0;"><strong>${m.sender}:</strong> ${m.isImage ? '<img src="'+m.text+'" style="max-height:80px; border-radius:4px;">' : m.text}</div>`).join('');
+                
+                let cardHtml = `
+                    <div class="glass" style="padding: 15px; border-radius: 14px; margin-bottom: 12px; border-color: ${isApproved ? '#22c55e' : 'var(--glass-border)'};">
+                        <div style="font-weight: 700; margin-bottom: 6px;">${req.name} (${req.username}) - طرح: ${req.plan} [وضعیت: ${isApproved ? 'تایید شده ✅' : 'در انتظار ⏳'}]</div>
+                        <div style="background: rgba(0,0,0,0.25); padding: 10px; border-radius: 8px; margin-bottom: 10px; max-height: 120px; overflow-y: auto;">${msgsHtml}</div>
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                            <button class="btn-action" style="padding: 6px 12px; font-size: 0.85rem;" onclick="openCustomSubModal('${req.username}', '${req.name}')">بررسی و تایید/لغو اشتراک</button>
+                            <button class="btn-glass" style="padding: 6px 12px; font-size: 0.85rem;" onclick="openAdminChatReply('${req.username}')">پاسخ و مشاهده کامل چت</button>
+                        </div>
+                    </div>
+                `;
+
+                if (isApproved) {
+                    hasApproved = true;
+                    approvedList.innerHTML += cardHtml;
+                } else {
+                    hasPending = true;
+                    pendingList.innerHTML += cardHtml;
+                }
+            });
+
+            if (!hasPending) pendingList.innerHTML = `<p style="color:var(--text-muted); text-align:center;">مورد در انتظاری نیست.</p>`;
+            if (!hasApproved) approvedList.innerHTML = `<p style="color:var(--text-muted); text-align:center;">مورد تایید شده‌ای نیست.</p>`;
+        }
+
+        function openCustomSubModal(username, name) {
+            targetSubUsername = username;
+            document.getElementById("subModalUserLabel").innerText = `کاربر: ${name} (${username})`;
+            document.getElementById("customDaysInput").value = 30;
+            openModal('customSubModal');
+        }
+
+        function processApproval(isApproved) {
+            const days = parseInt(document.getElementById("customDaysInput").value) || 30;
+            
+            let user = usersList.find(u => u.username === targetSubUsername);
+            if (!user) {
+                let req = chatRequests.find(c => c.username === targetSubUsername);
+                user = { name: req ? req.name : targetSubUsername, username: targetSubUsername, subscriptionDaysLeft: 0, isBanned: false };
+                usersList.push(user);
+            }
+
+            let chat = chatRequests.find(c => c.username === targetSubUsername);
+            if (!chat) {
+                chat = { username: targetSubUsername, name: user.name, plan: "دلخواه", status: "pending", messages: [] };
+                chatRequests.push(chat);
+            }
+
+            if (isApproved) {
+                user.subscriptionDaysLeft = days; 
+                chat.status = "approved";
+                chat.messages.push({ 
+                    sender: "admin", 
+                    text: `✅ کاربر تایید شد و اشتراک ${days} روزه برای شما فعال گردید! قفل‌ها باز شدند.`, 
+                    isSystemSuccess: true 
+                });
+                alert(`اشتراک ${days} روزه با موفقیت تایید شد.`);
+            } else {
+                user.subscriptionDaysLeft = 0;
+                chat.status = "rejected";
+                chat.messages.push({ 
+                    sender: "admin", 
+                    text: `❌ درخواست اشتراک شما توسط ادمین لغو شد.`, 
+                    isSystemDanger: true 
+                });
+                alert(`درخواست کاربر لغو شد.`);
+            }
+
+            if (currentUser && currentUser.username === targetSubUsername) {
+                currentUser.subscriptionDaysLeft = user.subscriptionDaysLeft;
+                saveUserSession();
+            }
+
+            closeModal('customSubModal');
+            closeModal('adminPanelModal');
+            loadAdminData();
+            syncToFirebase();
+            renderPosts();
+        }
+
+        function openAdminChatReply(username) {
+            closeModal('adminPanelModal');
+            openChatModal(username);
+        }
+
+        function deletePost(id) {
+            posts = posts.filter(p => p.id !== id);
+            loadAdminData();
+            renderPosts();
+            syncToFirebase();
+            alert("پست حذف شد.");
+        }
+
+        function banUser(idx) {
+            usersList[idx].isBanned = true;
+            alert(`کاربر ${usersList[idx].username} بن شد.`);
+            loadAdminData();
+            syncToFirebase();
+        }
+
+        function updateSubStatusBar() {
+            const bar = document.getElementById("subStatusBar");
+            const textElem = document.getElementById("subStatusText");
+            const badgeElem = document.getElementById("userBadgeName");
+            const authBtn = document.getElementById("headerAuthBtn");
+            const loginBtn = document.getElementById("headerLoginBtn");
+
+            if (isAdminLoggedIn) {
+                badgeElem.innerText = "مدیر کل (Admin)";
+                textElem.innerHTML = `وضعیت: <strong style="color: #4ade80;">دسترسی کامل ادمین فعال (همه قفل‌ها باز است)</strong>`;
+                authBtn.innerHTML = `<i class="fa-solid fa-user-shield"></i> ادمین`;
+                loginBtn.innerHTML = `<i class="fa-solid fa-right-from-bracket"></i> خروج`;
+                loginBtn.setAttribute("onclick", "logoutUser()");
+            } else if (currentUser) {
+                badgeElem.innerText = `${currentUser.name} (${currentUser.username})`;
+                authBtn.innerHTML = `<i class="fa-solid fa-user"></i> پروفایل`;
+                loginBtn.innerHTML = `<i class="fa-solid fa-right-from-bracket"></i> خروج`;
+                loginBtn.setAttribute("onclick", "logoutUser()");
+
+                if (currentUser.subscriptionDaysLeft > 0) {
+                    textElem.innerHTML = `اشتراک فعال: <strong style="color: #4ade80;">${currentUser.subscriptionDaysLeft} روز</strong> باقی مانده`;
+                } else {
+                    textElem.innerHTML = `وضعیت: <span style="color: #f87171;">بدون اشتراک</span> (منتظر تایید ادمین یا نیازمند خرید)`;
+                }
+            } else {
+                badgeElem.innerText = "مهمان";
+                textElem.innerText = "وضعیت: بدون اشتراک";
+                authBtn.innerHTML = `<i class="fa-solid fa-user-plus"></i> اشتراک`;
+                loginBtn.innerHTML = `<i class="fa-solid fa-right-to-bracket"></i> ورود`;
+                loginBtn.setAttribute("onclick", "openLoginModal()");
+            }
+        }
+
+        function logoutUser() {
+            currentUser = null;
+            isAdminLoggedIn = false;
+            localStorage.removeItem("netflix_sit_user");
+            localStorage.setItem("netflix_sit_admin", "false");
+            document.getElementById("adminManagementTrigger").style.display = "none";
+            updateSubStatusBar();
+            renderPosts();
+            alert("از حساب کاربری / پنل ادمین خارج شدید.");
+        }
+
+        function goHome() {
+            selectCategory('movie');
+        }
+
+        // Firebase Sync
+        function syncToFirebase() {
+            const payload = { posts, usersList, chatRequests };
+            fetch(FIREBASE_URL + "data.json", {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            }).catch(err => console.log("Firebase sync error:", err));
+        }
+
+        function loadFromFirebase() {
+            fetch(FIREBASE_URL + "data.json")
+                .then(res => res.json())
+                .then(data => {
+                    if (data) {
+                        if (data.posts) posts = data.posts;
+                        if (data.usersList) usersList = data.usersList;
+                        if (data.chatRequests) chatRequests = data.chatRequests;
+                        renderPosts();
+                        if (document.getElementById("adminPanelModal").style.display === "flex") {
+                            loadAdminData();
                         }
                     }
-                    openPlayerUI(partnerId);
-                }
-            }
-        }, 3000);
-    }
-
-    async function openInviteModal() {
-        const user = await fbGet(`users/${currentUser}`);
-        const friends = user?.friends || {};
-        const friendIds = Object.keys(friends);
-        if(friendIds.length === 0) return alert('دوستی در لیست خود ندارید.');
-        
-        let fListText = friendIds.join(', ');
-        let target = prompt(`کدام دوست را دعوت می‌کنید؟\nدوستان شما: ${fListText}`);
-        if(target && friends[target]) {
-            requestWatch(target);
-        } else if(target) {
-            alert('این کاربر در لیست دوستان شما نیست.');
+                })
+                .catch(err => console.log("Firebase load error:", err));
         }
-    }
-
-    async function startWatchingMovie(movie, forcedPartner = null) {
-        currentMovieId = movie.id;
-        const now = Date.now();
-        await fbSet(`movie_viewers/${currentMovieId}/${currentUser}`, now);
-
-        if(forcedPartner) {
-            partnerId = forcedPartner;
-            currentRoomId = [currentUser, partnerId].sort().join('_');
-        }
-
-        openPlayerUI(partnerId || 'در انتظار پارتنر...');
-        
-        document.getElementById('videoErrorMsg').innerText = '';
-        
-        // تنظیم استاندارد منبع ویدیو برای جلوگیری از خطای مرورگرهای موبایل
-        const video = document.getElementById('mainVideo');
-        const source = document.getElementById('videoSource');
-        source.src = movie.url;
-        video.load();
-        video.play().catch(() => {});
-        
-        document.getElementById('playingTitle').innerText = movie.title;
-    }
-
-    const videoElement = document.getElementById('mainVideo');
-    videoElement.onerror = function() {
-        const error = videoElement.error;
-        let errText = "خطا در بارگذاری ویدیو!";
-        if(error) {
-            switch (error.code) {
-                case 1: errText = "بارگذاری ویدیو لغو شد."; break;
-                case 2: errText = "خطای شبکه: لینک ویدیو در دسترس نیست یا قطع است."; break;
-                case 3: errText = "خطای دیکد: فرمت ویدیو برای پخش مناسب نیست."; break;
-                case 4: errText = "فرمت ویدیو پشتیبانی نمی‌شود یا لینک مستقیم نیست!"; break;
-            }
-        }
-        document.getElementById('videoErrorMsg').innerText = errText;
-    };
-
-    function openPlayerUI(pLabel) {
-        switchTab('player');
-        document.getElementById('playerTab').classList.remove('hidden');
-        document.getElementById('partnerLabel').innerText = pLabel;
-        setupVideoSync();
-    }
-
-    async function sendChat() {
-        const input = document.getElementById('msgInput');
-        const text = input.value.trim();
-        if(!text || !currentRoomId) return;
-
-        await fbPush(`rooms/${currentRoomId}/messages`, {
-            sender: currentUser,
-            text: text,
-            time: new Date().toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' })
-        });
-        input.value = '';
-    }
-
-    function setupVideoSync() {
-        const video = document.getElementById('mainVideo');
-
-        const sendSyncState = async (action) => {
-            if (isSyncing) return;
-            lastActionTime = Date.now();
-            await fbSet(`rooms/${currentRoomId}/sync`, {
-                action: action,
-                time: video.currentTime,
-                by: currentUser,
-                timestamp: Date.now()
-            });
-        };
-
-        video.onplay = () => sendSyncState('play');
-        video.onpause = () => sendSyncState('pause');
-        video.onseeked = () => sendSyncState('seek');
-
-        if(syncInterval) clearInterval(syncInterval);
-
-        syncInterval = setInterval(async () => {
-            if(!currentRoomId) return;
-
-            const msgs = await fbGet(`rooms/${currentRoomId}/messages`);
-            if(msgs) {
-                const msgList = Object.values(msgs);
-                if(msgList.length !== lastMsgCount) {
-                    lastMsgCount = msgList.length;
-                    const container = document.getElementById('chatMessages');
-                    container.innerHTML = '';
-                    msgList.forEach(m => {
-                        const div = document.createElement('div');
-                        div.className = `chat-msg ${m.sender === currentUser ? 'me' : ''}`;
-                        div.innerHTML = `<span>${m.sender} - ${m.time}</span>${m.text}`;
-                        container.appendChild(div);
-                    });
-                    container.scrollTop = container.scrollHeight;
-                }
-            }
-
-            const sync = await fbGet(`rooms/${currentRoomId}/sync`);
-            if(sync && sync.by !== currentUser && sync.timestamp > lastActionTime) {
-                isSyncing = true;
-                
-                if(Math.abs(video.currentTime - sync.time) > 1.2) {
-                    video.currentTime = sync.time;
-                }
-
-                if(sync.action === 'play' && video.paused) {
-                    await video.play().catch(() => {});
-                } else if(sync.action === 'pause' && !video.paused) {
-                    video.pause();
-                }
-
-                lastActionTime = sync.timestamp;
-                setTimeout(() => { isSyncing = false; }, 600);
-            }
-        }, 1000);
-    }
-
-    async function closePlayer() {
-        const video = document.getElementById('mainVideo');
-        video.pause();
-        document.getElementById('videoSource').src = '';
-        video.load();
-        if(syncInterval) clearInterval(syncInterval);
-        if(localStream) {
-            localStream.getTracks().forEach(track => track.stop());
-            localStream = null;
-            document.getElementById('myCam').srcObject = null;
-        }
-        await leaveMovieRoom();
-        currentRoomId = null;
-        partnerId = null;
-        lastMsgCount = 0;
-        switchTab('movies');
-    }
-</script>
-
+    </script>
 </body>
 </html>
