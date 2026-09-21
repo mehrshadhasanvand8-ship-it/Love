@@ -546,13 +546,24 @@
             margin-bottom: 12px;
             background: #000;
         }
-        .video-container iframe {
+        .video-container iframe, .video-container video {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             border: 0;
+        }
+
+        .telegram-container {
+            width: 100%;
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: center;
+            background: rgba(0,0,0,0.2);
+            border: 1px solid var(--glass-border);
         }
 
         .room-info-bar {
@@ -809,6 +820,9 @@
                 <iframe id="videoEmbedFrame" src="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" allowfullscreen></iframe>
             </div>
 
+            <!-- بخش نمایش اختصاصی پست تلگرام و ویدیوی استخراج شده -->
+            <div id="telegramEmbedSection" class="telegram-container" style="display:none;"></div>
+
             <img id="detailCover" src="" style="width:100%; height:220px; object-fit:cover; border-radius:18px; border:1px solid var(--glass-border); margin-bottom:12px;">
             <div style="font-size: 12px; opacity: 0.8; margin-bottom: 6px;"><b>سبک:</b> <span id="detailGenre"></span></div>
             <div style="font-size: 12px; opacity: 0.8; margin-bottom: 12px;"><b>توضیحات:</b> <span id="detailDesc"></span></div>
@@ -882,7 +896,7 @@
             </select>
             <input type="text" id="editPostTitle" placeholder="نام اثر">
             <input type="text" id="editPostGenre" placeholder="سبک / ژانر">
-            <input type="text" id="editPostLink" placeholder="لینک (مستقیم، اسپاتیفای، ساندکلاود، رادیو جوان و...)">
+            <input type="text" id="editPostLink" placeholder="لینک (مستقیم، اسپاتیفای، تلگرام، ساندکلاود، رادیو جوان و...)">
             
             <div style="font-size: 11px; margin-top: 6px; opacity: 0.8;">تغییر کاور پست:</div>
             <input type="text" id="editPostCoverUrl" placeholder="لینک مستقیم عکس کاور (http://...)">
@@ -947,7 +961,7 @@
             </select>
             <input type="text" id="postTitle" placeholder="نام اثر">
             <input type="text" id="postGenre" placeholder="سبک / ژانر">
-            <input type="text" id="postLink" placeholder="لینک (مستقیم MP3/MP4، اسپاتیفای، ساندکلاود، رادیوجوان یا یوتیوب)">
+            <input type="text" id="postLink" placeholder="لینک (مستقیم MP3/MP4، تلگرام، اسپاتیفای، ساندکلاود، رادیوجوان یا یوتیوب)">
             
             <div style="font-size: 11px; margin-top: 6px; opacity: 0.8;">کاور پست (عکس):</div>
             <input type="text" id="postCoverUrl" placeholder="لینک مستقیم عکس کاور (http://...)">
@@ -1183,6 +1197,45 @@
             showGlassAlert('با موفقیت خارج شدید', () => { location.reload(); }); 
         }
 
+        // بررسی و خواندن ساختار لینک تلگرام
+        function parseTelegramPost(url) {
+            if (!url) return null;
+            const tgRegex = /(?:t\.me|telegram\.me)\/([a-zA-Z0-9_]+)\/(\d+)/;
+            const match = url.match(tgRegex);
+            if (match) {
+                return { channel: match[1], postId: match[2] };
+            }
+            return null;
+        }
+
+        // استخراج مستقیم فایل مالتی‌مدیا از پست عمومی تلگرام
+        async function fetchTelegramMediaDirectUrl(channel, postId) {
+            try {
+                const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(`https://t.me/${channel}/${postId}?embed=1`)}`;
+                const response = await fetch(proxyUrl);
+                const data = await response.json();
+                if (data && data.contents) {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(data.contents, 'text/html');
+                    
+                    // بررسی ویدیوی مستقیم درون پست
+                    const videoTag = doc.querySelector('video');
+                    if (videoTag && videoTag.src) {
+                        return { type: 'video', url: videoTag.src };
+                    }
+
+                    // بررسی فایل صوتی درون پست
+                    const audioTag = doc.querySelector('audio');
+                    if (audioTag && audioTag.src) {
+                        return { type: 'audio', url: audioTag.src };
+                    }
+                }
+            } catch (err) {
+                console.error("خطا در استخراج مستقیم رسانه تلگرام:", err);
+            }
+            return null;
+        }
+
         // پردازش هوشمند لینک‌های آنلاین (یوتیوب، آپارات، اسپاتیفای، ساندکلاود)
         function parseVideoEmbedUrl(url) {
             if (!url) return null;
@@ -1280,13 +1333,22 @@
                 moviesContainer.innerHTML = '';
                 musicContainer.innerHTML = '';
 
-                if(Object.keys(postsData).length === 0) {
+                const postKeys = Object.keys(postsData);
+
+                if(postKeys.length === 0) {
                     moviesContainer.innerHTML = 'موردی ثبت نشده است.';
                     musicContainer.innerHTML = 'موردی ثبت نشده است.';
                     return;
                 }
 
-                Object.keys(postsData).forEach(key => {
+                // مرتب‌سازی پست‌ها از جدید به قدیم بر اساس timestamp
+                postKeys.sort((a, b) => {
+                    const timeA = postsData[a].timestamp || 0;
+                    const timeB = postsData[b].timestamp || 0;
+                    return timeB - timeA;
+                });
+
+                postKeys.forEach(key => {
                     const post = postsData[key];
                     const adminButtons = isAdmin ? `
                         <div class="admin-controls-card" onclick="event.stopPropagation()">
@@ -1314,6 +1376,9 @@
                         moviesContainer.innerHTML += cardHTML;
                     }
                 });
+
+                if(moviesContainer.innerHTML === '') moviesContainer.innerHTML = 'موردی ثبت نشده است.';
+                if(musicContainer.innerHTML === '') musicContainer.innerHTML = 'موردی ثبت نشده است.';
             });
         }
 
@@ -1377,7 +1442,7 @@
             });
         }
 
-        window.openPostDetail = function(postId) {
+        window.openPostDetail = async function(postId) {
             const post = postsData[postId];
             if(!post) return;
             currentPlayingPostId = postId;
@@ -1385,7 +1450,7 @@
             document.getElementById('detailTitle').innerText = post.title;
             document.getElementById('detailCover').src = post.cover;
             document.getElementById('detailGenre').innerText = post.genre;
-            document.getElementById('detailDesc').innerText = post.desc || 'توضیحاتی ثبت نشده است.';
+            document.getElementById('detailDesc').innerText = post.desc || 'توضیحات بیشتری برای این پست ثبت نشده است.';
             
             const dlBtn = document.getElementById('detailDownloadBtn');
             const extLinkBtn = document.getElementById('externalLinkBtn');
@@ -1396,18 +1461,60 @@
             extLinkBtn.setAttribute('onclick', `window.open('${post.link}', '_blank')`);
 
             const embedUrl = parseVideoEmbedUrl(post.link);
+            const tgData = parseTelegramPost(post.link);
+
             const videoSec = document.getElementById('videoEmbedSection');
             const videoFrame = document.getElementById('videoEmbedFrame');
+            const tgSec = document.getElementById('telegramEmbedSection');
             const audioSec = document.getElementById('audioPlayerSection');
 
-            if (embedUrl) {
-                videoFrame.src = embedUrl;
+            tgSec.innerHTML = ''; // پاکسازی قبلی
+
+            if (tgData) {
+                // تلاش برای دریافت مستقیم فایل رسانه از سرورهای تلگرام برای پخش مستقیم
+                videoSec.style.display = 'none';
+                videoFrame.src = '';
+                document.getElementById('detailCover').style.display = 'block';
+                audioSec.style.display = 'none';
+                tgSec.style.display = 'none';
+
+                const directMedia = await fetchTelegramMediaDirectUrl(tgData.channel, tgData.postId);
+
+                if (directMedia && directMedia.type === 'video') {
+                    videoSec.style.display = 'block';
+                    document.getElementById('detailCover').style.display = 'none';
+                    videoSec.innerHTML = `<video src="${directMedia.url}" controls autoplay style="width:100%; height:100%; border-radius:16px;"></video>`;
+                } else if (directMedia && directMedia.type === 'audio') {
+                    audioSec.style.display = 'block';
+                    audioDirectUrl = directMedia.url;
+                    dlBtn.setAttribute('onclick', `downloadInApp('${post.title}', '${audioDirectUrl}')`);
+                    if(globalAudio.src === audioDirectUrl && !globalAudio.paused) {
+                        document.getElementById('modalPlayBtn').innerText = '⏸ توقف';
+                    } else {
+                        document.getElementById('modalPlayBtn').innerText = '▶ پخش آنلاین';
+                    }
+                } else {
+                    // نمایش ویجت استاندارد تلگرام در صورت لزوم
+                    document.getElementById('detailCover').style.display = 'none';
+                    tgSec.style.display = 'flex';
+
+                    const script = document.createElement('script');
+                    script.src = "https://telegram.org/js/telegram-widget.js?22";
+                    script.setAttribute('data-telegram-post', `${tgData.channel}/${tgData.postId}`);
+                    script.setAttribute('data-width', '100%');
+                    script.setAttribute('data-dark', '1');
+                    tgSec.appendChild(script);
+                }
+
+            } else if (embedUrl) {
+                videoSec.innerHTML = `<iframe id="videoEmbedFrame" src="${embedUrl}" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
                 videoSec.style.display = 'block';
+                tgSec.style.display = 'none';
                 document.getElementById('detailCover').style.display = 'none';
                 audioSec.style.display = 'none';
             } else {
-                videoFrame.src = '';
                 videoSec.style.display = 'none';
+                tgSec.style.display = 'none';
                 document.getElementById('detailCover').style.display = 'block';
 
                 if(post.type === 'music') {
